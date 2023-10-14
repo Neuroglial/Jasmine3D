@@ -3,7 +3,7 @@
 
 #include "Log.h"
 
-#define JASMINE_BUILD_ID "v0.1a"
+#define Jasmine_BUILD_ID "v0.1a"
 
 namespace Jasmine {
 
@@ -11,7 +11,7 @@ namespace Jasmine {
 	{
 		Jasmine::Log::Init();
 
-		JM_CORE_TRACE("Jasmine Engine {}", JASMINE_BUILD_ID);
+		JM_CORE_TRACE("Jasmine Engine {}", Jasmine_BUILD_ID);
 		JM_CORE_TRACE("Initializing...");
 	}
 

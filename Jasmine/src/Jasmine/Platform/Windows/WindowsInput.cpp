@@ -8,6 +8,8 @@
 
 namespace Jasmine {
 
+	Input* Input::s_Instance = new WindowsInput;
+
 	bool WindowsInput::IsKeyPressedImpl(int keycode)
 	{
 		auto& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());

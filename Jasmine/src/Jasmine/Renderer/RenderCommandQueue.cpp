@@ -35,7 +35,7 @@ namespace Jasmine {
 
 	void RenderCommandQueue::Execute()
 	{
-		JM_RENDER_TRACE("RenderCommandQueue::Execute -- {0} commands, {1} bytes", m_CommandCount, (m_CommandBufferPtr - m_CommandBuffer));
+		//JM_RENDER_TRACE("RenderCommandQueue::Execute -- {0} commands, {1} bytes", m_CommandCount, (m_CommandBufferPtr - m_CommandBuffer));
 
 		byte* buffer = m_CommandBuffer;
 

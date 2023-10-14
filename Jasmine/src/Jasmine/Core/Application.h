@@ -10,7 +10,7 @@
 
 namespace Jasmine {
 
-	class Application
+	class  Application
 	{
 	public:
 		Application();
@@ -27,6 +27,8 @@ namespace Jasmine {
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
 		void RenderImGui();
+
+		std::string OpenFile(const std::string& filter) const;
 
 		inline Window& GetWindow() { return *m_Window; }
 		

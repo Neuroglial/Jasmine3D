@@ -2,7 +2,14 @@
 #include "Application.h"
 
 #include "Jasmine/Renderer/Renderer.h"
+#include "Jasmine/Renderer/Framebuffer.h"
 #include <GLFW/glfw3.h>
+
+#include <imgui/imgui.h>
+
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
+#include <Windows.h>
 
 namespace Jasmine {
 
@@ -43,6 +50,14 @@ namespace Jasmine {
 	void Application::RenderImGui()
 	{
 		m_ImGuiLayer->Begin();
+
+		ImGui::Begin("Renderer");
+		auto& caps = RendererAPI::GetCapabilities();
+		ImGui::Text("Vendor: %s", caps.Vendor.c_str());
+		ImGui::Text("Renderer: %s", caps.Renderer.c_str());
+		ImGui::Text("Version: %s", caps.Version.c_str());
+		ImGui::End();
+
 		for (Layer* layer : m_LayerStack)
 			layer->OnImGuiRender();
 
@@ -84,6 +99,11 @@ namespace Jasmine {
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
+		int width = e.GetWidth(), height = e.GetHeight();
+		JM_RENDER_2(width, height, { glViewport(0, 0, width, height); });
+		auto& fbs = FramebufferPool::GetGlobal()->GetAll();
+		for (auto& fb : fbs)
+			fb->Resize(width, height);
 		return false;
 	}
 
@@ -91,6 +111,31 @@ namespace Jasmine {
 	{
 		m_Running = false;
 		return true;
+	}
+
+	std::string Application::OpenFile(const std::string& filter) const
+	{
+		OPENFILENAMEA ofn;       // common dialog box structure
+		CHAR szFile[260] = { 0 };       // if using TCHAR macros
+
+		// Initialize OPENFILENAME
+		ZeroMemory(&ofn, sizeof(OPENFILENAME));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)m_Window->GetNativeWindow());
+		ofn.lpstrFile = szFile;
+		ofn.nMaxFile = sizeof(szFile);
+		ofn.lpstrFilter = "All\0*.*\0";
+		ofn.nFilterIndex = 1;
+		ofn.lpstrFileTitle = NULL;
+		ofn.nMaxFileTitle = 0;
+		ofn.lpstrInitialDir = NULL;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+		if (GetOpenFileNameA(&ofn) == TRUE)
+		{
+			return ofn.lpstrFile;
+		}
+		return std::string();
 	}
 
 }

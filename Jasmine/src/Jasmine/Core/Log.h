@@ -7,7 +7,7 @@
 
 namespace Jasmine {
 
-	class Log
+	class  Log
 	{
 	public:
 		static void Init();

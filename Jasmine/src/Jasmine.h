@@ -17,10 +17,11 @@
 // --- Jasmine Render API ------------------------------
 #include "Jasmine/Renderer/Renderer.h"
 #include "Jasmine/Renderer/FrameBuffer.h"
-#include "Jasmine/Renderer/VertexBuffer.h"
-#include "Jasmine/Renderer/IndexBuffer.h"
+#include "Jasmine/Renderer/Buffer.h"
 #include "Jasmine/Renderer/Texture.h"
 #include "Jasmine/Renderer/Shader.h"
+#include "Jasmine/Renderer/Mesh.h"
+#include "Jasmine/Renderer/Camera.h"
 // ---------------------------------------------------
 
 // --- Entry Point ------------
