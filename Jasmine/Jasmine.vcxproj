@@ -143,10 +143,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Jasmine\Platform\Windows\WindowsInput.h" />
-    <ClInclude Include="src\Jasmine\Renderer\Mesh.h" />
-    <ClInclude Include="src\Jasmine\Renderer\Camera.h" />
-    <ClInclude Include="src\Jasmine\Core\KeyCodes.h" />
     <ClInclude Include="src\JMpch.h" />
     <ClInclude Include="src\Jasmine.h" />
     <ClInclude Include="src\Jasmine\Core\Application.h" />
@@ -156,6 +152,7 @@
     <ClInclude Include="src\Jasmine\Core\Events\KeyEvent.h" />
     <ClInclude Include="src\Jasmine\Core\Events\MouseEvent.h" />
     <ClInclude Include="src\Jasmine\Core\Input.h" />
+    <ClInclude Include="src\Jasmine\Core\KeyCodes.h" />
     <ClInclude Include="src\Jasmine\Core\Layer.h" />
     <ClInclude Include="src\Jasmine\Core\LayerStack.h" />
     <ClInclude Include="src\Jasmine\Core\Log.h" />
@@ -167,9 +164,12 @@
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h" />
+    <ClInclude Include="src\Jasmine\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Jasmine\Renderer\Buffer.h" />
+    <ClInclude Include="src\Jasmine\Renderer\Camera.h" />
     <ClInclude Include="src\Jasmine\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Jasmine\Renderer\Mesh.h" />
     <ClInclude Include="src\Jasmine\Renderer\RenderCommandQueue.h" />
     <ClInclude Include="src\Jasmine\Renderer\Renderer.h" />
     <ClInclude Include="src\Jasmine\Renderer\RendererAPI.h" />
@@ -177,10 +177,6 @@
     <ClInclude Include="src\Jasmine\Renderer\Texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Jasmine\Renderer\Mesh.cpp" />
-    <ClCompile Include="src\Jasmine\Renderer\Framebuffer.cpp" />
-    <ClCompile Include="src\Jasmine\Renderer\Camera.cpp" />
-    <ClCompile Include="src\Jasmine\vendor\stb_image.cpp" />
     <ClCompile Include="src\JMpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -200,10 +196,14 @@
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\Mesh.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\RenderCommandQueue.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Shader.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Texture.cpp" />
+    <ClCompile Include="src\Jasmine\vendor\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
