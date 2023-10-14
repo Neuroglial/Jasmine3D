@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Jasmine">
+      <UniqueIdentifier>{AC26B82E-1806-37CA-211E-C2A08D7C9D2B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jasmine\Core">
+      <UniqueIdentifier>{8456705A-70B9-FFFE-193F-38B50581CB81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jasmine\Core\Events">
+      <UniqueIdentifier>{E8055BF7-5467-3805-DDD4-7EB749356FC4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jasmine\ImGui">
+      <UniqueIdentifier>{D6ECE5A8-42AD-61DF-0BE8-AA5C7767A6BB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jasmine\Platform">
+      <UniqueIdentifier>{80A40A22-6C9D-2974-95CF-0EF981270980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jasmine\Platform\OpenGL">
+      <UniqueIdentifier>{B43D7162-2075-B9F9-297F-1D1D9535E0F2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jasmine\Platform\Windows">
+      <UniqueIdentifier>{BACEB408-A6F3-0389-CF3E-E918BBC202A7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Jasmine\Renderer">
+      <UniqueIdentifier>{D2ABE7FC-BEA4-064F-E7D6-EBD3D32EE65A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\JMpch.h" />
+    <ClInclude Include="src\Jasmine.h" />
+    <ClInclude Include="src\Jasmine\Core\Application.h">
+      <Filter>Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Base.h">
+      <Filter>Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Events\ApplicationEvent.h">
+      <Filter>Jasmine\Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Events\Event.h">
+      <Filter>Jasmine\Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Events\KeyEvent.h">
+      <Filter>Jasmine\Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Events\MouseEvent.h">
+      <Filter>Jasmine\Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Input.h">
+      <Filter>Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Layer.h">
+      <Filter>Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\LayerStack.h">
+      <Filter>Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Log.h">
+      <Filter>Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Platform.h">
+      <Filter>Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Window.h">
+      <Filter>Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\EntryPoint.h">
+      <Filter>Jasmine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\ImGui\ImGuiLayer.h">
+      <Filter>Jasmine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.h">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLIndexBuffer.h">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShader.h">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexBuffer.h">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Platform\Windows\WindowsInput.h">
+      <Filter>Jasmine\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h">
+      <Filter>Jasmine\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\Framebuffer.h">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\IndexBuffer.h">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\RenderCommandQueue.h">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\Renderer.h">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\RendererAPI.h">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\Shader.h">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\Texture.h">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\VertexBuffer.h">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\JMpch.cpp" />
+    <ClCompile Include="src\Jasmine\Core\Application.cpp">
+      <Filter>Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Base.cpp">
+      <Filter>Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Layer.cpp">
+      <Filter>Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\LayerStack.cpp">
+      <Filter>Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Log.cpp">
+      <Filter>Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Window.cpp">
+      <Filter>Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\ImGui\ImGuiBuild.cpp">
+      <Filter>Jasmine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\ImGui\ImGuiLayer.cpp">
+      <Filter>Jasmine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.cpp">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLIndexBuffer.cpp">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShader.cpp">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexBuffer.cpp">
+      <Filter>Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\Windows\WindowsInput.cpp">
+      <Filter>Jasmine\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\Windows\WindowsWindow.cpp">
+      <Filter>Jasmine\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\IndexBuffer.cpp">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\RenderCommandQueue.cpp">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Renderer.cpp">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Shader.cpp">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Texture.cpp">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\VertexBuffer.cpp">
+      <Filter>Jasmine\Renderer</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
