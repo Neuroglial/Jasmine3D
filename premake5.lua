@@ -1,6 +1,7 @@
 workspace "Jasmine3D"
 	architecture "x64"
 	targetdir "build"
+	startproject "Sandbox"
 	
 	configurations 
 	{ 

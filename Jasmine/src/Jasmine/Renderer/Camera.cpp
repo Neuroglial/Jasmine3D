@@ -37,19 +37,17 @@ namespace Jasmine {
 
 	void Camera::Update()
 	{
-		if (Input::IsKeyPressed(GLFW_KEY_LEFT_ALT))
-		{
-			const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
-			glm::vec2 delta = mouse - m_InitialMousePosition;
-			m_InitialMousePosition = mouse;
+		const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
+		glm::vec2 delta = mouse - m_InitialMousePosition;
+		m_InitialMousePosition = mouse;
 
-			if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE))
-				MousePan(delta);
-			else if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+		if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle)) {
+			if (Input::IsKeyPressed(Key::LeftShift))
+				MousePan(delta * 0.5f);
+			else
 				MouseRotate(delta);
-			else if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
-				MouseZoom(delta.y);
 		}
+			
 
 		m_Position = CalculatePosition();
 

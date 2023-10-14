@@ -89,9 +89,6 @@
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h">
       <Filter>Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Jasmine\Platform\Windows\WindowsInput.h">
-      <Filter>Jasmine\Platform\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h">
       <Filter>Jasmine\Platform\Windows</Filter>
     </ClInclude>
@@ -122,6 +119,7 @@
     <ClInclude Include="src\Jasmine\Renderer\Texture.h">
       <Filter>Jasmine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\MouseCodes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JMpch.cpp" />
