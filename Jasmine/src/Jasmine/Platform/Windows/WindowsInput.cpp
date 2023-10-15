@@ -1,52 +1,48 @@
 #include "JMpch.h"
-#include "Jasmine/Core/Input.h"
+#include "WindowsInput.h"
+#include "WindowsWindow.h"
 
 #include "Jasmine/Core/Application.h"
+
 #include <GLFW/glfw3.h>
 
 namespace Jasmine {
 
-	bool Input::IsKeyPressed(const KeyCode key)
+	Input* Input::s_Instance = new WindowsInput;
+
+	bool WindowsInput::IsKeyPressedImpl(int keycode)
 	{
-		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		auto state = glfwGetKey(window, static_cast<int32_t>(key));
+		auto& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());
+		auto state = glfwGetKey(static_cast<GLFWwindow*>(window.GetNativeWindow()), keycode);
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
-	bool Input::IsMouseButtonPressed(const MouseCode button)
+	bool WindowsInput::IsMouseButtonPressedImpl(int button)
 	{
-		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
+		auto& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());
+
+		auto state = glfwGetMouseButton(static_cast<GLFWwindow*>(window.GetNativeWindow()), button);
 		return state == GLFW_PRESS;
 	}
 
-	glm::vec2 Input::GetMousePosition()
+	float WindowsInput::GetMouseXImpl()
 	{
-		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		auto& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());
+
 		double xpos, ypos;
-		glfwGetCursorPos(window, &xpos, &ypos);
+		glfwGetCursorPos(static_cast<GLFWwindow*>(window.GetNativeWindow()), &xpos, &ypos);
 
-		return { (float)xpos, (float)ypos };
+		return (float)xpos;
 	}
 
-	float Input::GetMouseX()
+	float WindowsInput::GetMouseYImpl()
 	{
-		auto pos = GetMousePosition();
-		return pos.x;
-	}
+		auto& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());
 
-	float Input::GetMouseY()
-	{
-		auto pos = GetMousePosition();
-		return pos.y;
-	}
+		double xpos, ypos;
+		glfwGetCursorPos(static_cast<GLFWwindow*>(window.GetNativeWindow()), &xpos, &ypos);
 
-	glm::vec2 Input::GetWindowSize()
-	{
-		auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		int w, h;
-		glfwGetWindowSize(window, &w, &h);
-		return { w, h };
+		return (float)ypos;
 	}
 
 }

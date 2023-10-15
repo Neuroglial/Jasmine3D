@@ -143,11 +143,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Jasmine\Core\MouseCodes.h" />
     <ClInclude Include="src\JMpch.h" />
     <ClInclude Include="src\Jasmine.h" />
     <ClInclude Include="src\Jasmine\Core\Application.h" />
     <ClInclude Include="src\Jasmine\Core\Base.h" />
+    <ClInclude Include="src\Jasmine\Core\Buffer.h" />
     <ClInclude Include="src\Jasmine\Core\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Jasmine\Core\Events\Event.h" />
     <ClInclude Include="src\Jasmine\Core\Events\KeyEvent.h" />
@@ -158,22 +158,27 @@
     <ClInclude Include="src\Jasmine\Core\LayerStack.h" />
     <ClInclude Include="src\Jasmine\Core\Log.h" />
     <ClInclude Include="src\Jasmine\Core\Platform.h" />
+    <ClInclude Include="src\Jasmine\Core\TimeStep.h" />
     <ClInclude Include="src\Jasmine\Core\Window.h" />
     <ClInclude Include="src\Jasmine\EntryPoint.h" />
     <ClInclude Include="src\Jasmine\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h" />
+    <ClInclude Include="src\Jasmine\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Jasmine\Renderer\Buffer.h" />
     <ClInclude Include="src\Jasmine\Renderer\Camera.h" />
     <ClInclude Include="src\Jasmine\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Jasmine\Renderer\Material.h" />
     <ClInclude Include="src\Jasmine\Renderer\Mesh.h" />
     <ClInclude Include="src\Jasmine\Renderer\RenderCommandQueue.h" />
     <ClInclude Include="src\Jasmine\Renderer\Renderer.h" />
     <ClInclude Include="src\Jasmine\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Jasmine\Renderer\Shader.h" />
+    <ClInclude Include="src\Jasmine\Renderer\ShaderUniform.h" />
     <ClInclude Include="src\Jasmine\Renderer\Texture.h" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +190,7 @@
     <ClCompile Include="src\Jasmine\Core\Layer.cpp" />
     <ClCompile Include="src\Jasmine\Core\LayerStack.cpp" />
     <ClCompile Include="src\Jasmine\Core\Log.cpp" />
+    <ClCompile Include="src\Jasmine\Core\TimeStep.cpp" />
     <ClCompile Include="src\Jasmine\Core\Window.cpp" />
     <ClCompile Include="src\Jasmine\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Jasmine\ImGui\ImGuiLayer.cpp" />
@@ -192,18 +198,20 @@
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Camera.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\Material.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Mesh.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\RenderCommandQueue.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Shader.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Texture.cpp" />
-    <ClCompile Include="src\Jasmine\vendor\stb_image.cpp" />
+    <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

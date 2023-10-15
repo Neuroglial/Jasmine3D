@@ -14,7 +14,7 @@ namespace Jasmine {
 	void Renderer::Clear()
 	{
 		JM_RENDER({
-			RendererAPI::Clear(0.0f,0.0f,0.0f,1.0f);
+			RendererAPI::Clear(0.0f, 0.0f, 0.0f, 1.0f);
 		});
 	}
 

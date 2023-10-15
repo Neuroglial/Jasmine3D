@@ -7,7 +7,7 @@
 
 namespace Jasmine {
 
-	class  KeyEvent : public Event
+	class Jasmine_API KeyEvent : public Event
 	{
 	public:
 		inline int GetKeyCode() const { return m_KeyCode; }
@@ -20,7 +20,7 @@ namespace Jasmine {
 		int m_KeyCode;
 	};
 
-	class  KeyPressedEvent : public KeyEvent
+	class Jasmine_API KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(int keycode, int repeatCount)
@@ -40,7 +40,7 @@ namespace Jasmine {
 		int m_RepeatCount;
 	};
 
-	class  KeyReleasedEvent : public KeyEvent
+	class Jasmine_API KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(int keycode)
@@ -56,7 +56,7 @@ namespace Jasmine {
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
-	class  KeyTypedEvent : public KeyEvent
+	class Jasmine_API KeyTypedEvent : public KeyEvent
 	{
 	public:
 		KeyTypedEvent(int keycode)

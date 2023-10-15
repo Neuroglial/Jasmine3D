@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Jasmine/Core/Base.h"
+#include "Jasmine/Core/TimeStep.h"
 
 namespace Jasmine {
 
-	class  Layer
+	class Jasmine_API Layer
 	{
 	public:
 		Layer(const std::string& name = "Layer");
@@ -12,7 +13,7 @@ namespace Jasmine {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(TimeStep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 

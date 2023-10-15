@@ -52,9 +52,6 @@ namespace Jasmine {
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
-		
-
-
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		JM_CORE_ASSERT(status, "Failed to initialize Glad!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -184,6 +181,10 @@ namespace Jasmine {
 		ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
 		glfwSetCursor(m_Window, m_ImGuiMouseCursors[imgui_cursor] ? m_ImGuiMouseCursors[imgui_cursor] : m_ImGuiMouseCursors[ImGuiMouseCursor_Arrow]);
 		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+		float time = glfwGetTime();
+		float delta = time - m_LastFrameTime;
+		m_LastFrameTime = time;
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

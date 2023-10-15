@@ -22,7 +22,7 @@ namespace Jasmine {
 	};
 
 	// Interface representing a desktop system based Window
-	class  Window
+	class Jasmine_API Window
 	{
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;

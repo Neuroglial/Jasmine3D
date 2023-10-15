@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Jasmine/Core/TimeStep.h"
+
 #include <glm/glm.hpp>
 
 namespace Jasmine {
@@ -10,7 +12,7 @@ namespace Jasmine {
 		Camera(const glm::mat4& projectionMatrix);
 
 		void Focus();
-		void Update();
+		void Update(TimeStep ts);
 
 		inline float GetDistance() const { return m_Distance; }
 		inline void SetDistance(float distance) { m_Distance = distance; }

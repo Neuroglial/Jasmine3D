@@ -4,7 +4,7 @@
 
 namespace Jasmine {
 
-	class   RenderCommandQueue
+	class Jasmine_API RenderCommandQueue
 	{
 	public:
 		typedef void(*RenderCommandFn)(void*);

@@ -7,7 +7,7 @@
 namespace Jasmine {
 
 	// TODO: Should this store previous size?
-	class  WindowResizeEvent : public Event
+	class Jasmine_API WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height)
@@ -29,7 +29,7 @@ namespace Jasmine {
 		unsigned int m_Width, m_Height;
 	};
 
-	class  WindowCloseEvent : public Event
+	class Jasmine_API WindowCloseEvent : public Event
 	{
 	public:
 		WindowCloseEvent() {}
@@ -38,7 +38,7 @@ namespace Jasmine {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class  AppTickEvent : public Event
+	class Jasmine_API AppTickEvent : public Event
 	{
 	public:
 		AppTickEvent() {}
@@ -47,7 +47,7 @@ namespace Jasmine {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class  AppUpdateEvent : public Event
+	class Jasmine_API AppUpdateEvent : public Event
 	{
 	public:
 		AppUpdateEvent() {}
@@ -56,7 +56,7 @@ namespace Jasmine {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class  AppRenderEvent : public Event
+	class Jasmine_API AppRenderEvent : public Event
 	{
 	public:
 		AppRenderEvent() {}

@@ -99,8 +99,7 @@ workspace "Jasmine3D"
 
 		links 
 		{ 
-			"Jasmine",
-			"Jasmine/vendor/assimp/win64/assimp.lib"
+			"Jasmine"
     		}
     
 		files 
@@ -130,11 +129,24 @@ workspace "Jasmine3D"
     		filter "configurations:Debug"
         		defines "JM_DEBUG"
         		symbols "on"
+        		links
+			{
+				"Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.lib"
+			}
                 
     		filter "configurations:Release"
         		defines "JM_RELEASE"
         		optimize "on"
+        		links
+			{
+				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+			}
 
     		filter "configurations:Dist"
         		defines "JM_DIST"
         		optimize "on"
+        		links
+			{
+				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+			}
+

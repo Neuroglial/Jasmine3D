@@ -4,7 +4,7 @@
 
 namespace Jasmine {
 
-	class   VertexBuffer
+	class Jasmine_API VertexBuffer
 	{
 	public:
 		virtual ~VertexBuffer() {}
@@ -18,7 +18,7 @@ namespace Jasmine {
 		static VertexBuffer* Create(unsigned int size = 0);
 	};
 
-	class   IndexBuffer
+	class Jasmine_API IndexBuffer
 	{
 	public:
 		virtual ~IndexBuffer() {}

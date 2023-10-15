@@ -5,7 +5,7 @@
 
 namespace Jasmine {
 
-	class  ImGuiLayer : public Layer
+	class Jasmine_API ImGuiLayer : public Layer
 	{
 	public:
 		ImGuiLayer();

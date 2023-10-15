@@ -7,7 +7,7 @@
 
 namespace Jasmine {
 
-	class  LayerStack
+	class Jasmine_API LayerStack
 	{
 	public:
 		LayerStack();

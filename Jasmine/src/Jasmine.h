@@ -6,6 +6,7 @@
 
 #include "Jasmine/Core/Application.h"
 #include "Jasmine/Core/Log.h"
+#include "Jasmine/Core/TimeStep.h"
 
 #include "Jasmine/Core/Events/Event.h"
 #include "Jasmine/Core/Events/ApplicationEvent.h"
@@ -16,12 +17,13 @@
 
 // --- Jasmine Render API ------------------------------
 #include "Jasmine/Renderer/Renderer.h"
-#include "Jasmine/Renderer/FrameBuffer.h"
+#include "Jasmine/Renderer/Framebuffer.h"
 #include "Jasmine/Renderer/Buffer.h"
 #include "Jasmine/Renderer/Texture.h"
 #include "Jasmine/Renderer/Shader.h"
 #include "Jasmine/Renderer/Mesh.h"
 #include "Jasmine/Renderer/Camera.h"
+#include "Jasmine/Renderer/Material.h"
 // ---------------------------------------------------
 
 // --- Entry Point ------------

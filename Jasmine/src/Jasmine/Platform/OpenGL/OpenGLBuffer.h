@@ -8,7 +8,7 @@ namespace Jasmine {
 	// VertexBuffer
 	//////////////////////////////////////////////////////////////////////////////////
 
-	class  OpenGLVertexBuffer : public VertexBuffer
+	class Jasmine_API OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
 		OpenGLVertexBuffer(unsigned int size);
@@ -28,7 +28,7 @@ namespace Jasmine {
 	// IndexBuffer
 	//////////////////////////////////////////////////////////////////////////////////
 
-	class  OpenGLIndexBuffer : public IndexBuffer
+	class Jasmine_API OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
 		OpenGLIndexBuffer(unsigned int size);
