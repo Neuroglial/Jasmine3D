@@ -40,7 +40,7 @@ namespace Jasmine {
 	{
 	}
 
-	void Renderer::DrawIndexed(unsigned int count, bool depthTest)
+	void Renderer::DrawIndexed(uint32_t count, bool depthTest)
 	{
 		JM_RENDER_2(count, depthTest, {
 			RendererAPI::DrawIndexed(count, depthTest);

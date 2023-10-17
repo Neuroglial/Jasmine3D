@@ -27,28 +27,21 @@ namespace Jasmine {
 		Reload();
 	}
 
+	Ref<OpenGLShader> OpenGLShader::CreateFromString(const std::string& source)
+	{
+		Ref<OpenGLShader> shader = std::make_shared<OpenGLShader>();
+		shader->Load(source);
+		return shader;
+	}
+
+
 	void OpenGLShader::Reload()
 	{
 		std::string source = ReadShaderFromFile(m_AssetPath);
 		m_ShaderSource = PreProcess(source);
 		Parse();
 
-		JM_RENDER_S({
-			if (self->m_RendererID)
-				glDeleteShader(self->m_RendererID);
-
-			self->CompileAndUploadShader();
-			self->ResolveUniforms();
-			self->ValidateUniforms();
-
-			if (self->m_Loaded)
-			{
-				for (auto& callback : self->m_ShaderReloadedCallbacks)
-					callback();
-			}
-
-			self->m_Loaded = true;
-		});
+		Load(source);
 	}
 
 	void OpenGLShader::AddShaderReloadedCallback(const ShaderReloadedCallback& callback)
@@ -60,6 +53,26 @@ namespace Jasmine {
 	{
 		JM_RENDER_S({
 			glUseProgram(self->m_RendererID);
+		});
+	}
+
+	void OpenGLShader::Load(const std::string& source)
+	{
+		m_ShaderSource = PreProcess(source);
+		Parse();
+
+		JM_RENDER_S({
+			if (self->m_RendererID)
+				glDeleteShader(self->m_RendererID);
+			self->CompileAndUploadShader();
+			self->ResolveUniforms();
+			self->ValidateUniforms();
+			if (self->m_Loaded)
+			{
+				for (auto& callback : self->m_ShaderReloadedCallbacks)
+					callback();
+			}
+			self->m_Loaded = true;
 		});
 	}
 

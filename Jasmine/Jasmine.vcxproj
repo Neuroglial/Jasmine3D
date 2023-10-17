@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\JMpch.h" />
     <ClInclude Include="src\Jasmine.h" />
     <ClInclude Include="src\Jasmine\Core\Application.h" />
@@ -180,8 +181,10 @@
     <ClInclude Include="src\Jasmine\Renderer\Shader.h" />
     <ClInclude Include="src\Jasmine\Renderer\ShaderUniform.h" />
     <ClInclude Include="src\Jasmine\Renderer\Texture.h" />
+    <ClInclude Include="src\Jasmine\Renderer\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\JMpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -212,6 +215,7 @@
     <ClCompile Include="src\Jasmine\Renderer\Shader.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Texture.cpp" />
     <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

@@ -137,6 +137,8 @@
     <ClInclude Include="src\Jasmine\Renderer\Texture.h">
       <Filter>Jasmine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\VertexArray.h" />
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JMpch.cpp" />
@@ -221,5 +223,7 @@
     <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp">
       <Filter>Jasmine\Vendor</Filter>
     </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.cpp" />
   </ItemGroup>
 </Project>

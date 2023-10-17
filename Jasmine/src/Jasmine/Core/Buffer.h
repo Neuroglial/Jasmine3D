@@ -37,6 +37,14 @@ namespace Jasmine {
 				memset(Data, 0, Size);
 		}
 
+		static Buffer Copy(void* data, uint32_t size)
+		{
+			Buffer buffer;
+			buffer.Allocate(size);
+			memcpy(buffer.Data, data, size);
+			return buffer;
+		}
+
 		void Write(byte* data, uint32_t size, uint32_t offset = 0)
 		{
 			JM_CORE_ASSERT(offset + size <= Size, "Buffer overflow!");
