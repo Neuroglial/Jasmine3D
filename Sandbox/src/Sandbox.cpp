@@ -561,7 +561,7 @@ public:
 
 		/*float posX = ImGui::GetCursorScreenPos().x;
 		float posY = ImGui::GetCursorScreenPos().y;
-		auto [wx, wy] = Hazel::Application::Get().GetWindow().GetWindowPos();
+		auto [wx, wy] = Jasmine::Application::Get().GetWindow().GetWindowPos();
 		posX -= wx;
 		posY -= wy;
 		HZ_INFO("{0}, {1}", posX, posY);*/

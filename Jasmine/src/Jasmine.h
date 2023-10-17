@@ -25,7 +25,3 @@
 #include "Jasmine/Renderer/Camera.h"
 #include "Jasmine/Renderer/Material.h"
 // ---------------------------------------------------
-
-// --- Entry Point ------------
-#include "Jasmine/EntryPoint.h"
-// ----------------------------

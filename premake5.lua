@@ -86,6 +86,70 @@ workspace "Jasmine3D"
         		defines "JM_DIST"
         		optimize "On"
 
+  	--------------------------------------------------------------------
+	project "JasEditor"
+    		location "JasEditor"
+    		kind "ConsoleApp"
+    		language "C++"
+    		cppdialect "C++17"
+    		staticruntime "on"
+    
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+		links 
+		{ 
+			"Jasmine"
+    		}
+    
+		files 
+		{ 
+			"%{prj.name}/src/**.h", 
+			"%{prj.name}/src/**.c", 
+			"%{prj.name}/src/**.hpp", 
+			"%{prj.name}/src/**.cpp" 
+		}
+    
+		includedirs 
+		{
+        		"%{prj.name}/src",
+        		"Jasmine/src",
+        		"Jasmine/vendor",
+        		"%{IncludeDir.glm}"
+    		}
+	
+		filter "system:windows"
+        		systemversion "latest"
+                
+		defines 
+		{ 
+            	"JM_PLATFORM_WINDOWS"
+		}
+    
+    		filter "configurations:Debug"
+        		defines "JM_DEBUG"
+        		symbols "on"
+        		links
+			{
+				"Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.lib"
+			}
+                
+    		filter "configurations:Release"
+        		defines "JM_RELEASE"
+        		optimize "on"
+        		links
+			{
+				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+			}
+
+    		filter "configurations:Dist"
+        		defines "JM_DIST"
+        		optimize "on"
+        		links
+			{
+				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+			}
+
 	--------------------------------------------------------------------
 	project "Sandbox"
     		location "Sandbox"

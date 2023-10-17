@@ -33,25 +33,26 @@ namespace Jasmine {
 
 	glm::vec2 Camera::PanSpeed() const
 	{
+		float factor = 0.01;
 		float x = std::min(m_ViewportWidth / 1000.0f, 2.4f); // max = 2.4f
 		float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
 
 		float y = std::min(m_ViewportHeight / 1000.0f, 2.4f); // max = 2.4f
 		float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
 
-		return { xFactor, yFactor };
+		return glm::vec2{ xFactor, yFactor } * factor;
 	}
 
 	float Camera::RotationSpeed() const
 	{
-		return 0.8f;
+		return 0.008f;
 	}
 
 	float Camera::ZoomSpeed() const
 	{
 		float distance = m_Distance * 0.2f;
 		distance = std::max(distance, 0.0f);
-		float speed = distance * distance;
+		float speed = distance;
 		speed = std::min(speed, 100.0f); // max speed = 100
 		return speed;
 	}
@@ -69,6 +70,19 @@ namespace Jasmine {
 				MouseRotate(delta);
 		}
 
+		if (Input::IsKeyPressed(GLFW_KEY_UP)) {
+			MouseRotate({ 0.0f,0.001f });
+		}
+		if (Input::IsKeyPressed(GLFW_KEY_DOWN)) {
+			MouseRotate({ 0.0f,-0.001f });
+		}
+		if (Input::IsKeyPressed(GLFW_KEY_LEFT)) {
+			MouseRotate({ 0.001f,0.0f });
+		}
+		if (Input::IsKeyPressed(GLFW_KEY_RIGHT)) {
+			MouseRotate({ -0.001f,0.0f });
+		}
+
 		m_Position = CalculatePosition();
 
 		glm::quat orientation = GetOrientation();
@@ -81,7 +95,7 @@ namespace Jasmine {
 	void Camera::MousePan(const glm::vec2& delta)
 	{
 		auto speed = PanSpeed();
-		JM_CORE_TRACE("{0}, {1}", speed.x, speed.y);
+		//JM_CORE_TRACE("{0}, {1}", speed.x, speed.y);
 		m_FocalPoint += -GetRightDirection() * delta.x * speed.x * m_Distance;
 		m_FocalPoint += GetUpDirection() * delta.y * speed.y * m_Distance;
 	}
