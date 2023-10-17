@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <glm/glm.hpp>
 
 #include "Jasmine/Core/Base.h"
 #include "Jasmine/Core/Events/Event.h"
@@ -33,6 +34,7 @@ namespace Jasmine {
 
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
+		virtual glm::ivec2 GetWindowPos() const = 0;
 
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;

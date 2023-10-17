@@ -18,6 +18,7 @@ namespace Jasmine {
 		inline void SetDistance(float distance) { m_Distance = distance; }
 
 		inline void SetProjectionMatrix(const glm::mat4& projectionMatrix) { m_ProjectionMatrix = projectionMatrix; }
+		inline void SetViewportSize(uint32_t width, uint32_t height) { m_ViewportWidth = width; m_ViewportHeight = height; }
 
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
@@ -27,6 +28,10 @@ namespace Jasmine {
 		glm::vec3 GetForwardDirection();
 		const glm::vec3& GetPosition() const { return m_Position; }
 		void MouseZoom(float delta);
+
+		glm::vec2 PanSpeed() const;
+		float RotationSpeed() const;
+		float ZoomSpeed() const;
 	private:
 		void MousePan(const glm::vec2& delta);
 		void MouseRotate(const glm::vec2& delta);
@@ -42,9 +47,11 @@ namespace Jasmine {
 		glm::vec3 m_InitialFocalPoint, m_InitialRotation;
 
 		float m_Distance;
-		float m_PanSpeed, m_RotationSpeed, m_ZoomSpeed;
+		//float m_PanSpeed, m_RotationSpeed, m_ZoomSpeed;
 
 		float m_Pitch, m_Yaw;
+
+		uint32_t m_ViewportWidth = 1280, m_ViewportHeight = 720;
 	};
 
 }

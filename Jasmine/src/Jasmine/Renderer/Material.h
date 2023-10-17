@@ -49,6 +49,9 @@ namespace Jasmine {
 		{
 			Set(name, (const Ref<Texture>&)texture);
 		}
+
+	public:
+		static Ref<Material> Create(const Ref<Shader>& shader);
 	private:
 		void AllocateStorage();
 		void OnShaderReloaded();
@@ -90,6 +93,7 @@ namespace Jasmine {
 		void Set(const std::string& name, const Ref<Texture>& texture)
 		{
 			auto decl = m_Material->FindResourceDeclaration(name);
+
 			uint32_t slot = decl->GetRegister();
 			if (m_Textures.size() <= slot)
 				m_Textures.resize((size_t)slot + 1);
@@ -107,6 +111,9 @@ namespace Jasmine {
 		}
 
 		void Bind() const;
+
+	public:
+		static Ref<MaterialInstance> Create(const Ref<Material>& material);
 	private:
 		void AllocateStorage();
 		void OnShaderReloaded();

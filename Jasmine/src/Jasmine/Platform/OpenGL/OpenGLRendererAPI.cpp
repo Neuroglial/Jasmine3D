@@ -1,5 +1,6 @@
 #include "JMpch.h"
 #include "Jasmine/Renderer/RendererAPI.h"
+#include "Jasmine/Renderer/Shader.h"
 
 #include <Glad/glad.h>
 
@@ -14,13 +15,14 @@ namespace Jasmine {
 		}
 		else
 		{
-			JM_CORE_TRACE("{0}", message);
+			//JM_CORE_TRACE("{0}", message);
 		}
 	}
 
 	void RendererAPI::Init()
 	{
 		glDebugMessageCallback(OpenGLLogMessage, nullptr);
+		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
 		unsigned int vao;
@@ -50,9 +52,15 @@ namespace Jasmine {
 			JM_CORE_ERROR("OpenGL Error {0}", error);
 			error = glGetError();
 		}
+
+		LoadRequiredAssets();
 	}
 
 	void RendererAPI::Shutdown()
+	{
+	}
+
+	void RendererAPI::LoadRequiredAssets()
 	{
 	}
 

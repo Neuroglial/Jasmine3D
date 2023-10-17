@@ -5,6 +5,8 @@
 
 namespace Jasmine {
 
+	class ShaderLibrary;
+
 	// TODO: Maybe this should be renamed to RendererAPI? Because we want an actual renderer vs API calls...
 	class Renderer
 	{
@@ -17,10 +19,11 @@ namespace Jasmine {
 		static void SetClearColor(float r, float g, float b, float a);
 
 		static void DrawIndexed(unsigned int count, bool depthTest = true);
-
 		static void ClearMagenta();
 
 		static void Init();
+
+		static const Scope<ShaderLibrary>& GetShaderLibrary() { return Get().m_ShaderLibrary; }
 
 		static void* Submit(RenderCommandFn fn, unsigned int size)
 		{
@@ -34,6 +37,7 @@ namespace Jasmine {
 		static Renderer* s_Instance;
 
 		RenderCommandQueue m_CommandQueue;
+		Scope<ShaderLibrary> m_ShaderLibrary;
 	};
 
 }
@@ -43,7 +47,7 @@ namespace Jasmine {
 #define JM_RENDER_UNIQUE(x) JM_RENDER_PASTE(x, __LINE__)
 
 #define JM_RENDER(code) \
-    struct JM_RENDER_UNIQUE(HZRenderCommand) \
+    struct JM_RENDER_UNIQUE(JMRenderCommand) \
     {\
         static void Execute(void*)\
         {\
@@ -51,41 +55,41 @@ namespace Jasmine {
         }\
     };\
 	{\
-		auto mem = ::Jasmine::Renderer::Submit(JM_RENDER_UNIQUE(HZRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(HZRenderCommand)));\
-		new (mem) JM_RENDER_UNIQUE(HZRenderCommand)();\
+		auto mem = ::Jasmine::Renderer::Submit(JM_RENDER_UNIQUE(JMRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(JMRenderCommand)));\
+		new (mem) JM_RENDER_UNIQUE(JMRenderCommand)();\
 	}\
 
 #define JM_RENDER_1(arg0, code) \
 	do {\
-    struct JM_RENDER_UNIQUE(HZRenderCommand) \
+    struct JM_RENDER_UNIQUE(JMRenderCommand) \
     {\
-		JM_RENDER_UNIQUE(HZRenderCommand)(typename ::std::remove_const<typename ::std::remove_reference<decltype(arg0)>::type>::type arg0) \
+		JM_RENDER_UNIQUE(JMRenderCommand)(typename ::std::remove_const<typename ::std::remove_reference<decltype(arg0)>::type>::type arg0) \
 		: arg0(arg0) {}\
 		\
         static void Execute(void* argBuffer)\
         {\
-			auto& arg0 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg0;\
+			auto& arg0 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg0;\
             code\
         }\
 		\
 		typename ::std::remove_const<typename ::std::remove_reference<decltype(arg0)>::type>::type arg0;\
     };\
 	{\
-		auto mem = ::Jasmine::Renderer::Submit(JM_RENDER_UNIQUE(HZRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(HZRenderCommand)));\
-		new (mem) JM_RENDER_UNIQUE(HZRenderCommand)(arg0);\
+		auto mem = ::Jasmine::Renderer::Submit(JM_RENDER_UNIQUE(JMRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(JMRenderCommand)));\
+		new (mem) JM_RENDER_UNIQUE(JMRenderCommand)(arg0);\
 	} } while(0)
 
 #define JM_RENDER_2(arg0, arg1, code) \
-    struct JM_RENDER_UNIQUE(HZRenderCommand) \
+    struct JM_RENDER_UNIQUE(JMRenderCommand) \
     {\
-		JM_RENDER_UNIQUE(HZRenderCommand)(typename ::std::remove_const<typename ::std::remove_reference<decltype(arg0)>::type>::type arg0,\
+		JM_RENDER_UNIQUE(JMRenderCommand)(typename ::std::remove_const<typename ::std::remove_reference<decltype(arg0)>::type>::type arg0,\
 											typename ::std::remove_const<typename ::std::remove_reference<decltype(arg1)>::type>::type arg1) \
 		: arg0(arg0), arg1(arg1) {}\
 		\
         static void Execute(void* argBuffer)\
         {\
-			auto& arg0 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg0;\
-			auto& arg1 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg1;\
+			auto& arg0 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg0;\
+			auto& arg1 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg1;\
             code\
         }\
 		\
@@ -93,23 +97,23 @@ namespace Jasmine {
 		typename ::std::remove_const<typename ::std::remove_reference<decltype(arg1)>::type>::type arg1;\
     };\
 	{\
-		auto mem = ::Jasmine::Renderer::Submit(JM_RENDER_UNIQUE(HZRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(HZRenderCommand)));\
-		new (mem) JM_RENDER_UNIQUE(HZRenderCommand)(arg0, arg1);\
+		auto mem = ::Jasmine::Renderer::Submit(JM_RENDER_UNIQUE(JMRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(JMRenderCommand)));\
+		new (mem) JM_RENDER_UNIQUE(JMRenderCommand)(arg0, arg1);\
 	}\
 
 #define JM_RENDER_3(arg0, arg1, arg2, code) \
-    struct JM_RENDER_UNIQUE(HZRenderCommand) \
+    struct JM_RENDER_UNIQUE(JMRenderCommand) \
     {\
-		JM_RENDER_UNIQUE(HZRenderCommand)(typename ::std::remove_const<typename ::std::remove_reference<decltype(arg0)>::type>::type arg0,\
+		JM_RENDER_UNIQUE(JMRenderCommand)(typename ::std::remove_const<typename ::std::remove_reference<decltype(arg0)>::type>::type arg0,\
 											typename ::std::remove_const<typename ::std::remove_reference<decltype(arg1)>::type>::type arg1,\
 											typename ::std::remove_const<typename ::std::remove_reference<decltype(arg2)>::type>::type arg2) \
 		: arg0(arg0), arg1(arg1), arg2(arg2) {}\
 		\
         static void Execute(void* argBuffer)\
         {\
-			auto& arg0 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg0;\
-			auto& arg1 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg1;\
-			auto& arg2 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg2;\
+			auto& arg0 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg0;\
+			auto& arg1 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg1;\
+			auto& arg2 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg2;\
             code\
         }\
 		\
@@ -118,14 +122,14 @@ namespace Jasmine {
 		typename ::std::remove_const<typename ::std::remove_reference<decltype(arg2)>::type>::type arg2;\
     };\
 	{\
-		auto mem = ::Jasmine::Renderer::Submit(JM_RENDER_UNIQUE(HZRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(HZRenderCommand)));\
-		new (mem) JM_RENDER_UNIQUE(HZRenderCommand)(arg0, arg1, arg2);\
+		auto mem = ::Jasmine::Renderer::Submit(JM_RENDER_UNIQUE(JMRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(JMRenderCommand)));\
+		new (mem) JM_RENDER_UNIQUE(JMRenderCommand)(arg0, arg1, arg2);\
 	}\
 
 #define JM_RENDER_4(arg0, arg1, arg2, arg3, code) \
-    struct JM_RENDER_UNIQUE(HZRenderCommand) \
+    struct JM_RENDER_UNIQUE(JMRenderCommand) \
     {\
-		JM_RENDER_UNIQUE(HZRenderCommand)(typename ::std::remove_const<typename ::std::remove_reference<decltype(arg0)>::type>::type arg0,\
+		JM_RENDER_UNIQUE(JMRenderCommand)(typename ::std::remove_const<typename ::std::remove_reference<decltype(arg0)>::type>::type arg0,\
 											typename ::std::remove_const<typename ::std::remove_reference<decltype(arg1)>::type>::type arg1,\
 											typename ::std::remove_const<typename ::std::remove_reference<decltype(arg2)>::type>::type arg2,\
 											typename ::std::remove_const<typename ::std::remove_reference<decltype(arg3)>::type>::type arg3)\
@@ -133,10 +137,10 @@ namespace Jasmine {
 		\
         static void Execute(void* argBuffer)\
         {\
-			auto& arg0 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg0;\
-			auto& arg1 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg1;\
-			auto& arg2 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg2;\
-			auto& arg3 = ((JM_RENDER_UNIQUE(HZRenderCommand)*)argBuffer)->arg3;\
+			auto& arg0 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg0;\
+			auto& arg1 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg1;\
+			auto& arg2 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg2;\
+			auto& arg3 = ((JM_RENDER_UNIQUE(JMRenderCommand)*)argBuffer)->arg3;\
             code\
         }\
 		\
@@ -146,8 +150,8 @@ namespace Jasmine {
 		typename ::std::remove_const<typename ::std::remove_reference<decltype(arg3)>::type>::type arg3;\
     };\
 	{\
-		auto mem = Renderer::Submit(JM_RENDER_UNIQUE(HZRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(HZRenderCommand)));\
-		new (mem) JM_RENDER_UNIQUE(HZRenderCommand)(arg0, arg1, arg2, arg3);\
+		auto mem = Renderer::Submit(JM_RENDER_UNIQUE(JMRenderCommand)::Execute, sizeof(JM_RENDER_UNIQUE(JMRenderCommand)));\
+		new (mem) JM_RENDER_UNIQUE(JMRenderCommand)(arg0, arg1, arg2, arg3);\
 	}
 
 #define JM_RENDER_S(code) auto self = this;\

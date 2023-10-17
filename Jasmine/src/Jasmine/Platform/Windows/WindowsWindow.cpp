@@ -187,6 +187,13 @@ namespace Jasmine {
 		m_LastFrameTime = time;
 	}
 
+	glm::ivec2 WindowsWindow::GetWindowPos() const
+	{
+		int xpos, ypos;
+		glfwGetWindowPos(m_Window, &xpos, &ypos);
+		return { xpos,ypos };
+	}
+
 	void WindowsWindow::SetVSync(bool enabled)
 	{
 		if (enabled)
