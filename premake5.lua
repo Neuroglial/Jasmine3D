@@ -18,6 +18,7 @@ workspace "Jasmine3D"
 	IncludeDir["Glad"] = "Jasmine/vendor/Glad/include"
 	IncludeDir["ImGui"] = "Jasmine/vendor/ImGui"
 	IncludeDir["glm"] = "Jasmine/vendor/glm"
+	IncludeDir["ImGuizmo"] = "Jasmine/vendor/ImGuizmo"
 
 	include "Jasmine/vendor/GLFW"
 	include "Jasmine/vendor/Glad"
@@ -42,8 +43,16 @@ workspace "Jasmine3D"
 			"%{prj.name}/src/**.h", 
 			"%{prj.name}/src/**.c", 
 			"%{prj.name}/src/**.hpp", 
-			"%{prj.name}/src/**.cpp" 
+			"%{prj.name}/src/**.cpp" ,
+			"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+			"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
     		}
+    		
+    		defines
+		{
+			"_CRT_SECURE_NO_WARNINGS"
+		}
+
 
     		includedirs
 		{
@@ -54,8 +63,10 @@ workspace "Jasmine3D"
         		"%{IncludeDir.glm}",
         		"%{IncludeDir.ImGui}",
         		"%{prj.name}/vendor/assimp/include",
-        		"%{prj.name}/vendor/stb/include"
-    		}
+        		"%{prj.name}/vendor/spdlog/include",
+        		"%{prj.name}/vendor/stb/include",
+        		"%{IncludeDir.ImGuizmo}"
+     		}
     
     		links 
 		{ 
@@ -65,6 +76,9 @@ workspace "Jasmine3D"
 			"opengl32.lib"
     		}
     
+    		filter "files:vendor/ImGuizmo/**.cpp"
+		flags { "NoPCH" }
+    		
 		filter "system:windows"
      		systemversion "latest"
         
@@ -113,9 +127,11 @@ workspace "Jasmine3D"
 		includedirs 
 		{
         		"%{prj.name}/src",
+        		"Jasmine/vendor/spdlog/include",
         		"Jasmine/src",
         		"Jasmine/vendor",
-        		"%{IncludeDir.glm}"
+        		"%{IncludeDir.glm}",
+        		"%{IncludeDir.ImGuizmo}"
     		}
 	
 		filter "system:windows"
@@ -179,6 +195,7 @@ workspace "Jasmine3D"
         		"%{prj.name}/src",
         		"Jasmine/src",
         		"Jasmine/vendor",
+        		"Jasmine/vendor/spdlog/include",
         		"%{IncludeDir.glm}"
     		}
 	

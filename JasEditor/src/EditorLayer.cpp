@@ -1,5 +1,7 @@
 #include "EditorLayer.h"
 
+#include "../vendor/ImGuizmo/ImGuizmo.h"
+
 namespace Jasmine {
 
 	static void ImGuiShowHelpMarker(const char* desc)
@@ -119,6 +121,8 @@ namespace Jasmine {
 		// Set lights
 		m_Light.Direction = { -0.5f, -0.5f, 1.0f };
 		m_Light.Radiance = { 1.0f, 1.0f, 1.0f };
+
+		m_Transform = glm::scale(glm::mat4(1.0f), glm::vec3(m_MeshScale));
 	}
 
 	void EditorLayer::OnDetach()
@@ -206,7 +210,7 @@ namespace Jasmine {
 		else if (m_Scene == Scene::Model)
 		{
 			if (m_Mesh)
-				m_Mesh->Render(ts, scale(mat4(1.0f), vec3(m_MeshScale)), m_MeshMaterial);
+				m_Mesh->Render(ts, m_Transform, m_MeshMaterial);
 		}
 
 		m_GridMaterial->Set("u_MVP", viewProjection * glm::scale(glm::mat4(1.0f), glm::vec3(16.0f)));
@@ -315,8 +319,8 @@ namespace Jasmine {
 		}
 
 		// When using ImGuiDockNodeFlags_PassthruDockspace, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
-		if (opt_flags & ImGuiDockNodeFlags_PassthruDockspace)
-			window_flags |= ImGuiWindowFlags_NoBackground;
+		//if (opt_flags & ImGuiDockNodeFlags_PassthruDockspace)
+		//	window_flags |= ImGuiWindowFlags_NoBackground;
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("DockSpace Demo", &p_open, window_flags);
@@ -538,7 +542,7 @@ namespace Jasmine {
 		auto [wx, wy] = Application::Get().GetWindow().GetWindowPos();
 		posX -= wx;
 		posY -= wy;
-		HZ_INFO("{0}, {1}", posX, posY);*/
+		JM_INFO("{0}, {1}", posX, posY);*/
 
 		auto viewportSize = ImGui::GetContentRegionAvail();
 		m_Framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
@@ -546,6 +550,20 @@ namespace Jasmine {
 		m_Camera.SetProjectionMatrix(glm::perspectiveFov(glm::radians(45.0f), viewportSize.x, viewportSize.y, 0.1f, 10000.0f));
 		m_Camera.SetViewportSize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 		ImGui::Image((void*)m_FinalPresentBuffer->GetColorAttachmentRendererID(), viewportSize, { 0, 1 }, { 1, 0 });
+
+
+		// Gizmos
+		if (m_GizmoType != -1)
+		{
+			float rw = (float)ImGui::GetWindowWidth();
+			float rh = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, rw, rh);
+			ImGuizmo::Manipulate(glm::value_ptr(m_Camera.GetViewMatrix()), glm::value_ptr(m_Camera.GetProjectionMatrix()), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(m_Transform));
+		}
+
+
 		ImGui::End();
 		ImGui::PopStyleVar();
 
@@ -559,8 +577,7 @@ namespace Jasmine {
 
 				if (ImGui::MenuItem("Flag: NoSplit", "", (opt_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 opt_flags ^= ImGuiDockNodeFlags_NoSplit;
 				if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (opt_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0))  opt_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode;
-				if (ImGui::MenuItem("Flag: NoResize", "", (opt_flags & ImGuiDockNodeFlags_NoResize) != 0))                opt_flags ^= ImGuiDockNodeFlags_NoResize;
-				if (ImGui::MenuItem("Flag: PassthruDockspace", "", (opt_flags & ImGuiDockNodeFlags_PassthruDockspace) != 0))       opt_flags ^= ImGuiDockNodeFlags_PassthruDockspace;
+				//if (ImGui::MenuItem("Flag: PassthruDockspace", "", (opt_flags & ImGuiDockNodeFlags_PassthruDockspace) != 0))       opt_flags ^= ImGuiDockNodeFlags_PassthruDockspace;if (ImGui::MenuItem("Flag: NoResize", "", (opt_flags & ImGuiDockNodeFlags_NoResize) != 0))                opt_flags ^= ImGuiDockNodeFlags_NoResize;
 				if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (opt_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))          opt_flags ^= ImGuiDockNodeFlags_AutoHideTabBar;
 				ImGui::Separator();
 				if (ImGui::MenuItem("Close DockSpace", NULL, false, p_open != NULL))
@@ -589,12 +606,33 @@ namespace Jasmine {
 
 	void EditorLayer::OnEvent(Event& _event)
 	{
+		EventDispatcher dispatcher(_event);
+		dispatcher.Dispatch<KeyPressedEvent>(JM_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
+
 		if (_event.GetEventType() == EventType::MouseScrolled) {
 			auto e = dynamic_cast<MouseScrolledEvent*>(&_event);
-			
 			m_Camera.MouseZoom(e->GetYOffset());
-
 		}
+	}
+
+	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+	{
+		switch (e.GetKeyCode())
+		{
+		case JM_KEY_Q:
+			m_GizmoType = -1;
+			break;
+		case JM_KEY_W:
+			m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			break;
+		case JM_KEY_E:
+			m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+			break;
+		case JM_KEY_R:
+			m_GizmoType = ImGuizmo::OPERATION::SCALE;
+			break;
+		}
+		return false;
 	}
 
 

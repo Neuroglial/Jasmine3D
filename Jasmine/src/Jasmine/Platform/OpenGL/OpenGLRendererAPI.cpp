@@ -11,7 +11,7 @@ namespace Jasmine {
 		if (severity != GL_DEBUG_SEVERITY_NOTIFICATION)
 		{
 			JM_CORE_ERROR("{0}", message);
-			JM_CORE_ASSERT(false, "");
+			//JM_CORE_ASSERT(false, "");
 		}
 		else
 		{

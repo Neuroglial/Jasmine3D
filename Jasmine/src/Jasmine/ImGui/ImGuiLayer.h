@@ -5,7 +5,7 @@
 
 namespace Jasmine {
 
-	class Jasmine_API ImGuiLayer : public Layer
+	class ImGuiLayer : public Layer
 	{
 	public:
 		ImGuiLayer();
@@ -19,6 +19,7 @@ namespace Jasmine {
 		virtual void OnDetach() override;
 		virtual void OnImGuiRender() override;
 	private:
+		void SetDarkThemeColors();
 		float m_Time = 0.0f;
 	};
 

@@ -7,7 +7,7 @@
 
 namespace Jasmine {
 
-	class Jasmine_API Log
+	class Log
 	{
 	public:
 		static void Init();

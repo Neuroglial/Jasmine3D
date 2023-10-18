@@ -76,8 +76,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>JMpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;vendor\GLFW\include;vendor\Glad\include;vendor\glm;vendor\ImGui;vendor\assimp\include;vendor\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor;vendor\GLFW\include;vendor\Glad\include;vendor\glm;vendor\ImGui;vendor\assimp\include;vendor\spdlog\include;vendor\stb\include;vendor\ImGuizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -97,8 +97,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>JMpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;vendor\GLFW\include;vendor\Glad\include;vendor\glm;vendor\ImGui;vendor\assimp\include;vendor\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor;vendor\GLFW\include;vendor\Glad\include;vendor\glm;vendor\ImGui;vendor\assimp\include;vendor\spdlog\include;vendor\stb\include;vendor\ImGuizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -122,8 +122,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>JMpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;vendor\GLFW\include;vendor\Glad\include;vendor\glm;vendor\ImGui;vendor\assimp\include;vendor\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;vendor;vendor\GLFW\include;vendor\Glad\include;vendor\glm;vendor\ImGui;vendor\assimp\include;vendor\spdlog\include;vendor\stb\include;vendor\ImGuizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -143,10 +143,10 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\JMpch.h" />
     <ClInclude Include="src\Jasmine.h" />
     <ClInclude Include="src\Jasmine\Core\Application.h" />
+    <ClInclude Include="src\Jasmine\Core\Assert.h" />
     <ClInclude Include="src\Jasmine\Core\Base.h" />
     <ClInclude Include="src\Jasmine\Core\Buffer.h" />
     <ClInclude Include="src\Jasmine\Core\Events\ApplicationEvent.h" />
@@ -168,6 +168,7 @@
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h" />
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Jasmine\Renderer\Buffer.h" />
@@ -182,9 +183,9 @@
     <ClInclude Include="src\Jasmine\Renderer\ShaderUniform.h" />
     <ClInclude Include="src\Jasmine\Renderer\Texture.h" />
     <ClInclude Include="src\Jasmine\Renderer\VertexArray.h" />
+    <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\JMpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -203,6 +204,7 @@
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.cpp" />
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Buffer.cpp" />
@@ -214,8 +216,11 @@
     <ClCompile Include="src\Jasmine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Shader.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Texture.cpp" />
-    <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp" />
+    <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
