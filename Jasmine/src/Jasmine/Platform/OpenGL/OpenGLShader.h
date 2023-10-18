@@ -3,6 +3,7 @@
 #include "Jasmine/Renderer/Shader.h"
 #include <glad/glad.h>
 
+#include "Jasmine/Renderer/Renderer.h"
 #include "OpenGLShaderUniform.h"
 
 namespace Jasmine {

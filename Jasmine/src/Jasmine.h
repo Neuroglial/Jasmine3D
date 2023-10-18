@@ -17,6 +17,7 @@
 
 // --- Jasmine Render API ------------------------------
 #include "Jasmine/Renderer/Renderer.h"
+#include "Jasmine/Renderer/RenderPass.h"
 #include "Jasmine/Renderer/Framebuffer.h"
 #include "Jasmine/Renderer/Buffer.h"
 #include "Jasmine/Renderer/Texture.h"

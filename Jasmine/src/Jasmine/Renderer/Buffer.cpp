@@ -1,5 +1,6 @@
 #include "JMpch.h"
 
+#include "Renderer.h"
 #include "Jasmine/Platform/OpenGL/OpenGLBuffer.h"
 
 namespace Jasmine {

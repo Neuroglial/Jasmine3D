@@ -17,6 +17,8 @@
 
 #include "imgui/imgui.h"
 
+#include "Jasmine/Renderer/Renderer.h"
+
 namespace Jasmine {
 
 	static const uint32_t s_MeshImportFlags =
@@ -456,8 +458,8 @@ namespace Jasmine {
 					}
 				}
 
-				if (!materialOverride)
-					self->m_MeshShader->SetMat4FromRenderThread("u_ModelMatrix", transform * submesh.Transform);
+				//if (!materialOverride)
+				//	self->m_MeshShader->SetMat4FromRenderThread("u_ModelMatrix", transform * submesh.Transform);
 				glDrawElementsBaseVertex(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.BaseIndex), submesh.BaseVertex);
 			}
 		});

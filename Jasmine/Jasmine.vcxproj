@@ -143,6 +143,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.h" />
+    <ClInclude Include="src\Jasmine\Renderer\RenderPass.h" />
     <ClInclude Include="src\JMpch.h" />
     <ClInclude Include="src\Jasmine.h" />
     <ClInclude Include="src\Jasmine\Core\Application.h" />
@@ -186,6 +188,8 @@
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\RenderPass.cpp" />
     <ClCompile Include="src\JMpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

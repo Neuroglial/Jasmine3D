@@ -118,7 +118,10 @@ namespace Jasmine {
 		JM_RENDER_2(width, height, { glViewport(0, 0, width, height); });
 		auto& fbs = FramebufferPool::GetGlobal()->GetAll();
 		for (auto& fb : fbs)
-			fb->Resize(width, height);
+		{
+			if (auto fbp = fb.lock())
+			fbp->Resize(width, height);
+		}
 		return false;
 	}
 

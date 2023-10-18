@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Jasmine/Renderer/Renderer.h"
+#include "RendererAPI.h"
 
 namespace Jasmine {
 

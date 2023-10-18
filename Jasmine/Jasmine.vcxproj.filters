@@ -162,6 +162,8 @@
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
       <Filter>vendor\ImGuizmo</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\RenderPass.h" />
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JMpch.cpp">
@@ -257,5 +259,7 @@
     <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
       <Filter>vendor\ImGuizmo</Filter>
     </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\RenderPass.cpp" />
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.cpp" />
   </ItemGroup>
 </Project>

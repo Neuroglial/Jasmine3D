@@ -3,7 +3,7 @@
 #include "Jasmine/Core/Base.h"
 #include "Jasmine/Core/Buffer.h"
 
-#include "Jasmine/Renderer/Renderer.h"
+//#include "Jasmine/Renderer/Renderer.h"
 #include "Jasmine/Renderer/ShaderUniform.h"
 
 #include <string>

@@ -1,6 +1,7 @@
 #include "JMpch.h"
 #include "OpenGLVertexArray.h"
 
+#include "Jasmine/Renderer/Renderer.h"
 #include <glad/glad.h>
 
 namespace Jasmine {
