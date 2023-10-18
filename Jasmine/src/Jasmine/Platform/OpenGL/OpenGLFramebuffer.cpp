@@ -15,8 +15,8 @@ namespace Jasmine {
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
-		Renderer::Submit([this](){
-			glDeleteFramebuffers(1, &m_RendererID);
+		Renderer::Submit([id = m_RendererID](){
+			glDeleteFramebuffers(1, &id);
 		});
 	}
 

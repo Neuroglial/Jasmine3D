@@ -29,7 +29,7 @@ namespace Jasmine {
 		PushOverlay(m_ImGuiLayer);
 
 		Renderer::Init();
-		Renderer::Get().WaitAndRender();
+		Renderer::WaitAndRender();
 	}
 
 	Application::~Application()
@@ -81,7 +81,7 @@ namespace Jasmine {
 				Application* app = this;
 				Renderer::Submit([app](){ app->RenderImGui(); });
 
-				Renderer::Get().WaitAndRender();
+				Renderer::WaitAndRender();
 			}
 			m_Window->OnUpdate();
 

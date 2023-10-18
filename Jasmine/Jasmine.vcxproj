@@ -143,6 +143,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Jasmine\Core\MouseCodes.h" />
+    <ClInclude Include="src\Jasmine\Editor\SceneHierarchyPanel.h" />
+    <ClInclude Include="src\Jasmine\Renderer\SceneRenderer.h" />
+    <ClInclude Include="src\Jasmine\Scene\Entity.h" />
+    <ClInclude Include="src\Jasmine\Scene\Scene.h" />
     <ClInclude Include="src\JMpch.h" />
     <ClInclude Include="src\Jasmine.h" />
     <ClInclude Include="src\Jasmine\Core\Application.h" />
@@ -158,7 +163,6 @@
     <ClInclude Include="src\Jasmine\Core\Layer.h" />
     <ClInclude Include="src\Jasmine\Core\LayerStack.h" />
     <ClInclude Include="src\Jasmine\Core\Log.h" />
-    <ClInclude Include="src\Jasmine\Core\Platform.h" />
     <ClInclude Include="src\Jasmine\Core\Timestep.h" />
     <ClInclude Include="src\Jasmine\Core\Window.h" />
     <ClInclude Include="src\Jasmine\EntryPoint.h" />
@@ -170,7 +174,6 @@
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.h" />
-    <ClInclude Include="src\Jasmine\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Jasmine\Renderer\Buffer.h" />
     <ClInclude Include="src\Jasmine\Renderer\Camera.h" />
@@ -188,6 +191,10 @@
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\SceneRenderer.cpp" />
+    <ClCompile Include="src\Jasmine\Scene\Entity.cpp" />
+    <ClCompile Include="src\Jasmine\Scene\Scene.cpp" />
     <ClCompile Include="src\JMpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

@@ -3,7 +3,7 @@
 #include "Jasmine/Core/Base.h"
 #include "Jasmine/Core/Buffer.h"
 
-//#include "Jasmine/Renderer/Renderer.h"
+#include "Jasmine/Renderer/RendererAPI.h"
 #include "Jasmine/Renderer/ShaderUniform.h"
 
 #include <string>
@@ -112,6 +112,7 @@ namespace Jasmine
 		virtual void Reload() = 0;
 
 		virtual void Bind() = 0;
+		virtual RendererID GetRendererID() const = 0;
 		virtual void UploadUniformBuffer(const UniformBufferBase& uniformBuffer) = 0;
 
 		// Temporary while we don't have materials
@@ -132,6 +133,8 @@ namespace Jasmine
 
 		virtual const ShaderUniformBufferList& GetVSRendererUniforms() const = 0;
 		virtual const ShaderUniformBufferList& GetPSRendererUniforms() const = 0;
+		virtual bool HasVSMaterialUniformBuffer() const = 0;
+		virtual bool HasPSMaterialUniformBuffer() const = 0;
 		virtual const ShaderUniformBufferDeclaration& GetVSMaterialUniformBuffer() const = 0;
 		virtual const ShaderUniformBufferDeclaration& GetPSMaterialUniformBuffer() const = 0;
 

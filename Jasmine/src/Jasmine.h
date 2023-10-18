@@ -17,6 +17,7 @@
 
 // --- Jasmine Render API ------------------------------
 #include "Jasmine/Renderer/Renderer.h"
+#include "Jasmine/Renderer/SceneRenderer.h"
 #include "Jasmine/Renderer/RenderPass.h"
 #include "Jasmine/Renderer/Framebuffer.h"
 #include "Jasmine/Renderer/Buffer.h"
@@ -25,4 +26,8 @@
 #include "Jasmine/Renderer/Mesh.h"
 #include "Jasmine/Renderer/Camera.h"
 #include "Jasmine/Renderer/Material.h"
-// ---------------------------------------------------
+//---------------------------------------------------
+
+// Scenes-----------------------------------
+#include "Jasmine/Scene/Entity.h"
+#include "Jasmine/Scene/Scene.h"

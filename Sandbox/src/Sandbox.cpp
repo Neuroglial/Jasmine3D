@@ -1,6 +1,6 @@
-#include "Hazel.h"
+#include "Jasmine.h"
 
-#include "Hazel/ImGui/ImGuiLayer.h"
+#include "Jasmine/ImGui/ImGuiLayer.h"
 #include "imgui/imgui_internal.h"
 
 #include <glm/glm.hpp>
@@ -24,7 +24,7 @@ static void ImGuiShowHelpMarker(const char* desc)
 	}
 }
 
-class EditorLayer : public Hazel::Layer
+class EditorLayer : public Jasmine::Layer
 {
 public:
 	EditorLayer()
@@ -40,37 +40,37 @@ public:
 	{
 		using namespace glm;
 
-		m_Mesh.reset(new Hazel::Mesh("assets/models/m1911/m1911.fbx"));
-		m_MeshMaterial.reset(new Hazel::MaterialInstance(m_Mesh->GetMaterial()));
+		m_Mesh.reset(new Jasmine::Mesh("assets/models/m1911/m1911.fbx"));
+		m_MeshMaterial.reset(new Jasmine::MaterialInstance(m_Mesh->GetMaterial()));
 
-		m_QuadShader = Hazel::Shader::Create("assets/shaders/quad.glsl");
-		m_HDRShader = Hazel::Shader::Create("assets/shaders/hdr.glsl");
+		m_QuadShader = Jasmine::Shader::Create("assets/shaders/quad.glsl");
+		m_HDRShader = Jasmine::Shader::Create("assets/shaders/hdr.glsl");
 
-		m_SphereMesh.reset(new Hazel::Mesh("assets/models/Sphere1m.fbx"));
-		m_PlaneMesh.reset(new Hazel::Mesh("assets/models/Plane1m.obj"));
+		m_SphereMesh.reset(new Jasmine::Mesh("assets/models/Sphere1m.fbx"));
+		m_PlaneMesh.reset(new Jasmine::Mesh("assets/models/Plane1m.obj"));
 
-		m_GridShader = Hazel::Shader::Create("assets/shaders/Grid.glsl");
-		m_GridMaterial = Hazel::MaterialInstance::Create(Hazel::Material::Create(m_GridShader));
+		m_GridShader = Jasmine::Shader::Create("assets/shaders/Grid.glsl");
+		m_GridMaterial = Jasmine::MaterialInstance::Create(Jasmine::Material::Create(m_GridShader));
 		m_GridMaterial->Set("u_Scale", m_GridScale);
 		m_GridMaterial->Set("u_Res", m_GridSize);
 
 		// Editor
-		m_CheckerboardTex.reset(Hazel::Texture2D::Create("assets/editor/Checkerboard.tga"));
+		m_CheckerboardTex.reset(Jasmine::Texture2D::Create("assets/editor/Checkerboard.tga"));
 
 		// Environment
-		m_EnvironmentCubeMap.reset(Hazel::TextureCube::Create("assets/textures/environments/Arches_E_PineTree_Radiance.tga"));
-		//m_EnvironmentCubeMap.reset(Hazel::TextureCube::Create("assets/textures/environments/DebugCubeMap.tga"));
-		m_EnvironmentIrradiance.reset(Hazel::TextureCube::Create("assets/textures/environments/Arches_E_PineTree_Irradiance.tga"));
-		m_BRDFLUT.reset(Hazel::Texture2D::Create("assets/textures/BRDF_LUT.tga"));
+		m_EnvironmentCubeMap.reset(Jasmine::TextureCube::Create("assets/textures/environments/Arches_E_PineTree_Radiance.tga"));
+		//m_EnvironmentCubeMap.reset(Jasmine::TextureCube::Create("assets/textures/environments/DebugCubeMap.tga"));
+		m_EnvironmentIrradiance.reset(Jasmine::TextureCube::Create("assets/textures/environments/Arches_E_PineTree_Irradiance.tga"));
+		m_BRDFLUT.reset(Jasmine::Texture2D::Create("assets/textures/BRDF_LUT.tga"));
 
-		m_Framebuffer.reset(Hazel::Framebuffer::Create(1280, 720, Hazel::FramebufferFormat::RGBA16F));
-		m_FinalPresentBuffer.reset(Hazel::Framebuffer::Create(1280, 720, Hazel::FramebufferFormat::RGBA8));
+		m_Framebuffer.reset(Jasmine::Framebuffer::Create(1280, 720, Jasmine::FramebufferFormat::RGBA16F));
+		m_FinalPresentBuffer.reset(Jasmine::Framebuffer::Create(1280, 720, Jasmine::FramebufferFormat::RGBA8));
 
 		float x = -4.0f;
 		float roughness = 0.0f;
 		for (int i = 0; i < 8; i++)
 		{
-			Hazel::Ref<Hazel::MaterialInstance> mi(new Hazel::MaterialInstance(m_SphereMesh->GetMaterial()));
+			Jasmine::Ref<Jasmine::MaterialInstance> mi(new Jasmine::MaterialInstance(m_SphereMesh->GetMaterial()));
 			mi->Set("u_Metalness", 1.0f);
 			mi->Set("u_Roughness", roughness);
 			mi->Set("u_ModelMatrix", translate(mat4(1.0f), vec3(x, 0.0f, 0.0f)));
@@ -83,7 +83,7 @@ public:
 		roughness = 0.0f;
 		for (int i = 0; i < 8; i++)
 		{
-			Hazel::Ref<Hazel::MaterialInstance> mi(new Hazel::MaterialInstance(m_SphereMesh->GetMaterial()));
+			Jasmine::Ref<Jasmine::MaterialInstance> mi(new Jasmine::MaterialInstance(m_SphereMesh->GetMaterial()));
 			mi->Set("u_Metalness", 0.0f);
 			mi->Set("u_Roughness", roughness);
 			mi->Set("u_ModelMatrix", translate(mat4(1.0f), vec3(x, 1.2f, 0.0f)));
@@ -116,11 +116,11 @@ public:
 		data[3].Position = glm::vec3(x, y + height, 0);
 		data[3].TexCoord = glm::vec2(0, 1);
 
-		m_VertexBuffer.reset(Hazel::VertexBuffer::Create());
+		m_VertexBuffer.reset(Jasmine::VertexBuffer::Create());
 		m_VertexBuffer->SetData(data, 4 * sizeof(QuadVertex));
 
 		uint32_t* indices = new uint32_t[6] { 0, 1, 2, 2, 3, 0, };
-		m_IndexBuffer.reset(Hazel::IndexBuffer::Create());
+		m_IndexBuffer.reset(Jasmine::IndexBuffer::Create());
 		m_IndexBuffer->SetData(indices, 6 * sizeof(uint32_t));
 
 		m_Light.Direction = { -0.5f, -0.5f, 1.0f };
@@ -131,13 +131,13 @@ public:
 	{
 	}
 
-	virtual void OnUpdate(Hazel::Timestep ts) override
+	virtual void OnUpdate(Jasmine::Timestep ts) override
 	{
 		// THINGS TO LOOK AT:
 		// - BRDF LUT
 		// - Cubemap mips and filtering
 		// - Tonemapping and proper HDR pipeline
-		using namespace Hazel;
+		using namespace Jasmine;
 		using namespace glm;
 
 		m_Camera.Update(ts);
@@ -395,11 +395,11 @@ public:
 			ImGui::Text(path.c_str()); ImGui::SameLine();
 			if (ImGui::Button("...##Mesh"))
 			{
-				std::string filename = Hazel::Application::Get().OpenFile("");
+				std::string filename = Jasmine::Application::Get().OpenFile("");
 				if (filename != "")
 				{
-					m_Mesh.reset(new Hazel::Mesh(filename));
-					m_MeshMaterial.reset(new Hazel::MaterialInstance(m_Mesh->GetMaterial()));
+					m_Mesh.reset(new Jasmine::Mesh(filename));
+					m_MeshMaterial.reset(new Jasmine::MaterialInstance(m_Mesh->GetMaterial()));
 				}
 			}
 		}
@@ -426,9 +426,9 @@ public:
 					}
 					if (ImGui::IsItemClicked())
 					{
-						std::string filename = Hazel::Application::Get().OpenFile("");
+						std::string filename = Jasmine::Application::Get().OpenFile("");
 						if (filename != "")
-							m_AlbedoInput.TextureMap.reset(Hazel::Texture2D::Create(filename, m_AlbedoInput.SRGB));
+							m_AlbedoInput.TextureMap.reset(Jasmine::Texture2D::Create(filename, m_AlbedoInput.SRGB));
 					}
 				}
 				ImGui::SameLine();
@@ -437,7 +437,7 @@ public:
 				if (ImGui::Checkbox("sRGB##AlbedoMap", &m_AlbedoInput.SRGB))
 				{
 					if (m_AlbedoInput.TextureMap)
-						m_AlbedoInput.TextureMap.reset(Hazel::Texture2D::Create(m_AlbedoInput.TextureMap->GetPath(), m_AlbedoInput.SRGB));
+						m_AlbedoInput.TextureMap.reset(Jasmine::Texture2D::Create(m_AlbedoInput.TextureMap->GetPath(), m_AlbedoInput.SRGB));
 				}
 				ImGui::EndGroup();
 				ImGui::SameLine();
@@ -464,9 +464,9 @@ public:
 					}
 					if (ImGui::IsItemClicked())
 					{
-						std::string filename = Hazel::Application::Get().OpenFile("");
+						std::string filename = Jasmine::Application::Get().OpenFile("");
 						if (filename != "")
-							m_NormalInput.TextureMap.reset(Hazel::Texture2D::Create(filename));
+							m_NormalInput.TextureMap.reset(Jasmine::Texture2D::Create(filename));
 					}
 				}
 				ImGui::SameLine();
@@ -493,9 +493,9 @@ public:
 					}
 					if (ImGui::IsItemClicked())
 					{
-						std::string filename = Hazel::Application::Get().OpenFile("");
+						std::string filename = Jasmine::Application::Get().OpenFile("");
 						if (filename != "")
-							m_MetalnessInput.TextureMap.reset(Hazel::Texture2D::Create(filename));
+							m_MetalnessInput.TextureMap.reset(Jasmine::Texture2D::Create(filename));
 					}
 				}
 				ImGui::SameLine();
@@ -524,9 +524,9 @@ public:
 					}
 					if (ImGui::IsItemClicked())
 					{
-						std::string filename = Hazel::Application::Get().OpenFile("");
+						std::string filename = Jasmine::Application::Get().OpenFile("");
 						if (filename != "")
-							m_RoughnessInput.TextureMap.reset(Hazel::Texture2D::Create(filename));
+							m_RoughnessInput.TextureMap.reset(Jasmine::Texture2D::Create(filename));
 					}
 				}
 				ImGui::SameLine();
@@ -540,7 +540,7 @@ public:
 
 		if (ImGui::TreeNode("Shaders"))
 		{
-			auto& shaders = Hazel::Shader::s_AllShaders;
+			auto& shaders = Jasmine::Shader::s_AllShaders;
 			for (auto& shader : shaders)
 			{
 				if (ImGui::TreeNode(shader->GetName().c_str()))
@@ -563,10 +563,10 @@ public:
 		/*float posX = ImGui::GetCursorScreenPos().x;
 		float posY = ImGui::GetCursorScreenPos().y;
 
-		auto [wx, wy] = Hazel::Application::Get().GetWindow().GetWindowPos();
+		auto [wx, wy] = Jasmine::Application::Get().GetWindow().GetWindowPos();
 		posX -= wx;
 		posY -= wy;
-		HZ_INFO("{0}, {1}", posX, posY);*/
+		JM_INFO("{0}, {1}", posX, posY);*/
 
 		auto viewportSize = ImGui::GetContentRegionAvail();
 		m_Framebuffer->Resize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
@@ -615,21 +615,21 @@ public:
 		// ImGui::ShowDemoWindow(&o);
 	}
 
-	virtual void OnEvent(Hazel::Event& event) override
+	virtual void OnEvent(Jasmine::Event& event) override
 	{
 	}
 private:
-	Hazel::Ref<Hazel::Shader> m_QuadShader;
-	Hazel::Ref<Hazel::Shader> m_HDRShader;
-	Hazel::Ref<Hazel::Shader> m_GridShader;
-	Hazel::Ref<Hazel::Mesh> m_Mesh;
-	Hazel::Ref<Hazel::Mesh> m_SphereMesh, m_PlaneMesh;
-	Hazel::Ref<Hazel::Texture2D> m_BRDFLUT;
+	Jasmine::Ref<Jasmine::Shader> m_QuadShader;
+	Jasmine::Ref<Jasmine::Shader> m_HDRShader;
+	Jasmine::Ref<Jasmine::Shader> m_GridShader;
+	Jasmine::Ref<Jasmine::Mesh> m_Mesh;
+	Jasmine::Ref<Jasmine::Mesh> m_SphereMesh, m_PlaneMesh;
+	Jasmine::Ref<Jasmine::Texture2D> m_BRDFLUT;
 
-	Hazel::Ref<Hazel::MaterialInstance> m_MeshMaterial;
-	Hazel::Ref<Hazel::MaterialInstance> m_GridMaterial;
-	std::vector<Hazel::Ref<Hazel::MaterialInstance>> m_MetalSphereMaterialInstances;
-	std::vector<Hazel::Ref<Hazel::MaterialInstance>> m_DielectricSphereMaterialInstances;
+	Jasmine::Ref<Jasmine::MaterialInstance> m_MeshMaterial;
+	Jasmine::Ref<Jasmine::MaterialInstance> m_GridMaterial;
+	std::vector<Jasmine::Ref<Jasmine::MaterialInstance>> m_MetalSphereMaterialInstances;
+	std::vector<Jasmine::Ref<Jasmine::MaterialInstance>> m_DielectricSphereMaterialInstances;
 
 	float m_GridScale = 16.025f, m_GridSize = 0.025f;
 	float m_MeshScale = 1.0f;
@@ -637,7 +637,7 @@ private:
 	struct AlbedoInput
 	{
 		glm::vec3 Color = { 0.972f, 0.96f, 0.915f }; // Silver, from https://docs.unrealengine.com/en-us/Engine/Rendering/Materials/PhysicallyBased
-		Hazel::Ref<Hazel::Texture2D> TextureMap;
+		Jasmine::Ref<Jasmine::Texture2D> TextureMap;
 		bool SRGB = true;
 		bool UseTexture = false;
 	};
@@ -645,7 +645,7 @@ private:
 
 	struct NormalInput
 	{
-		Hazel::Ref<Hazel::Texture2D> TextureMap;
+		Jasmine::Ref<Jasmine::Texture2D> TextureMap;
 		bool UseTexture = false;
 	};
 	NormalInput m_NormalInput;
@@ -653,7 +653,7 @@ private:
 	struct MetalnessInput
 	{
 		float Value = 1.0f;
-		Hazel::Ref<Hazel::Texture2D> TextureMap;
+		Jasmine::Ref<Jasmine::Texture2D> TextureMap;
 		bool UseTexture = false;
 	};
 	MetalnessInput m_MetalnessInput;
@@ -661,18 +661,18 @@ private:
 	struct RoughnessInput
 	{
 		float Value = 0.5f;
-		Hazel::Ref<Hazel::Texture2D> TextureMap;
+		Jasmine::Ref<Jasmine::Texture2D> TextureMap;
 		bool UseTexture = false;
 	};
 	RoughnessInput m_RoughnessInput;
 
-	std::unique_ptr<Hazel::Framebuffer> m_Framebuffer, m_FinalPresentBuffer;
+	std::unique_ptr<Jasmine::Framebuffer> m_Framebuffer, m_FinalPresentBuffer;
 
-	Hazel::Ref<Hazel::VertexBuffer> m_VertexBuffer;
-	Hazel::Ref<Hazel::IndexBuffer> m_IndexBuffer;
-	Hazel::Ref<Hazel::TextureCube> m_EnvironmentCubeMap, m_EnvironmentIrradiance;
+	Jasmine::Ref<Jasmine::VertexBuffer> m_VertexBuffer;
+	Jasmine::Ref<Jasmine::IndexBuffer> m_IndexBuffer;
+	Jasmine::Ref<Jasmine::TextureCube> m_EnvironmentCubeMap, m_EnvironmentIrradiance;
 
-	Hazel::Camera m_Camera;
+	Jasmine::Camera m_Camera;
 
 	struct Light
 	{
@@ -696,15 +696,15 @@ private:
 	Scene m_Scene;
 
 	// Editor resources
-	Hazel::Ref<Hazel::Texture2D> m_CheckerboardTex;
+	Jasmine::Ref<Jasmine::Texture2D> m_CheckerboardTex;
 };
 
-class Sandbox : public Hazel::Application
+class Sandbox : public Jasmine::Application
 {
 public:
 	Sandbox()
 	{
-		HZ_TRACE("Hello!");
+		JM_TRACE("Hello!");
 	}
 
 	virtual void OnInit() override
@@ -713,7 +713,7 @@ public:
 	}
 };
 
-Hazel::Application* Hazel::CreateApplication()
+Jasmine::Application* Jasmine::CreateApplication()
 {
 	return new Sandbox();
 }

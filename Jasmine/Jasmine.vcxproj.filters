@@ -84,9 +84,6 @@
     <ClInclude Include="src\Jasmine\Core\Log.h">
       <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Jasmine\Core\Platform.h">
-      <Filter>src\Jasmine\Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Timestep.h">
       <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
@@ -119,9 +116,6 @@
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>src\Jasmine\Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Jasmine\Platform\Windows\WindowsInput.h">
-      <Filter>src\Jasmine\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h">
       <Filter>src\Jasmine\Platform\Windows</Filter>
@@ -168,6 +162,11 @@
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
       <Filter>vendor\ImGuizmo</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Scene\Scene.h" />
+    <ClInclude Include="src\Jasmine\Scene\Entity.h" />
+    <ClInclude Include="src\Jasmine\Renderer\SceneRenderer.h" />
+    <ClInclude Include="src\Jasmine\Editor\SceneHierarchyPanel.h" />
+    <ClInclude Include="src\Jasmine\Core\MouseCodes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JMpch.cpp">
@@ -269,5 +268,9 @@
     <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
       <Filter>vendor\ImGuizmo</Filter>
     </ClCompile>
+    <ClCompile Include="src\Jasmine\Scene\Scene.cpp" />
+    <ClCompile Include="src\Jasmine\Scene\Entity.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\SceneRenderer.cpp" />
+    <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp" />
   </ItemGroup>
 </Project>

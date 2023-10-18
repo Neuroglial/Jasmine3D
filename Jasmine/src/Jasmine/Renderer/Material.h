@@ -9,6 +9,13 @@
 
 namespace Jasmine {
 
+	enum class MaterialFlag
+	{
+		None = BIT(0),
+		DepthTest = BIT(1),
+		Blend = BIT(2)
+	};
+
 	class Material
 	{
 		friend class MaterialInstance;
@@ -17,6 +24,10 @@ namespace Jasmine {
 		virtual ~Material();
 
 		void Bind() const;
+
+
+		uint32_t GetFlags() const { return m_MaterialFlags; }
+		void SetFlag(MaterialFlag flag) { m_MaterialFlags |= (uint32_t)flag; }
 
 		template <typename T>
 		void Set(const std::string& name, const T& value)
@@ -68,7 +79,7 @@ namespace Jasmine {
 		Buffer m_PSUniformStorageBuffer;
 		std::vector<Ref<Texture>> m_Textures;
 
-		int32_t m_RenderFlags = 0;
+		uint32_t m_MaterialFlags;
 	};
 
 	class MaterialInstance
@@ -82,6 +93,8 @@ namespace Jasmine {
 		void Set(const std::string& name, const T& value)
 		{
 			auto decl = m_Material->FindUniformDeclaration(name);
+			if (!decl)
+				JM_CORE_WARN("Cannot find material property: ", name);
 			// JM_CORE_ASSERT(decl, "Could not find uniform with name '{0}'", name);
 			JM_CORE_ASSERT(decl, "Could not find uniform with name 'x'");
 			auto& buffer = GetUniformBufferTarget(decl);
@@ -111,6 +124,12 @@ namespace Jasmine {
 		}
 
 		void Bind() const;
+
+		uint32_t GetFlags() const { return m_Material->m_MaterialFlags; }
+		bool GetFlag(MaterialFlag flag) const { return (uint32_t)flag & m_Material->m_MaterialFlags; }
+		void SetFlag(MaterialFlag flag, bool value = true);
+
+		Ref<Shader >GetShader() { return m_Material->m_Shader; }
 
 	public:
 		static Ref<MaterialInstance> Create(const Ref<Material>& material);

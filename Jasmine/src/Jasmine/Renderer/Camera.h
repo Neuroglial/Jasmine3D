@@ -9,6 +9,7 @@ namespace Jasmine {
 	class Camera
 	{
 	public:
+		Camera() = default;
 		Camera(const glm::mat4& projectionMatrix);
 
 		void Focus();
@@ -32,6 +33,9 @@ namespace Jasmine {
 		glm::vec2 PanSpeed() const;
 		float RotationSpeed() const;
 		float ZoomSpeed() const;
+
+		float GetExposure() const { return m_Exposure; }
+		float& GetExposure() { return m_Exposure; }
 	private:
 		void MousePan(const glm::vec2& delta);
 		void MouseRotate(const glm::vec2& delta);
@@ -50,6 +54,8 @@ namespace Jasmine {
 		//float m_PanSpeed, m_RotationSpeed, m_ZoomSpeed;
 
 		float m_Pitch, m_Yaw;
+
+		float m_Exposure = 0.8f;
 
 		uint32_t m_ViewportWidth = 1280, m_ViewportHeight = 720;
 	};
