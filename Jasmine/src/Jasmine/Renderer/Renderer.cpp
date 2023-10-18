@@ -1,6 +1,7 @@
 #include "JMpch.h"
 #include "Renderer.h"
 
+#include <glad/glad.h>
 #include "Shader.h"
 
 namespace Jasmine {
@@ -11,7 +12,7 @@ namespace Jasmine {
 	void Renderer::Init()
 	{
 		s_Instance->m_ShaderLibrary = std::make_unique<ShaderLibrary>();
-		JM_RENDER({ RendererAPI::Init(); });
+		Renderer::Submit([]() { RendererAPI::Init(); });
 
 		Renderer::GetShaderLibrary()->Load("assets/shaders/JasminePBR_Static.glsl");
 		Renderer::GetShaderLibrary()->Load("assets/shaders/JasminePBR_Anim.glsl");
@@ -19,14 +20,14 @@ namespace Jasmine {
 
 	void Renderer::Clear()
 	{
-		JM_RENDER({
+		Renderer::Submit([](){
 			RendererAPI::Clear(0.0f, 0.0f, 0.0f, 1.0f);
 		});
 	}
 
 	void Renderer::Clear(float r, float g, float b, float a)
 	{
-		JM_RENDER_4(r, g, b, a, {
+		Renderer::Submit([=]() {
 			RendererAPI::Clear(r, g, b, a);
 		});
 	}
@@ -42,7 +43,7 @@ namespace Jasmine {
 
 	void Renderer::DrawIndexed(uint32_t count, bool depthTest)
 	{
-		JM_RENDER_2(count, depthTest, {
+		Renderer::Submit([=](){
 			RendererAPI::DrawIndexed(count, depthTest);
 		});
 	}
@@ -58,6 +59,10 @@ namespace Jasmine {
 		m_ActiveRenderPass = renderPass;
 
 		renderPass->GetSpecification().TargetFramebuffer->Bind();
+		const glm::vec4& clearColor = renderPass->GetSpecification().TargetFramebuffer->GetSpecification().ClearColor;
+		Renderer::Submit([=]() {
+			RendererAPI::Clear(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+		});
 	}
 
 	void Renderer::IEndRenderPass()
@@ -67,9 +72,37 @@ namespace Jasmine {
 		m_ActiveRenderPass = nullptr;
 	}
 
-	void Renderer::SubmitMeshI(const Ref<Mesh>& mesh)
+	void Renderer::SubmitMeshI(const Ref<Mesh>& mesh, const glm::mat4& transform, const Ref<MaterialInstance>& overrideMaterial)
 	{
+		if (overrideMaterial)
+		{
+			overrideMaterial->Bind();
+		}
+		else
+		{
+			// Bind mesh material here
+		}
 
+		// TODO: Sort this out
+		mesh->m_VertexArray->Bind();
+
+		// TODO: replace with render API calls
+		Renderer::Submit([=]()
+			{
+				for (Submesh& submesh : mesh->m_Submeshes)
+				{
+					if (mesh->m_IsAnimated)
+					{
+						for (size_t i = 0; i < mesh->m_BoneTransforms.size(); i++)
+						{
+							std::string uniformName = std::string("u_BoneTransforms[") + std::to_string(i) + std::string("]");
+							mesh->m_MeshShader->SetMat4FromRenderThread(uniformName, mesh->m_BoneTransforms[i]);
+						}
+					}
+
+					glDrawElementsBaseVertex(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.BaseIndex), submesh.BaseVertex);
+				}
+		});
 	}
 
 }

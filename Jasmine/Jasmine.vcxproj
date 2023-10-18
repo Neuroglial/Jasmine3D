@@ -143,8 +143,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.h" />
-    <ClInclude Include="src\Jasmine\Renderer\RenderPass.h" />
     <ClInclude Include="src\JMpch.h" />
     <ClInclude Include="src\Jasmine.h" />
     <ClInclude Include="src\Jasmine\Core\Application.h" />
@@ -167,6 +165,7 @@
     <ClInclude Include="src\Jasmine\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.h" />
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h" />
@@ -179,6 +178,7 @@
     <ClInclude Include="src\Jasmine\Renderer\Material.h" />
     <ClInclude Include="src\Jasmine\Renderer\Mesh.h" />
     <ClInclude Include="src\Jasmine\Renderer\RenderCommandQueue.h" />
+    <ClInclude Include="src\Jasmine\Renderer\RenderPass.h" />
     <ClInclude Include="src\Jasmine\Renderer\Renderer.h" />
     <ClInclude Include="src\Jasmine\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Jasmine\Renderer\Shader.h" />
@@ -188,8 +188,6 @@
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.cpp" />
-    <ClCompile Include="src\Jasmine\Renderer\RenderPass.cpp" />
     <ClCompile Include="src\JMpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -204,6 +202,7 @@
     <ClCompile Include="src\Jasmine\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.cpp" />
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.cpp" />
@@ -217,11 +216,12 @@
     <ClCompile Include="src\Jasmine\Renderer\Material.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Mesh.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\RenderCommandQueue.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\RenderPass.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Shader.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Texture.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\VertexArray.cpp" />
-    <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp" />
+    <ClCompile Include="src\Jasmine\vendor\stb_image.cpp" />
     <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
