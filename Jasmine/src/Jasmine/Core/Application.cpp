@@ -58,7 +58,7 @@ namespace Jasmine {
 		ImGui::Text("Vendor: %s", caps.Vendor.c_str());
 		ImGui::Text("Renderer: %s", caps.Renderer.c_str());
 		ImGui::Text("Version: %s", caps.Version.c_str());
-		ImGui::Text("Frame Time: %.2fms\n", m_TimeStep.GetMilliseconds());
+		ImGui::Text("Frame Time: %.2fms\n", m_Timestep.GetMilliseconds());
 		ImGui::End();
 
 		for (Layer* layer : m_LayerStack)
@@ -75,7 +75,7 @@ namespace Jasmine {
 			if (!m_Minimized)
 			{
 				for (Layer* layer : m_LayerStack)
-					layer->OnUpdate(m_TimeStep);
+					layer->OnUpdate(m_Timestep);
 
 				// Render ImGui on render thread
 				Application* app = this;
@@ -86,7 +86,7 @@ namespace Jasmine {
 			m_Window->OnUpdate();
 
 			float time = GetTime();
-			m_TimeStep = time - m_LastFrameTime;
+			m_Timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 		}
 		OnShutdown();

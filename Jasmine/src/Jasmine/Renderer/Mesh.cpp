@@ -409,54 +409,6 @@ namespace Jasmine {
 			m_BoneTransforms[i] = m_BoneInfo[i].FinalTransformation;
 	}
 
-	void Mesh::Render(TimeStep ts, Ref<MaterialInstance> materialInstance)
-	{
-		Render(ts, glm::mat4(1.0f), materialInstance);
-	}
-	
-	void Mesh::Render(TimeStep ts, const glm::mat4& transform, Ref<MaterialInstance> materialInstance)
-	{
-		if (m_IsAnimated)
-		{
-			if (m_AnimationPlaying)
-			{
-				m_WorldTime += ts;
-				float ticksPerSecond = (float)(m_Scene->mAnimations[0]->mTicksPerSecond != 0 ? m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f) * m_TimeMultiplier;
-				m_AnimationTime += ts * ticksPerSecond;
-				m_AnimationTime = fmod(m_AnimationTime, (float)m_Scene->mAnimations[0]->mDuration);
-			}
-			BoneTransform(m_AnimationTime);
-		}
-
-		if (materialInstance)
-			materialInstance->Bind();
-
-		// TODO: Sort this out
-		m_VertexArray->Bind();
-
-		bool materialOverride = !!materialInstance;
-
-		
-
-		// TODO: replace with render API calls
-		Renderer::Submit([=](){
-			for (Submesh& submesh : m_Submeshes)
-			{
-				if (m_IsAnimated)
-				{
-					for (size_t i = 0; i < m_BoneTransforms.size(); i++)
-					{
-						std::string uniformName = std::string("u_BoneTransforms[") + std::to_string(i) + std::string("]");
-						m_MeshShader->SetMat4FromRenderThread(uniformName, m_BoneTransforms[i]);
-					}
-				}
-
-				//if (!materialOverride)
-				//	m_MeshShader->SetMat4FromRenderThread("u_ModelMatrix", transform * submesh.Transform);
-				glDrawElementsBaseVertex(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.BaseIndex), submesh.BaseVertex);
-			}
-		});
-	}
 	void Mesh::OnImGuiRender()
 	{
 		ImGui::Begin("Mesh Debug");
@@ -477,6 +429,25 @@ namespace Jasmine {
 
 		ImGui::End();
 	}
+
+	void Mesh::OnUpdate(Timestep ts)
+	{
+		if (m_IsAnimated)
+		{
+			if (m_AnimationPlaying)
+			{
+				m_WorldTime += ts;
+
+				float ticksPerSecond = (float)(m_Scene->mAnimations[0]->mTicksPerSecond != 0 ? m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f) * m_TimeMultiplier;
+				m_AnimationTime += ts * ticksPerSecond;
+				m_AnimationTime = fmod(m_AnimationTime, (float)m_Scene->mAnimations[0]->mDuration);
+			}
+
+			// TODO: We only need to recalc bones if rendering has been requested at the current animation frame
+			BoneTransform(m_AnimationTime);
+		}
+	}
+
 
 	void Mesh::DumpVertexBuffer()
 	{

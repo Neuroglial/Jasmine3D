@@ -159,7 +159,7 @@
     <ClInclude Include="src\Jasmine\Core\LayerStack.h" />
     <ClInclude Include="src\Jasmine\Core\Log.h" />
     <ClInclude Include="src\Jasmine\Core\Platform.h" />
-    <ClInclude Include="src\Jasmine\Core\TimeStep.h" />
+    <ClInclude Include="src\Jasmine\Core\Timestep.h" />
     <ClInclude Include="src\Jasmine\Core\Window.h" />
     <ClInclude Include="src\Jasmine\EntryPoint.h" />
     <ClInclude Include="src\Jasmine\ImGui\ImGuiLayer.h" />
@@ -196,7 +196,7 @@
     <ClCompile Include="src\Jasmine\Core\Layer.cpp" />
     <ClCompile Include="src\Jasmine\Core\LayerStack.cpp" />
     <ClCompile Include="src\Jasmine\Core\Log.cpp" />
-    <ClCompile Include="src\Jasmine\Core\TimeStep.cpp" />
+    <ClCompile Include="src\Jasmine\Core\Timestep.cpp" />
     <ClCompile Include="src\Jasmine\Core\Window.cpp" />
     <ClCompile Include="src\Jasmine\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Jasmine\ImGui\ImGuiLayer.cpp" />

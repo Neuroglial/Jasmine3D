@@ -1,9 +1,9 @@
 #include "JMpch.h"
-#include "TimeStep.h"
+#include "Timestep.h"
 
 namespace Jasmine {
 
-	TimeStep::TimeStep(float time)
+	Timestep::Timestep(float time)
 		: m_Time(time)
 	{
 	}

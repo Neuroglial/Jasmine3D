@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Jasmine/Core/Base.h"
-#include "Jasmine/Core/TimeStep.h"
+#include "Jasmine/Core/Timestep.h"
 
 namespace Jasmine {
 
@@ -13,7 +13,7 @@ namespace Jasmine {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate(TimeStep ts) {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 

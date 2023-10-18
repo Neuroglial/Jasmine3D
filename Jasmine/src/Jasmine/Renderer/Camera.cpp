@@ -57,7 +57,7 @@ namespace Jasmine {
 		return speed;
 	}
 
-	void Camera::Update(TimeStep ts)
+	void Camera::Update(Timestep ts)
 	{
 		const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
 		glm::vec2 delta = mouse - m_InitialMousePosition;

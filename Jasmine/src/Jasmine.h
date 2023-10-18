@@ -6,7 +6,7 @@
 
 #include "Jasmine/Core/Application.h"
 #include "Jasmine/Core/Log.h"
-#include "Jasmine/Core/TimeStep.h"
+#include "Jasmine/Core/Timestep.h"
 
 #include "Jasmine/Core/Events/Event.h"
 #include "Jasmine/Core/Events/ApplicationEvent.h"
