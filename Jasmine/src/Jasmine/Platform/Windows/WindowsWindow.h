@@ -14,8 +14,9 @@ namespace Jasmine {
 
 		void OnUpdate() override;
 
-		inline unsigned int GetWidth() const override { return m_Data.Width; }
-		inline unsigned int GetHeight() const override { return m_Data.Height; }
+		inline uint32_t GetWidth() const override { return m_Data.Width; }
+		inline uint32_t GetHeight() const override { return m_Data.Height; }
+		virtual glm::ivec2 GetSize() const override { return { m_Data.Width, m_Data.Height }; }
 		virtual glm::ivec2 GetWindowPos() const override;
 
 		// Window attributes
@@ -34,7 +35,7 @@ namespace Jasmine {
 		struct WindowData
 		{
 			std::string Title;
-			unsigned int Width, Height;
+			uint32_t Width, Height;
 			bool VSync;
 
 			EventCallbackFn EventCallback;

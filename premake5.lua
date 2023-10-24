@@ -50,7 +50,8 @@ workspace "Jasmine3D"
     		
     		defines
 		{
-			"_CRT_SECURE_NO_WARNINGS"
+			"_CRT_SECURE_NO_WARNINGS",
+			"NOMINMAX"
 		}
 
 
@@ -76,7 +77,7 @@ workspace "Jasmine3D"
 			"opengl32.lib"
     		}
     
-    		filter "files:vendor/ImGuizmo/**.cpp"
+    		filter "files:Jasmine/vendor/ImGuizmo/**.cpp"
 		flags { "NoPCH" }
     		
 		filter "system:windows"
@@ -133,12 +134,19 @@ workspace "Jasmine3D"
         		"%{IncludeDir.glm}",
         		"%{IncludeDir.ImGuizmo}"
     		}
+    		
+    		postbuildcommands 
+		{
+			'{COPY} "../JasEditor/assets" "%{cfg.targetdir}/assets"'
+		}
+
 	
 		filter "system:windows"
         		systemversion "latest"
                 
 		defines 
 		{ 
+			"NOMINMAX",
             	"JM_PLATFORM_WINDOWS"
 		}
     
@@ -149,6 +157,12 @@ workspace "Jasmine3D"
 			{
 				"Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.lib"
 			}
+			
+			postbuildcommands 
+			{
+				'{COPY} "../Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
+			}
+
                 
     		filter "configurations:Release"
         		defines "JM_RELEASE"
@@ -157,6 +171,12 @@ workspace "Jasmine3D"
 			{
 				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
 			}
+			
+			postbuildcommands 
+			{
+				'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"'
+			}
+
 
     		filter "configurations:Dist"
         		defines "JM_DIST"
@@ -165,9 +185,15 @@ workspace "Jasmine3D"
 			{
 				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
 			}
+			
+			postbuildcommands 
+			{
+				'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"'
+			}
+
 
 	--------------------------------------------------------------------
-	project "Sandbox"
+--[[project "Sandbox"
     		location "Sandbox"
     		kind "ConsoleApp"
     		language "C++"
@@ -204,6 +230,7 @@ workspace "Jasmine3D"
                 
 		defines 
 		{ 
+			"NOMINMAX",
             	"JM_PLATFORM_WINDOWS"
 		}
     
@@ -231,3 +258,4 @@ workspace "Jasmine3D"
 				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
 			}
 
+--]]

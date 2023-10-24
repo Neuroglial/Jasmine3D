@@ -32,8 +32,9 @@ namespace Jasmine {
 
 		virtual void OnUpdate() = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
+		virtual glm::ivec2 GetSize() const = 0;
 		virtual glm::ivec2 GetWindowPos() const = 0;
 
 		// Window attributes

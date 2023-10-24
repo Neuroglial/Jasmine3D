@@ -9,11 +9,14 @@
 #include "Jasmine/Core/Timestep.h"
 
 #include "Jasmine/Core/Input.h"
+#include "Jasmine/Core/Math/Ray.h"
 #include "Jasmine/Core/Events/Event.h"
 #include "Jasmine/Core/Events/ApplicationEvent.h"
 #include "Jasmine/Core/Events/KeyEvent.h"
 #include "Jasmine/Core/Events/MouseEvent.h"
 
+#include "Jasmine/Core/Math/AABB.h"
+#include "Jasmine/Core/Math/Ray.h"
 #include "imgui/imgui.h"
 
 // --- Jasmine Render API ------------------------------

@@ -5,6 +5,8 @@
 
 namespace Jasmine {
 
+	//Entity* sph;
+
 	static void ImGuiShowHelpMarker(const char* desc)
 	{
 		ImGui::TextDisabled("(?)");
@@ -48,8 +50,12 @@ namespace Jasmine {
 
 			m_MeshMaterial = mesh->GetMaterial();
 
+			//sph = m_Scene->CreateEntity("Test Sphere");
+			//mesh = CreateRef<Mesh>("assets/models/Sphere1m.fbx");
+			//sph->SetMesh(mesh);
+
 			auto secondEntity = m_Scene->CreateEntity("Gun Entity");
-			secondEntity->Transform() = glm::translate(glm::mat4(1.0f), { 5, 5, 5 }) * glm::scale(glm::mat4(1.0f), { 10, 10, 10 });
+			secondEntity->Transform() = glm::translate(glm::mat4(1.0f), { 1, 10, 1 }) * glm::scale(glm::mat4(1.0f), { 10, 10, 10 });
 			mesh = CreateRef<Mesh>("assets/models/m1911/m1911.fbx");
 			secondEntity->SetMesh(mesh);
 		}
@@ -158,14 +164,14 @@ namespace Jasmine {
 			m_Scene->GetCamera().OnUpdate(ts);
 
 		m_ActiveScene->OnUpdate(ts);
-
+		
+		
 		if (m_DrawOnTopBoundingBoxes)
 		{
 			Jasmine::Renderer::BeginRenderPass(Jasmine::SceneRenderer::GetFinalRenderPass(), false);
 			auto viewProj = m_Scene->GetCamera().GetViewProjection();
 			Jasmine::Renderer2D::BeginScene(viewProj, false);
-			// Jasmine::Renderer2D::DrawQuad({ 0, 0, 0 }, { 4.0f, 5.0f }, { 1.0f, 1.0f, 0.5f, 1.0f });
-			Renderer::DrawAABB(m_MeshEntity->GetMesh());
+			Renderer::DrawAABB(m_MeshEntity->GetMesh(),m_MeshEntity->GetTransform());
 			Jasmine::Renderer2D::EndScene();
 			Jasmine::Renderer::EndRenderPass();
 		}

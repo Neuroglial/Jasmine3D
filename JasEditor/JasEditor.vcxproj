@@ -78,7 +78,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>JM_PLATFORM_WINDOWS;JM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;JM_PLATFORM_WINDOWS;JM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;..\Jasmine\vendor\spdlog\include;..\Jasmine\src;..\Jasmine\vendor;..\Jasmine\vendor\glm;..\Jasmine\vendor\ImGuizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -91,12 +91,16 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST "..\JasEditor\assets"\ (xcopy /Q /E /Y /I "..\JasEditor\assets" "..\bin\Debug-windows-x86_64\JasEditor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "..\JasEditor\assets" "..\bin\Debug-windows-x86_64\JasEditor\assets" &gt; nul)
+IF EXIST "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>JM_PLATFORM_WINDOWS;JM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;JM_PLATFORM_WINDOWS;JM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;..\Jasmine\vendor\spdlog\include;..\Jasmine\src;..\Jasmine\vendor;..\Jasmine\vendor\glm;..\Jasmine\vendor\ImGuizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -113,12 +117,16 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST "..\JasEditor\assets"\ (xcopy /Q /E /Y /I "..\JasEditor\assets" "..\bin\Release-windows-x86_64\JasEditor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "..\JasEditor\assets" "..\bin\Release-windows-x86_64\JasEditor\assets" &gt; nul)
+IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>JM_PLATFORM_WINDOWS;JM_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;JM_PLATFORM_WINDOWS;JM_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;..\Jasmine\vendor\spdlog\include;..\Jasmine\src;..\Jasmine\vendor;..\Jasmine\vendor\glm;..\Jasmine\vendor\ImGuizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -135,6 +143,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST "..\JasEditor\assets"\ (xcopy /Q /E /Y /I "..\JasEditor\assets" "..\bin\Dist-windows-x86_64\JasEditor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "..\JasEditor\assets" "..\bin\Dist-windows-x86_64\JasEditor\assets" &gt; nul)
+IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />

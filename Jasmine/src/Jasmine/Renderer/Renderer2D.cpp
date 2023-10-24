@@ -167,26 +167,26 @@ namespace Jasmine {
 		if (dataSize)
 		{
 			s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
-
+		
 			s_Data.TextureShader->Bind();
 			s_Data.TextureShader->SetMat4("u_ViewProjection", s_Data.CameraViewProj);
-
+		
 			for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
 				s_Data.TextureSlots[i]->Bind(i);
-
+		
 			s_Data.QuadVertexArray->Bind();
-			Renderer::DrawIndexed(s_Data.QuadIndexCount, PrimitiveType::Triangles, s_Data.DepthTest);
+			//Renderer::DrawIndexed(s_Data.QuadIndexCount, PrimitiveType::Triangles, s_Data.DepthTest);
 			s_Data.Stats.DrawCalls++;
 		}
-
+		
 		dataSize = (uint8_t*)s_Data.LineVertexBufferPtr - (uint8_t*)s_Data.LineVertexBufferBase;
 		if (dataSize)
 		{
 			s_Data.LineVertexBuffer->SetData(s_Data.LineVertexBufferBase, dataSize);
-
+		
 			s_Data.LineShader->Bind();
 			s_Data.LineShader->SetMat4("u_ViewProjection", s_Data.CameraViewProj);
-
+		
 			s_Data.LineVertexArray->Bind();
 			Renderer::SetLineThickness(2.0f);
 			Renderer::DrawIndexed(s_Data.LineIndexCount, PrimitiveType::Lines, s_Data.DepthTest);

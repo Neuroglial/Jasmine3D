@@ -13,6 +13,12 @@
     <Filter Include="src\Jasmine\Core\Events">
       <UniqueIdentifier>{7FE01EC9-EB17-6760-F421-CB8360D88D59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Jasmine\Core\Math">
+      <UniqueIdentifier>{B4B68B88-2023-4783-E916-DFE0554269EB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Jasmine\Editor">
+      <UniqueIdentifier>{99CAA219-85AE-636F-EE0E-5EC2DA114EF1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Jasmine\ImGui">
       <UniqueIdentifier>{2D621B20-9978-19B6-E2EF-A4D74E45EA3D}</UniqueIdentifier>
     </Filter>
@@ -27,6 +33,9 @@
     </Filter>
     <Filter Include="src\Jasmine\Renderer">
       <UniqueIdentifier>{C9B55464-B544-DE2D-5E63-F2284AD1EED3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Jasmine\Scene">
+      <UniqueIdentifier>{205ACB20-8C70-C9B6-D5E7-54D8413D9A3E}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Jasmine\vendor">
       <UniqueIdentifier>{C023048C-AC07-C5E1-1568-BF34016BAF63}</UniqueIdentifier>
@@ -84,11 +93,23 @@
     <ClInclude Include="src\Jasmine\Core\Log.h">
       <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Math\AABB.h">
+      <Filter>src\Jasmine\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Math\Ray.h">
+      <Filter>src\Jasmine\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\MouseCodes.h">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Timestep.h">
       <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Window.h">
       <Filter>src\Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Editor\SceneHierarchyPanel.h">
+      <Filter>src\Jasmine\Editor</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\EntryPoint.h">
       <Filter>src\Jasmine</Filter>
@@ -144,7 +165,13 @@
     <ClInclude Include="src\Jasmine\Renderer\Renderer.h">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\Renderer2D.h">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\RendererAPI.h">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\SceneRenderer.h">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Shader.h">
@@ -159,15 +186,15 @@
     <ClInclude Include="src\Jasmine\Renderer\VertexArray.h">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Scene\Entity.h">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Scene\Scene.h">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
       <Filter>vendor\ImGuizmo</Filter>
     </ClInclude>
-    <ClInclude Include="src\Jasmine\Scene\Scene.h" />
-    <ClInclude Include="src\Jasmine\Scene\Entity.h" />
-    <ClInclude Include="src\Jasmine\Renderer\SceneRenderer.h" />
-    <ClInclude Include="src\Jasmine\Editor\SceneHierarchyPanel.h" />
-    <ClInclude Include="src\Jasmine\Core\MouseCodes.h" />
-    <ClInclude Include="src\Jasmine\Renderer\Renderer2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JMpch.cpp">
@@ -193,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="src\Jasmine\Core\Window.cpp">
       <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp">
+      <Filter>src\Jasmine\Editor</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\ImGui\ImGuiBuild.cpp">
       <Filter>src\Jasmine\ImGui</Filter>
@@ -254,6 +284,12 @@
     <ClCompile Include="src\Jasmine\Renderer\Renderer.cpp">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Renderer2D.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\SceneRenderer.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Jasmine\Renderer\Shader.cpp">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClCompile>
@@ -263,16 +299,17 @@
     <ClCompile Include="src\Jasmine\Renderer\VertexArray.cpp">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Jasmine\Scene\Entity.cpp">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Scene\Scene.cpp">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\Jasmine\vendor\stb_image.cpp">
       <Filter>src\Jasmine\vendor</Filter>
     </ClCompile>
     <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
       <Filter>vendor\ImGuizmo</Filter>
     </ClCompile>
-    <ClCompile Include="src\Jasmine\Scene\Scene.cpp" />
-    <ClCompile Include="src\Jasmine\Scene\Entity.cpp" />
-    <ClCompile Include="src\Jasmine\Renderer\SceneRenderer.cpp" />
-    <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp" />
-    <ClCompile Include="src\Jasmine\Renderer\Renderer2D.cpp" />
   </ItemGroup>
 </Project>

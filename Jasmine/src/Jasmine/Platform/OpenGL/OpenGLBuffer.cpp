@@ -52,7 +52,7 @@ namespace Jasmine {
 	{
 		m_LocalData = Buffer::Copy(data, size);
 		m_Size = size;
-		Renderer::Submit([&](){
+		Renderer::Submit([=](){
 			glNamedBufferSubData(m_RendererID, offset, m_Size, m_LocalData.Data);
 			});
 	}
