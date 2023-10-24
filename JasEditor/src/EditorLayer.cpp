@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 
 #include "../vendor/ImGuizmo/ImGuizmo.h"
+#include "Jasmine/Renderer/Renderer2D.h"
 
 namespace Jasmine {
 
@@ -40,14 +41,17 @@ namespace Jasmine {
 
 			m_Scene->SetEnvironment(environment);
 
-			m_MeshEntity = m_Scene->CreateEntity();
+			m_MeshEntity = m_Scene->CreateEntity("Test Entity");
 
-			auto mesh = CreateRef<Mesh>("assets/models/m1911/m1911.fbx");
-			//auto mesh = CreateRef<Mesh>("assets/meshes/cerberus/CerberusMaterials.fbx");
-			// auto mesh = CreateRef<Mesh>("assets/models/m1911/M1911Materials.fbx");
+			auto mesh = CreateRef<Mesh>("assets/meshes/TestScene.fbx");
 			m_MeshEntity->SetMesh(mesh);
 
 			m_MeshMaterial = mesh->GetMaterial();
+
+			auto secondEntity = m_Scene->CreateEntity("Gun Entity");
+			secondEntity->Transform() = glm::translate(glm::mat4(1.0f), { 5, 5, 5 }) * glm::scale(glm::mat4(1.0f), { 10, 10, 10 });
+			mesh = CreateRef<Mesh>("assets/models/m1911/m1911.fbx");
+			secondEntity->SetMesh(mesh);
 		}
 
 		// Sphere Scene
@@ -150,23 +154,36 @@ namespace Jasmine {
 		if (m_RoughnessInput.TextureMap)
 			m_MeshMaterial->Set("u_RoughnessTexture", m_RoughnessInput.TextureMap);
 
+		if (m_AllowViewportCameraEvents)
+			m_Scene->GetCamera().OnUpdate(ts);
+
 		m_ActiveScene->OnUpdate(ts);
 
-		/*m_GridMaterial->Set("u_ViewProjection", viewProjection);
-		Renderer::SubmitMesh(m_PlaneMesh, glm::scale(glm::mat4(1.0f), glm::vec3(16.0f)), m_GridMaterial);*/
+		if (m_DrawOnTopBoundingBoxes)
+		{
+			Jasmine::Renderer::BeginRenderPass(Jasmine::SceneRenderer::GetFinalRenderPass(), false);
+			auto viewProj = m_Scene->GetCamera().GetViewProjection();
+			Jasmine::Renderer2D::BeginScene(viewProj, false);
+			// Jasmine::Renderer2D::DrawQuad({ 0, 0, 0 }, { 4.0f, 5.0f }, { 1.0f, 1.0f, 0.5f, 1.0f });
+			Renderer::DrawAABB(m_MeshEntity->GetMesh());
+			Jasmine::Renderer2D::EndScene();
+			Jasmine::Renderer::EndRenderPass();
+		}
 	}
 
-	void EditorLayer::Property(const std::string& name, bool& value)
+	bool EditorLayer::Property(const std::string& name, bool& value)
 	{
 		ImGui::Text(name.c_str());
 		ImGui::NextColumn();
 		ImGui::PushItemWidth(-1);
 
 		std::string id = "##" + name;
-		ImGui::Checkbox(id.c_str(), &value);
+		bool result = ImGui::Checkbox(id.c_str(), &value);
 
 		ImGui::PopItemWidth();
 		ImGui::NextColumn();
+
+		return result;
 	}
 
 	void EditorLayer::Property(const std::string& name, float& value, float min, float max, EditorLayer::PropertyFlag flags)
@@ -228,6 +245,7 @@ namespace Jasmine {
 
 	void EditorLayer::Property(const std::string& name, glm::vec4& value, float min, float max, EditorLayer::PropertyFlag flags)
 	{
+
 		ImGui::Text(name.c_str());
 		ImGui::NextColumn();
 		ImGui::PushItemWidth(-1);
@@ -240,6 +258,12 @@ namespace Jasmine {
 
 		ImGui::PopItemWidth();
 		ImGui::NextColumn();
+	}
+
+	void EditorLayer::ShowBoundingBoxes(bool show, bool onTop)
+	{
+		SceneRenderer::GetOptions().ShowBoundingBoxes = show && !onTop;
+		m_DrawOnTopBoundingBoxes = show && onTop;
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -313,6 +337,11 @@ namespace Jasmine {
 
 		Property("Radiance Prefiltering", m_RadiancePrefilter);
 		Property("Env Map Rotation", m_EnvMapRotation, -360.0f, 360.0f);
+
+		if (Property("Show Bounding Boxes", m_UIShowBoundingBoxes))
+			ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
+		if (m_UIShowBoundingBoxes && Property("On Top", m_UIShowBoundingBoxesOnTop))
+			ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
 
 		ImGui::Columns(1);
 
@@ -495,20 +524,17 @@ namespace Jasmine {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::Begin("Viewport");
 
-		/*float posX = ImGui::GetCursorScreenPos().x;
-		float posY = ImGui::GetCursorScreenPos().y;
-
-		auto [wx, wy] = Application::Get().GetWindow().GetWindowPos();
-		posX -= wx;
-		posY -= wy;
-		JM_INFO("{0}, {1}", posX, posY);*/
-
 		auto viewportSize = ImGui::GetContentRegionAvail();
-		
 		SceneRenderer::SetViewportSize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 		m_ActiveScene->GetCamera().SetProjectionMatrix(glm::perspectiveFov(glm::radians(45.0f), viewportSize.x, viewportSize.y, 0.1f, 10000.0f));
 		m_ActiveScene->GetCamera().SetViewportSize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 		ImGui::Image((void*)SceneRenderer::GetFinalColorBufferRendererID(), viewportSize, { 0, 1 }, { 1, 0 });
+
+		static int counter = 0;
+		auto windowSize = ImGui::GetWindowSize();
+		ImVec2 minBound = ImGui::GetWindowPos();
+		ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+		m_AllowViewportCameraEvents = ImGui::IsMouseHoveringRect(minBound, maxBound);
 
 		// Gizmos
 		if (m_GizmoType != -1)
@@ -558,15 +584,13 @@ namespace Jasmine {
 		ImGui::End();
 	}
 
-	void EditorLayer::OnEvent(Event& event)
+	void EditorLayer::OnEvent(Event& e)
 	{
-		EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<KeyPressedEvent>(JM_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
+		if (m_AllowViewportCameraEvents)
+			m_Scene->GetCamera().OnEvent(e);
 
-		if (event.GetEventType() == EventType::MouseScrolled) {
-			auto* e = dynamic_cast<MouseScrolledEvent*>(&event);
-			m_Scene->GetCamera().MouseZoom(e->GetYOffset());
-		}
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<KeyPressedEvent>(JM_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
 	}
 
 
@@ -575,17 +599,30 @@ namespace Jasmine {
 		switch (e.GetKeyCode())
 		{
 		case Key::Q:
-				m_GizmoType = -1;
-				break;
+			m_GizmoType = -1;
+			break;
 		case Key::W:
-				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-				break;
+			m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			break;
 		case Key::E:
-				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-				break;
+			m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+			break;
 		case Key::R:
-				m_GizmoType = ImGuizmo::OPERATION::SCALE;
-				break;
+			m_GizmoType = ImGuizmo::OPERATION::SCALE;
+			break;
+		case Key::G:
+			// Toggle grid
+			if (Jasmine::Input::IsKeyPressed(Key::LeftControl))
+				SceneRenderer::GetOptions().ShowGrid = !SceneRenderer::GetOptions().ShowGrid;
+			break;
+		case Key::B:
+			// Toggle bounding boxes 
+			if (Jasmine::Input::IsKeyPressed(Key::LeftControl))
+			{
+				m_UIShowBoundingBoxes = !m_UIShowBoundingBoxes;
+				ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
+			}
+			break;
 		}
 		return false;
 	}

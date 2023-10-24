@@ -8,6 +8,7 @@
 #include "Jasmine/Core/Log.h"
 #include "Jasmine/Core/Timestep.h"
 
+#include "Jasmine/Core/Input.h"
 #include "Jasmine/Core/Events/Event.h"
 #include "Jasmine/Core/Events/ApplicationEvent.h"
 #include "Jasmine/Core/Events/KeyEvent.h"

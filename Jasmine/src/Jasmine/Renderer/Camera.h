@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Jasmine/Core/Timestep.h"
+#include "Jasmine/Core/Events/MouseEvent.h"
 
 #include <glm/glm.hpp>
 
@@ -13,7 +14,8 @@ namespace Jasmine {
 		Camera(const glm::mat4& projectionMatrix);
 
 		void Focus();
-		void Update(Timestep ts);
+		void OnUpdate(Timestep ts);
+		void OnEvent(Event& e);
 
 		inline float GetDistance() const { return m_Distance; }
 		inline void SetDistance(float distance) { m_Distance = distance; }
@@ -23,6 +25,7 @@ namespace Jasmine {
 
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
+		const glm::mat4& GetViewProjection() const { return m_ProjectionMatrix * m_ViewMatrix; }
 
 		glm::vec3 GetUpDirection();
 		glm::vec3 GetRightDirection();
@@ -37,6 +40,8 @@ namespace Jasmine {
 		float GetExposure() const { return m_Exposure; }
 		float& GetExposure() { return m_Exposure; }
 	private:
+		bool OnMouseScroll(MouseScrolledEvent& e);
+
 		void MousePan(const glm::vec2& delta);
 		void MouseRotate(const glm::vec2& delta);
 

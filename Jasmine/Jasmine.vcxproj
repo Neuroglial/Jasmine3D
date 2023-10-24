@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Jasmine\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Jasmine\Core\MouseCodes.h" />
     <ClInclude Include="src\Jasmine\Editor\SceneHierarchyPanel.h" />
     <ClInclude Include="src\Jasmine\Renderer\SceneRenderer.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Jasmine\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\SceneRenderer.cpp" />
     <ClCompile Include="src\Jasmine\Scene\Entity.cpp" />
