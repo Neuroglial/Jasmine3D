@@ -12,7 +12,19 @@
 #define M_PI 3.14159f
 
 namespace Jasmine {
+	Camera::Camera()
+	{
+		m_Rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+		m_FocalPoint = glm::vec3(0.0f);
 
+		glm::vec3 position = { -5, 5, 5 };
+		m_Distance = glm::distance(position, m_FocalPoint);
+
+		m_Yaw = 3.0f * (float)M_PI / 4.0f;
+		m_Pitch = M_PI / 4.0f;
+
+		UpdateCameraView();
+	}
 	Camera::Camera(const glm::mat4& projectionMatrix)
 		: m_ProjectionMatrix(projectionMatrix)
 	{

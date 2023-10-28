@@ -19,12 +19,23 @@ workspace "Jasmine3D"
 	IncludeDir["ImGui"] = "Jasmine/vendor/ImGui"
 	IncludeDir["glm"] = "Jasmine/vendor/glm"
 	IncludeDir["ImGuizmo"] = "Jasmine/vendor/ImGuizmo"
-
+	IncludeDir["entt"] = "Jasmine/vendor/entt/include"
+	
+	LibraryDir = {}
+	
+	
+	------Dependencies--------------------------------------------------
+	
+	group "Dependencies"
 	include "Jasmine/vendor/GLFW"
 	include "Jasmine/vendor/Glad"
 	include "Jasmine/vendor/ImGui"
-
-	--------------------------------------------------------------------
+	group ""
+	
+	
+	------Core----------------------------------------------------------
+	
+	group "Core"
 	project "Jasmine"
     		location "Jasmine"
     		kind "StaticLib"
@@ -66,7 +77,8 @@ workspace "Jasmine3D"
         		"%{prj.name}/vendor/assimp/include",
         		"%{prj.name}/vendor/spdlog/include",
         		"%{prj.name}/vendor/stb/include",
-        		"%{IncludeDir.ImGuizmo}"
+        		"%{IncludeDir.ImGuizmo}",
+        		"%{IncludeDir.entt}"
      		}
     
     		links 
@@ -100,8 +112,26 @@ workspace "Jasmine3D"
     		filter "configurations:Dist"
         		defines "JM_DIST"
         		optimize "On"
+        		
+      project "Jasmine-ScriptCore"
+		location "Jasmine-ScriptCore"
+		kind "SharedLib"
+		language "C#"
 
-  	--------------------------------------------------------------------
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+		files 
+		{
+			"%{prj.name}/src/**.cs", 
+		}
+		
+	group ""
+		
+	
+  	------Tool-----------------------------------------------------------
+  	
+  	group "Tool"
 	project "JasEditor"
     		location "JasEditor"
     		kind "ConsoleApp"
@@ -132,7 +162,8 @@ workspace "Jasmine3D"
         		"Jasmine/src",
         		"Jasmine/vendor",
         		"%{IncludeDir.glm}",
-        		"%{IncludeDir.ImGuizmo}"
+        		"%{IncludeDir.ImGuizmo}",
+        		"%{IncludeDir.entt}"
     		}
     		
     		postbuildcommands 
@@ -190,72 +221,29 @@ workspace "Jasmine3D"
 			{
 				'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"'
 			}
-
-
-	--------------------------------------------------------------------
---[[project "Sandbox"
-    		location "Sandbox"
-    		kind "ConsoleApp"
-    		language "C++"
-    		cppdialect "C++17"
-    		staticruntime "on"
-    
-		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-		links 
-		{ 
-			"Jasmine"
-    		}
-    
-		files 
-		{ 
-			"%{prj.name}/src/**.h", 
-			"%{prj.name}/src/**.c", 
-			"%{prj.name}/src/**.hpp", 
-			"%{prj.name}/src/**.cpp" 
-		}
-    
-		includedirs 
-		{
-        		"%{prj.name}/src",
-        		"Jasmine/src",
-        		"Jasmine/vendor",
-        		"Jasmine/vendor/spdlog/include",
-        		"%{IncludeDir.glm}"
-    		}
+			
+	group ""
 	
-		filter "system:windows"
-        		systemversion "latest"
-                
-		defines 
-		{ 
-			"NOMINMAX",
-            	"JM_PLATFORM_WINDOWS"
+	
+	------Examples------------------------------------------------------
+	
+	group "Examples"
+	project "ExampleApp"
+		location "ExampleApp"
+		kind "SharedLib"
+		language "C#"
+
+		targetdir ("JasEditor/assets/scripts")
+		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+		files 
+		{
+			"%{prj.name}/src/**.cs", 
 		}
-    
-    		filter "configurations:Debug"
-        		defines "JM_DEBUG"
-        		symbols "on"
-        		links
-			{
-				"Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.lib"
-			}
-                
-    		filter "configurations:Release"
-        		defines "JM_RELEASE"
-        		optimize "on"
-        		links
-			{
-				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
-			}
 
-    		filter "configurations:Dist"
-        		defines "JM_DIST"
-        		optimize "on"
-        		links
-			{
-				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
-			}
+		links
+		{
+			"Jasmine-ScriptCore"
+		}
 
---]]
+	group ""

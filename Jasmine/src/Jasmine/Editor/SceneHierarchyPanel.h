@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Jasmine/Scene/Scene.h"
+#include "Jasmine/Renderer/Mesh.h"
 
 namespace Jasmine {
 

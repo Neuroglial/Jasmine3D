@@ -23,7 +23,7 @@ namespace Jasmine {
 
 		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(props.Name, props.WindowWidth, props.WindowHeight)));
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-		m_Window->SetVSync(false);
+		m_Window->SetVSync(true);
 
 		m_ImGuiLayer = new ImGuiLayer("ImGui");
 		PushOverlay(m_ImGuiLayer);
@@ -53,6 +53,9 @@ namespace Jasmine {
 	{
 		m_ImGuiLayer->Begin();
 
+		for (Layer* layer : m_LayerStack)
+			layer->OnImGuiRender();
+
 		ImGui::Begin("Renderer");
 		auto& caps = RendererAPI::GetCapabilities();
 		ImGui::Text("Vendor: %s", caps.Vendor.c_str());
@@ -60,9 +63,6 @@ namespace Jasmine {
 		ImGui::Text("Version: %s", caps.Version.c_str());
 		ImGui::Text("Frame Time: %.2fms\n", m_Timestep.GetMilliseconds());
 		ImGui::End();
-
-		for (Layer* layer : m_LayerStack)
-			layer->OnImGuiRender();
 
 		m_ImGuiLayer->End();
 	}

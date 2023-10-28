@@ -10,7 +10,7 @@ namespace Jasmine {
 	class Camera
 	{
 	public:
-		Camera() = default;
+		Camera();
 		Camera(const glm::mat4& projectionMatrix);
 
 		void Focus();

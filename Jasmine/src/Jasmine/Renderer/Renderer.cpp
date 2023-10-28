@@ -199,7 +199,7 @@ namespace Jasmine {
 			}
 			shader->SetMat4("u_Transform", transform * submesh.Transform);
 
-			Renderer::Submit([submesh, material]() {
+			Renderer::Submit([&submesh, material]() {
 				if (material->GetFlag(MaterialFlag::DepthTest))
 					glEnable(GL_DEPTH_TEST);
 				else
@@ -243,6 +243,7 @@ namespace Jasmine {
 		for (Submesh& submesh : mesh->m_Submeshes)
 		{
 			auto& aabb = submesh.BoundingBox;
+
 			auto aabbTransform = transform * submesh.Transform;
 			DrawAABB(aabb, aabbTransform);
 		}

@@ -32,9 +32,9 @@ namespace Jasmine {
 		ImGui::Begin("Scene Hierarchy");
 
 		uint32_t entityCount = 0, meshCount = 0;
-		auto& sceneEntities = m_Context->m_Entities;
-		for (Entity* entity : sceneEntities)
-			DrawEntityNode(entity, entityCount, meshCount);
+		auto& sceneEntities = m_Context->m_Registry;
+		//for (Entity* entity : sceneEntities)
+		//	DrawEntityNode(entity, entityCount, meshCount);
 
 		ImGui::End();
 
@@ -82,22 +82,22 @@ namespace Jasmine {
 
 	void SceneHierarchyPanel::DrawEntityNode(Entity* entity, uint32_t& imguiEntityID, uint32_t& imguiMeshID)
 	{
-		const char* name = entity->GetName().c_str();
-		static char imguiName[128];
-		memset(imguiName, 0, 128);
-		sprintf(imguiName, "%s##%d", name, imguiEntityID++);
-		if (ImGui::TreeNode(imguiName))
-		{
-			auto mesh = entity->GetMesh();
-			auto material = entity->GetMaterial();
-			const auto& transform = entity->GetTransform();
-
-			if (mesh)
-				DrawMeshNode(mesh, imguiMeshID);
-
-			ImGui::TreePop();
-		}
-				}
+		//const char* name = entity->GetName().c_str();
+		//static char imguiName[128];
+		//memset(imguiName, 0, 128);
+		//sprintf(imguiName, "%s##%d", name, imguiEntityID++);
+		//if (ImGui::TreeNode(imguiName))
+		//{
+		//	auto mesh = entity->GetMesh();
+		//	auto material = entity->GetMaterial();
+		//	const auto& transform = entity->GetTransform();
+		//
+		//	if (mesh)
+		//		DrawMeshNode(mesh, imguiMeshID);
+		//
+		//	ImGui::TreePop();
+		//}
+	}
 
 	void SceneHierarchyPanel::DrawMeshNode(const Ref<Mesh>& mesh, uint32_t& imguiMeshID)
 	{

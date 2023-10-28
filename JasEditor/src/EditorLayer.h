@@ -58,7 +58,7 @@ namespace Jasmine {
 		Ref<Scene> m_SphereScene;
 		Ref<Scene> m_ActiveScene;
 
-		Entity* m_MeshEntity = nullptr;
+		Entity m_MeshEntity ;
 
 		Ref<Shader> m_BrushShader;
 		Ref<Mesh> m_PlaneMesh;

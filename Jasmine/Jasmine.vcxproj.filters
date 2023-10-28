@@ -195,6 +195,7 @@
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
       <Filter>vendor\ImGuizmo</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Scene\Components.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JMpch.cpp">

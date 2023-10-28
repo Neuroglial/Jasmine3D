@@ -1,9 +1,15 @@
 #pragma once
 
-#include "Entity.h"
 #include "Jasmine/Renderer/Camera.h"
 
+#include "Jasmine/Renderer/Texture.h"
+#include "Jasmine/Renderer/Material.h"
+
+#include "entt/entt.hpp"
+
 namespace Jasmine {
+
+	class Entity;
 
 	struct Environment
 	{
@@ -32,21 +38,26 @@ namespace Jasmine {
 		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
-		void SetCamera(const Camera& camera);
-		Camera& GetCamera() { return m_Camera; }
-
 		void SetEnvironment(const Environment& environment);
 		void SetSkybox(const Ref<TextureCube>& skybox);
 
 		Light& GetLight() { return m_Light; }
 		float& GetSkyboxLod() { return m_SkyboxLod; }
 
-		void AddEntity(Entity* entity);
-		Entity* CreateEntity(const std::string& name = "");
+		Entity CreateEntity(const std::string& name = "", const glm::mat4& trans = glm::mat4(1.0f));
+		void DestroyEntity(Entity entity);
+
+		template<typename T>
+		auto GetAllEntitiesWith()
+		{
+			return m_Registry.view<T>();
+		}
 	private:
+		uint32_t m_SceneID;
+		entt::entity m_SceneEntity;
+		entt::registry m_Registry;
+
 		std::string m_DebugName;
-		std::vector<Entity*> m_Entities;
-		Camera m_Camera;
 
 		Light m_Light;
 		float m_LightMultiplier = 0.3f;
@@ -57,6 +68,7 @@ namespace Jasmine {
 
 		float m_SkyboxLod = 1.0f;
 
+		friend class Entity;
 		friend class SceneRenderer;
 		friend class SceneHierarchyPanel;
 	};
