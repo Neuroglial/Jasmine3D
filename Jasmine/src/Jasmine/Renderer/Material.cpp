@@ -10,7 +10,7 @@ namespace Jasmine {
 
 	Ref<Material> Material::Create(const Ref<Shader>& shader)
 	{
-		return std::make_shared<Material>(shader);
+		return Ref<Material>::Create(shader);
 	}
 
 
@@ -101,7 +101,7 @@ namespace Jasmine {
 		return m_VSUniformStorageBuffer;
 	}
 
-	void Material::Bind() const
+	void Material::Bind()
 	{
 		m_Shader->Bind();
 
@@ -131,7 +131,7 @@ namespace Jasmine {
 
 	Ref<MaterialInstance> MaterialInstance::Create(const Ref<Material>& material)
 	{
-		return std::make_shared<MaterialInstance>(material);
+		return Ref<MaterialInstance>::Create(material);
 	}
 
 	MaterialInstance::MaterialInstance(const Ref<Material>& material)
@@ -203,7 +203,7 @@ namespace Jasmine {
 		return m_VSUniformStorageBuffer;
 	}
 
-	void MaterialInstance::Bind() const
+	void MaterialInstance::Bind()
 	{
 		m_Material->m_Shader->Bind();
 

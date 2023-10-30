@@ -25,13 +25,13 @@ namespace Jasmine {
 
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
-		const glm::mat4& GetViewProjection() const { return m_ProjectionMatrix * m_ViewMatrix; }
+		glm::mat4 GetViewProjection() const { return m_ProjectionMatrix * m_ViewMatrix; }
 
 		glm::vec3 GetUpDirection();
 		glm::vec3 GetRightDirection();
 		glm::vec3 GetForwardDirection();
 		const glm::vec3& GetPosition() const { return m_Position; }
-		void MouseZoom(float delta);
+		glm::quat GetOrientation() const;
 
 		glm::vec2 PanSpeed() const;
 		float RotationSpeed() const;
@@ -39,7 +39,11 @@ namespace Jasmine {
 
 		float GetExposure() const { return m_Exposure; }
 		float& GetExposure() { return m_Exposure; }
+
+		float GetPitch() const { return m_Pitch; }
+		float GetYaw() const { return m_Yaw; }
 	private:
+		void MouseZoom(float delta);
 		void UpdateCameraView();
 		bool OnMouseScroll(MouseScrolledEvent& e);
 
@@ -47,7 +51,6 @@ namespace Jasmine {
 		void MouseRotate(const glm::vec2& delta);
 
 		glm::vec3 CalculatePosition();
-		glm::quat GetOrientation();
 	private:
 		glm::mat4 m_ProjectionMatrix, m_ViewMatrix;
 		glm::vec3 m_Position, m_Rotation, m_FocalPoint;

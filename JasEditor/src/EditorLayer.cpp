@@ -1,11 +1,8 @@
 #include "EditorLayer.h"
 
-#include "../vendor/ImGuizmo/ImGuizmo.h"
 #include "Jasmine/Renderer/Renderer2D.h"
 
 namespace Jasmine {
-
-	CameraComponent* _camera;
 
 	static void ImGuiShowHelpMarker(const char* desc)
 	{
@@ -31,7 +28,6 @@ namespace Jasmine {
 
 	void EditorLayer::OnAttach()
 	{
-		
 
 		using namespace glm;
 
@@ -39,79 +35,84 @@ namespace Jasmine {
 
 		// Model Scene
 		{
-			m_Scene = CreateRef<Scene>("Model Scene");
-			_camera = &m_Scene->CreateEntity("Camera").AddComponent<CameraComponent>();
-			_camera->Camera.SetProjectionMatrix(glm::perspectiveFov(glm::radians(45.0f), 1280.0f, 720.0f, 0.1f, 10000.0f));
+			m_Scene = Ref<Scene>::Create("Model Scene");
+			m_CameraEntity = m_Scene->CreateEntity("Camera");
+			m_CameraEntity.AddComponent<CameraComponent>(Camera(glm::perspectiveFov(glm::radians(45.0f), 1280.0f, 720.0f, 0.1f, 10000.0f)));
 
 			m_Scene->SetEnvironment(environment);
 
+			m_MeshEntity = m_Scene->CreateEntity("Test Entity");
 
-			m_MeshEntity = m_Scene->CreateEntity("Scene Entity");
+			auto mesh = Ref<Mesh>::Create("assets/meshes/monkey.fbx");
+			m_MeshEntity.AddComponent<MeshComponent>(mesh);
 
-			auto mesh = CreateRef<Mesh>("assets/meshes/TestScene.fbx");
-			m_MeshEntity.AddComponent<MeshComponent>().Mesh = mesh;
+			//auto monkey = m_Scene->CreateEntity("monkey");
+			//monkey.AddComponent<MeshComponent>(mesh)
+
 			m_MeshMaterial = mesh->GetMaterial();
 
-			auto secondEntity = m_Scene->CreateEntity("Gun Entity", 
-				glm::translate(glm::mat4(1.0f), { 5, 5, 5 }) * glm::scale(glm::mat4(1.0f), { 10, 10, 10 }));
+			m_MeshEntity.AddComponent<ScriptComponent>("Example.Script");
 
-			mesh = CreateRef<Mesh>("assets/models/m1911/M1911Materials.fbx");
-			secondEntity.AddComponent<MeshComponent>(mesh);
+			// Test Sandbox
+			//auto mapGenerator = m_Scene->CreateEntity("Map Generator");
+			//mapGenerator.AddComponent<ScriptComponent>("Example.MapGenerator");
+			
+			//auto secondEntity = m_Scene->CreateEntity("Gun Entity");
+			//secondEntity->Transform() = glm::translate(glm::mat4(1.0f), { 5, 5, 5 }) * glm::scale(glm::mat4(1.0f), {10, 10, 10});
+			//mesh = CreateRef<Mesh>("assets/models/m1911/M1911Materials.fbx");
+			//secondEntity->SetMesh(mesh);
 		}
 
-		//// Sphere Scene
-		//{
-		//	m_SphereScene = CreateRef<Scene>("PBR Sphere Scene");
-		//	//m_SphereScene->SetCamera(Camera(glm::perspectiveFov(glm::radians(45.0f), 1280.0f, 720.0f, 0.1f, 10000.0f)));
-		//
-		//	m_SphereScene->SetEnvironment(environment);
-		//
-		//	auto sphereMesh = CreateRef<Mesh>("assets/models/Sphere1m.fbx");
-		//	m_SphereBaseMaterial = sphereMesh->GetMaterial();
-		//
-		//	float x = -4.0f;
-		//	float roughness = 0.0f;
-		//	for (int i = 0; i < 8; i++)
-		//	{
-		//		auto sphereEntity = m_SphereScene->CreateEntity();
-		//
-		//		Ref<MaterialInstance> mi = CreateRef<MaterialInstance>(m_SphereBaseMaterial);
-		//		mi->Set("u_Metalness", 1.0f);
-		//		mi->Set("u_Roughness", roughness);
-		//		x += 1.1f;
-		//		roughness += 0.15f;
-		//		m_MetalSphereMaterialInstances.push_back(mi);
-		//		
-		//		
-		//		auto& mesh = sphereEntity.AddComponent<MeshComponent>();
-		//		mesh.Mesh->SetMaterial(mi);
-		//		mesh.Mesh-
-		//		sphereEntity->Transform() = translate(mat4(1.0f), vec3(x, 0.0f, 0.0f));
-		//	}
-		//
-		//	x = -4.0f;
-		//	roughness = 0.0f;
-		//	for (int i = 0; i < 8; i++)
-		//	{
-		//		auto sphereEntity = m_SphereScene->CreateEntity();
-		//
-		//		Ref<MaterialInstance> mi(new MaterialInstance(m_SphereBaseMaterial));
-		//		mi->Set("u_Metalness", 0.0f);
-		//		mi->Set("u_Roughness", roughness);
-		//		x += 1.1f;
-		//		roughness += 0.15f;
-		//		m_DielectricSphereMaterialInstances.push_back(mi);
-		//
-		//		sphereEntity->SetMesh(sphereMesh);
-		//		sphereEntity->SetMaterial(mi);
-		//		sphereEntity->Transform() = translate(mat4(1.0f), vec3(x, 1.2f, 0.0f));
-		//	}
-		//}
+		// Sphere Scene
+		{
+			m_SphereScene = Ref<Scene>::Create("PBR Sphere Scene");
+			auto cameraEntity = m_SphereScene->CreateEntity("Camera");
+			cameraEntity.AddComponent<CameraComponent>(Camera(glm::perspectiveFov(glm::radians(45.0f), 1280.0f, 720.0f, 0.1f, 10000.0f)));
+
+			m_SphereScene->SetEnvironment(environment);
+
+			auto sphereMesh = Ref<Mesh>::Create("assets/models/Sphere1m.fbx");
+			m_SphereBaseMaterial = sphereMesh->GetMaterial();
+
+			float x = -4.0f;
+			float roughness = 0.0f;
+			for (int i = 0; i < 8; i++)
+			{
+				auto sphereEntity = m_SphereScene->CreateEntity();
+
+				Ref<MaterialInstance> mi = Ref<MaterialInstance>::Create(m_SphereBaseMaterial);
+				mi->Set("u_Metalness", 1.0f);
+				mi->Set("u_Roughness", roughness);
+				x += 1.1f;
+				roughness += 0.15f;
+				m_MetalSphereMaterialInstances.push_back(mi);
+
+				// sphereEntity->SetMesh(sphereMesh);
+				// sphereEntity->SetMaterial(mi);
+				// sphereEntity->Transform() = translate(mat4(1.0f), vec3(x, 0.0f, 0.0f));
+			}
+
+			x = -4.0f;
+			roughness = 0.0f;
+			for (int i = 0; i < 8; i++)
+			{
+				auto sphereEntity = m_SphereScene->CreateEntity();
+
+				Ref<MaterialInstance> mi(new MaterialInstance(m_SphereBaseMaterial));
+				mi->Set("u_Metalness", 0.0f);
+				mi->Set("u_Roughness", roughness);
+				x += 1.1f;
+				roughness += 0.15f;
+				m_DielectricSphereMaterialInstances.push_back(mi);
+
+				// sphereEntity->SetMesh(sphereMesh);
+				// sphereEntity->SetMaterial(mi);
+				// sphereEntity->Transform() = translate(mat4(1.0f), vec3(x, 1.2f, 0.0f));
+			}
+		}
 
 		m_ActiveScene = m_Scene;
 		m_SceneHierarchyPanel = CreateScope<SceneHierarchyPanel>(m_ActiveScene);
-
-		m_PlaneMesh.reset(new Mesh("assets/models/Plane1m.obj"));
 
 		// Editor
 		m_CheckerboardTex = Texture2D::Create("assets/editor/Checkerboard.tga");
@@ -121,7 +122,7 @@ namespace Jasmine {
 		light.Direction = { -0.5f, -0.5f, 1.0f };
 		light.Radiance = { 1.0f, 1.0f, 1.0f };
 
-		m_CurrentlySelectedTransform = &m_MeshEntity.GetComponent<TransformComponent>().Transform;
+		m_CurrentlySelectedTransform = &m_MeshEntity.Transform();
 	}
 
 	void EditorLayer::OnDetach()
@@ -145,14 +146,14 @@ namespace Jasmine {
 		m_MeshMaterial->Set("u_RoughnessTexToggle", m_RoughnessInput.UseTexture ? 1.0f : 0.0f);
 		m_MeshMaterial->Set("u_EnvMapRotation", m_EnvMapRotation);
 
-		//m_SphereBaseMaterial->Set("u_AlbedoColor", m_AlbedoInput.Color);
-		//m_SphereBaseMaterial->Set("lights", m_Scene->GetLight());
-		//m_SphereBaseMaterial->Set("u_RadiancePrefilter", m_RadiancePrefilter ? 1.0f : 0.0f);
-		//m_SphereBaseMaterial->Set("u_AlbedoTexToggle", m_AlbedoInput.UseTexture ? 1.0f : 0.0f);
-		//m_SphereBaseMaterial->Set("u_NormalTexToggle", m_NormalInput.UseTexture ? 1.0f : 0.0f);
-		//m_SphereBaseMaterial->Set("u_MetalnessTexToggle", m_MetalnessInput.UseTexture ? 1.0f : 0.0f);
-		//m_SphereBaseMaterial->Set("u_RoughnessTexToggle", m_RoughnessInput.UseTexture ? 1.0f : 0.0f);
-		//m_SphereBaseMaterial->Set("u_EnvMapRotation", m_EnvMapRotation);
+		m_SphereBaseMaterial->Set("u_AlbedoColor", m_AlbedoInput.Color);
+		m_SphereBaseMaterial->Set("lights", m_Scene->GetLight());
+		m_SphereBaseMaterial->Set("u_RadiancePrefilter", m_RadiancePrefilter ? 1.0f : 0.0f);
+		m_SphereBaseMaterial->Set("u_AlbedoTexToggle", m_AlbedoInput.UseTexture ? 1.0f : 0.0f);
+		m_SphereBaseMaterial->Set("u_NormalTexToggle", m_NormalInput.UseTexture ? 1.0f : 0.0f);
+		m_SphereBaseMaterial->Set("u_MetalnessTexToggle", m_MetalnessInput.UseTexture ? 1.0f : 0.0f);
+		m_SphereBaseMaterial->Set("u_RoughnessTexToggle", m_RoughnessInput.UseTexture ? 1.0f : 0.0f);
+		m_SphereBaseMaterial->Set("u_EnvMapRotation", m_EnvMapRotation);
 
 		if (m_AlbedoInput.TextureMap)
 			m_MeshMaterial->Set("u_AlbedoTexture", m_AlbedoInput.TextureMap);
@@ -163,31 +164,31 @@ namespace Jasmine {
 		if (m_RoughnessInput.TextureMap)
 			m_MeshMaterial->Set("u_RoughnessTexture", m_RoughnessInput.TextureMap);
 
-		if (m_AllowViewportCameraEvents)
-			_camera->Camera.OnUpdate(ts);
-
-		
+		// if (m_AllowViewportCameraEvents)
+		// 	m_Scene->GetCamera().OnUpdate(ts);
 
 		m_ActiveScene->OnUpdate(ts);
 
 		if (m_DrawOnTopBoundingBoxes)
 		{
 			Jasmine::Renderer::BeginRenderPass(Jasmine::SceneRenderer::GetFinalRenderPass(), false);
-			auto viewProj = _camera->Camera.GetViewProjection();
+			auto viewProj = m_CameraEntity.GetComponent<CameraComponent>().Camera.GetViewProjection();
 			Jasmine::Renderer2D::BeginScene(viewProj, false);
-			
-			Renderer::DrawAABB(m_MeshEntity.GetComponent<MeshComponent>().Mesh, m_MeshEntity.GetComponent<TransformComponent>().Transform);
+			Renderer::DrawAABB(m_MeshEntity.GetComponent<MeshComponent>(), m_MeshEntity.GetComponent<TransformComponent>());
 			Jasmine::Renderer2D::EndScene();
 			Jasmine::Renderer::EndRenderPass();
 		}
 
-		if (m_SelectedSubmeshes.size())
+		if (m_SelectionContext.size())
 		{
+			auto& selection = m_SelectionContext[0];
+
 			Jasmine::Renderer::BeginRenderPass(Jasmine::SceneRenderer::GetFinalRenderPass(), false);
-			auto viewProj = _camera->Camera.GetViewProjection();
+			auto viewProj = m_CameraEntity.GetComponent<CameraComponent>().Camera.GetViewProjection();
 			Jasmine::Renderer2D::BeginScene(viewProj, false);
-			auto& submesh = m_SelectedSubmeshes[0];
-			Renderer::DrawAABB(submesh.Mesh->BoundingBox, m_MeshEntity.GetComponent<TransformComponent>().Transform * submesh.Mesh->Transform);
+			glm::vec4 color = (m_SelectionMode == SelectionMode::Entity) ? glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f } : glm::vec4{ 0.2f, 0.9f, 0.2f, 1.0f };
+			Renderer::DrawAABB(selection.Mesh->BoundingBox, selection.Entity.GetComponent<TransformComponent>().Transform * selection.Mesh->Transform, color);
+
 			Jasmine::Renderer2D::EndScene();
 			Jasmine::Renderer::EndRenderPass();
 		}
@@ -267,7 +268,6 @@ namespace Jasmine {
 
 	void EditorLayer::Property(const std::string& name, glm::vec4& value, float min, float max, EditorLayer::PropertyFlag flags)
 	{
-
 		ImGui::Text(name.c_str());
 		ImGui::NextColumn();
 		ImGui::PushItemWidth(-1);
@@ -332,8 +332,8 @@ namespace Jasmine {
 
 		// Editor Panel ------------------------------------------------------------------------------
 		ImGui::Begin("Model");
-		//if (ImGui::RadioButton("Spheres", (int*)&m_SceneType, (int)SceneType::Spheres))
-		//	m_ActiveScene = m_SphereScene;
+		if (ImGui::RadioButton("Spheres", (int*)&m_SceneType, (int)SceneType::Spheres))
+			m_ActiveScene = m_SphereScene;
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Model", (int*)&m_SceneType, (int)SceneType::Model))
 			m_ActiveScene = m_Scene;
@@ -356,7 +356,7 @@ namespace Jasmine {
 		Property("Light Direction", light.Direction);
 		Property("Light Radiance", light.Radiance, PropertyFlag::ColorProperty);
 		Property("Light Multiplier", light.Multiplier, 0.0f, 5.0f);
-		Property("Exposure", _camera->Camera.GetExposure(), 0.0f, 5.0f);
+		Property("Exposure", m_CameraEntity.GetComponent<CameraComponent>().Camera.GetExposure(), 0.0f, 5.0f);
 
 		Property("Radiance Prefiltering", m_RadiancePrefilter);
 		Property("Env Map Rotation", m_EnvMapRotation, -360.0f, 360.0f);
@@ -366,6 +366,12 @@ namespace Jasmine {
 		if (m_UIShowBoundingBoxes && Property("On Top", m_UIShowBoundingBoxesOnTop))
 			ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
 
+		char* label = m_SelectionMode == SelectionMode::Entity ? "Entity" : "Mesh";
+		if (ImGui::Button(label))
+		{
+			m_SelectionMode = m_SelectionMode == SelectionMode::Entity ? SelectionMode::SubMesh : SelectionMode::Entity;
+		}
+
 		ImGui::Columns(1);
 
 		ImGui::End();
@@ -373,8 +379,8 @@ namespace Jasmine {
 		ImGui::Separator();
 		{
 			ImGui::Text("Mesh");
-			auto mesh = m_MeshEntity.GetComponent<MeshComponent>().Mesh;
-			std::string fullpath = mesh ? mesh->GetFilePath() : "None";
+			auto meshComponent = m_MeshEntity.GetComponent<MeshComponent>();
+			std::string fullpath = meshComponent.Mesh ? meshComponent.Mesh->GetFilePath() : "None";
 			size_t found = fullpath.find_last_of("/\\");
 			std::string path = found != std::string::npos ? fullpath.substr(found + 1) : fullpath;
 			ImGui::Text(path.c_str()); ImGui::SameLine();
@@ -383,10 +389,10 @@ namespace Jasmine {
 				std::string filename = Application::Get().OpenFile("");
 				if (filename != "")
 				{
-					auto newMesh = CreateRef<Mesh>(filename);
+					auto newMesh = Ref<Mesh>::Create(filename);
 					// m_MeshMaterial.reset(new MaterialInstance(newMesh->GetMaterial()));
 					// m_MeshEntity->SetMaterial(m_MeshMaterial);
-					m_MeshEntity.GetComponent<MeshComponent>().Mesh.swap(newMesh);
+					meshComponent.Mesh = newMesh;
 				}
 			}
 		}
@@ -550,8 +556,8 @@ namespace Jasmine {
 		auto viewportOffset = ImGui::GetCursorPos(); // includes tab bar
 		auto viewportSize = ImGui::GetContentRegionAvail();
 		SceneRenderer::SetViewportSize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
-		_camera->Camera.SetProjectionMatrix(glm::perspectiveFov(glm::radians(45.0f), viewportSize.x, viewportSize.y, 0.1f, 10000.0f));
-		_camera->Camera.SetViewportSize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
+		m_CameraEntity.GetComponent<CameraComponent>().Camera.SetProjectionMatrix(glm::perspectiveFov(glm::radians(45.0f), viewportSize.x, viewportSize.y, 0.1f, 10000.0f));
+		m_CameraEntity.GetComponent<CameraComponent>().Camera.SetViewportSize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 		ImGui::Image((void*)SceneRenderer::GetFinalColorBufferRendererID(), viewportSize, { 0, 1 }, { 1, 0 });
 
 		static int counter = 0;
@@ -566,23 +572,47 @@ namespace Jasmine {
 		m_AllowViewportCameraEvents = ImGui::IsMouseHoveringRect(minBound, maxBound);
 
 		// Gizmos
-		if (m_GizmoType != -1 && m_CurrentlySelectedTransform)
+		if (m_GizmoType != -1 && m_SelectionContext.size())
 		{
+			auto& selection = m_SelectionContext[0];
+
 			float rw = (float)ImGui::GetWindowWidth();
 			float rh = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
 			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, rw, rh);
 
+			auto& camera = m_CameraEntity.GetComponent<CameraComponent>().Camera;
 			bool snap = Input::IsKeyPressed(Key::LeftControl);
-			ImGuizmo::Manipulate(glm::value_ptr(_camera->Camera.GetViewMatrix() * m_MeshEntity.GetComponent<TransformComponent>().Transform),
-				glm::value_ptr(_camera->Camera.GetProjectionMatrix()),
-				(ImGuizmo::OPERATION)m_GizmoType,
-				ImGuizmo::LOCAL,
-				glm::value_ptr(*m_CurrentlySelectedTransform),
-				nullptr,
-				snap ? &m_SnapValue : nullptr);
+
+			auto& entityTransform = selection.Entity.Transform();
+			float snapValue[3] = { m_SnapValue, m_SnapValue, m_SnapValue };
+			if (m_SelectionMode == SelectionMode::Entity)
+			{
+				ImGuizmo::Manipulate(glm::value_ptr(camera.GetViewMatrix()),
+					glm::value_ptr(camera.GetProjectionMatrix()),
+					(ImGuizmo::OPERATION)m_GizmoType,
+					ImGuizmo::LOCAL,
+					glm::value_ptr(entityTransform),
+					nullptr,
+					snap ? snapValue : nullptr);
+			}
+			else
+			{
+				glm::mat4 transformBase = entityTransform * selection.Mesh->Transform;
+				ImGuizmo::Manipulate(glm::value_ptr(camera.GetViewMatrix()),
+					glm::value_ptr(camera.GetProjectionMatrix()),
+					(ImGuizmo::OPERATION)m_GizmoType,
+					ImGuizmo::LOCAL,
+					glm::value_ptr(transformBase),
+					nullptr,
+					snap ? snapValue : nullptr);
+
+				selection.Mesh->Transform = glm::inverse(entityTransform) * transformBase;
+			}
 		}
+
+
 
 		ImGui::End();
 		ImGui::PopStyleVar();
@@ -623,8 +653,10 @@ namespace Jasmine {
 
 	void EditorLayer::OnEvent(Event& e)
 	{
-		if (m_AllowViewportCameraEvents)
-			_camera->Camera.OnEvent(e);
+		// if (m_AllowViewportCameraEvents)
+		// 	m_CameraEntity.GetComponent<CameraComponent>().OnEvent(e);
+
+		m_Scene->OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(JM_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
@@ -666,7 +698,6 @@ namespace Jasmine {
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		auto mpos = Input::GetMousePosition();
 		if (e.GetMouseButton() == Mouse::ButtonLeft && !Input::IsKeyPressed(Key::LeftAlt) && !ImGuizmo::IsOver())
 		{
 			auto [mouseX, mouseY] = GetMouseViewportSpace();
@@ -674,41 +705,45 @@ namespace Jasmine {
 			{
 				auto [origin, direction] = CastRay(mouseX, mouseY);
 
-				m_SelectedSubmeshes.clear();
-				auto mesh = m_MeshEntity.GetComponent<MeshComponent>().Mesh;
-				auto& submeshes = mesh->GetSubmeshes();
-				float lastT = std::numeric_limits<float>::max();
-				for (uint32_t i = 0; i < submeshes.size(); i++)
+				m_SelectionContext.clear();
+				auto meshEntities = m_Scene->GetAllEntitiesWith<MeshComponent>();
+				for (auto e : meshEntities)
 				{
-					auto& submesh = submeshes[i];
-					Ray ray = {
-						glm::inverse(m_MeshEntity.GetComponent<TransformComponent>().Transform * submesh.Transform) * glm::vec4(origin, 1.0f),
-						glm::inverse(glm::mat3(m_MeshEntity.GetComponent<TransformComponent>().Transform) * glm::mat3(submesh.Transform)) * direction
-					};
+					Entity entity = { e, m_Scene.Raw() };
+					auto mesh = entity.GetComponent<MeshComponent>().Mesh;
+					if (!mesh)
+						continue;
 
-					float t;
-					bool intersects = ray.IntersectsAABB(submesh.BoundingBox, t);
-					if (intersects)
+					auto& submeshes = mesh->GetSubmeshes();
+					float lastT = std::numeric_limits<float>::max();
+					for (uint32_t i = 0; i < submeshes.size(); i++)
 					{
-						const auto& triangleCache = mesh->GetTriangleCache(i);
-						for (const auto& triangle : triangleCache)
+						auto& submesh = submeshes[i];
+						Ray ray = {
+							glm::inverse(entity.Transform() * submesh.Transform) * glm::vec4(origin, 1.0f),
+							glm::inverse(glm::mat3(entity.Transform()) * glm::mat3(submesh.Transform)) * direction
+						};
+
+						float t;
+						bool intersects = ray.IntersectsAABB(submesh.BoundingBox, t);
+						if (intersects)
 						{
-							if (ray.IntersectsTriangle(triangle.V0.Position, triangle.V1.Position, triangle.V2.Position, t))
+							const auto& triangleCache = mesh->GetTriangleCache(i);
+							for (const auto& triangle : triangleCache)
 							{
-								JM_WARN("INTERSECTION: {0}, t={1}", submesh.NodeName, t);
-								m_SelectedSubmeshes.push_back({ &submesh, t });
-								break;
+								if (ray.IntersectsTriangle(triangle.V0.Position, triangle.V1.Position, triangle.V2.Position, t))
+								{
+									JM_WARN("INTERSECTION: {0}, t={1}", submesh.NodeName, t);
+									m_SelectionContext.push_back({ entity, &submesh, t });
+									break;
+								}
 							}
 						}
 					}
 				}
-				std::sort(m_SelectedSubmeshes.begin(), m_SelectedSubmeshes.end(), [](auto& a, auto& b) { return a.Distance < b.Distance; });
-
-				// TODO: Handle mesh being deleted, etc.
-				if (m_SelectedSubmeshes.size())
-					m_CurrentlySelectedTransform = &m_SelectedSubmeshes[0].Mesh->Transform;
-				else
-					m_CurrentlySelectedTransform = &m_MeshEntity.GetComponent<TransformComponent>().Transform;
+				std::sort(m_SelectionContext.begin(), m_SelectionContext.end(), [](auto& a, auto& b) { return a.Distance < b.Distance; });
+				if (m_SelectionContext.size())
+					OnSelected(m_SelectionContext[0]);
 
 			}
 		}
@@ -717,27 +752,43 @@ namespace Jasmine {
 
 	std::pair<float, float> EditorLayer::GetMouseViewportSpace()
 	{
-		auto mpos = ImGui::GetMousePos(); // Input::GetMousePosition();
-		mpos.x -= m_ViewportBounds[0].x;
-	    mpos.y -= m_ViewportBounds[0].y;
+		auto [mx, my] = ImGui::GetMousePos(); // Input::GetMousePosition();
+		mx -= m_ViewportBounds[0].x;
+		my -= m_ViewportBounds[0].y;
 		auto viewportWidth = m_ViewportBounds[1].x - m_ViewportBounds[0].x;
 		auto viewportHeight = m_ViewportBounds[1].y - m_ViewportBounds[0].y;
 
-		return { (mpos.x / viewportWidth) * 2.0f - 1.0f, ((mpos.y / viewportHeight) * 2.0f - 1.0f) * -1.0f };
+		return { (mx / viewportWidth) * 2.0f - 1.0f, ((my / viewportHeight) * 2.0f - 1.0f) * -1.0f };
 	}
 
 	std::pair<glm::vec3, glm::vec3> EditorLayer::CastRay(float mx, float my)
 	{
 		glm::vec4 mouseClipPos = { mx, my, -1.0f, 1.0f };
 
-		auto inverseProj = glm::inverse(_camera->Camera.GetProjectionMatrix());
-		auto inverseView = glm::inverse(glm::mat3(_camera->Camera.GetViewMatrix()));
+		auto inverseProj = glm::inverse(m_CameraEntity.GetComponent<CameraComponent>().Camera.GetProjectionMatrix());
+		auto inverseView = glm::inverse(glm::mat3(m_CameraEntity.GetComponent<CameraComponent>().Camera.GetViewMatrix()));
 
 		glm::vec4 ray = inverseProj * mouseClipPos;
-		glm::vec3 rayPos = _camera->Camera.GetPosition();
+		glm::vec3 rayPos = m_CameraEntity.GetComponent<CameraComponent>().Camera.GetPosition();
 		glm::vec3 rayDir = inverseView * glm::vec3(ray);
 
 		return { rayPos, rayDir };
+	}
+
+	void EditorLayer::OnSelected(const SelectedSubmesh& selectionContext)
+	{
+		m_SceneHierarchyPanel->SetSelected(selectionContext.Entity);
+	}
+
+	Ray EditorLayer::CastMouseRay()
+	{
+		auto [mouseX, mouseY] = GetMouseViewportSpace();
+		if (mouseX > -1.0f && mouseX < 1.0f && mouseY > -1.0f && mouseY < 1.0f)
+		{
+			auto [origin, direction] = CastRay(mouseX, mouseY);
+			return Ray(origin, direction);
+		}
+		return Ray::Zero();
 	}
 
 }

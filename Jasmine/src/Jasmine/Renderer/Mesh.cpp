@@ -85,7 +85,7 @@ namespace Jasmine {
 
 		m_IsAnimated = scene->mAnimations != nullptr;
 		m_MeshShader = m_IsAnimated ? Renderer::GetShaderLibrary()->Get("JasminePBR_Anim") : Renderer::GetShaderLibrary()->Get("JasminePBR_Static");
-		m_BaseMaterial = CreateRef<Material>(m_MeshShader);
+		m_BaseMaterial = Ref<Material>::Create(m_MeshShader);
 		// m_MaterialInstance = std::make_shared<MaterialInstance>(m_BaseMaterial);
 		m_InverseTransform = glm::inverse(Mat4FromAssimpMat4(scene->mRootNode->mTransformation));
 
@@ -229,10 +229,10 @@ namespace Jasmine {
 				auto aiMaterial = scene->mMaterials[i];
 				auto aiMaterialName = aiMaterial->GetName();
 
-				auto mi = CreateRef<MaterialInstance>(m_BaseMaterial);
+				auto mi = Ref<MaterialInstance>::Create(m_BaseMaterial);
 				m_Materials[i] = mi;
 
-				JM_MESH_LOG("  {0} (Index = {1})", aiMaterialName.data, i);
+				JM_MESH_LOG("    {0} (Index = {1})", aiMaterialName.data, i);
 				aiString aiTexPath;
 				uint32_t textureCount = aiMaterial->GetTextureCount(aiTextureType_DIFFUSE);
 				JM_MESH_LOG("    TextureCount = {0}", textureCount);
@@ -244,11 +244,15 @@ namespace Jasmine {
 				aiMaterial->Get(AI_MATKEY_SHININESS, shininess);
 				aiMaterial->Get(AI_MATKEY_REFLECTIVITY, metalness);
 
+				//TODO 
+				//metalness = 0.0f;
+
 				// float roughness = 1.0f - shininess * 0.01f;
 				// roughness *= roughness;
 				float roughness = 1.0f - glm::sqrt(shininess / 100.0f);
 				JM_MESH_LOG("    COLOR = {0}, {1}, {2}", aiColor.r, aiColor.g, aiColor.b);
 				JM_MESH_LOG("    ROUGHNESS = {0}", roughness);
+				JM_MESH_LOG("    MATALNESS = {0}", metalness);
 				bool hasAlbedoMap = aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &aiTexPath) == AI_SUCCESS;
 				if (hasAlbedoMap)
 				{

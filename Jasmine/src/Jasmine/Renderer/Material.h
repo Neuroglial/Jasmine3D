@@ -16,14 +16,14 @@ namespace Jasmine {
 		Blend = BIT(2)
 	};
 
-	class Material
+	class Material:public RefCounted
 	{
 		friend class MaterialInstance;
 	public:
 		Material(const Ref<Shader>& shader);
 		virtual ~Material();
 
-		void Bind() const;
+		void Bind();
 
 
 		uint32_t GetFlags() const { return m_MaterialFlags; }
@@ -82,7 +82,7 @@ namespace Jasmine {
 		uint32_t m_MaterialFlags;
 	};
 
-	class MaterialInstance
+	class MaterialInstance :public RefCounted
 	{
 		friend class Material;
 	public:
@@ -123,7 +123,7 @@ namespace Jasmine {
 			Set(name, (const Ref<Texture>&)texture);
 		}
 
-		void Bind() const;
+		void Bind();
 
 		uint32_t GetFlags() const { return m_Material->m_MaterialFlags; }
 		bool GetFlag(MaterialFlag flag) const { return (uint32_t)flag & m_Material->m_MaterialFlags; }

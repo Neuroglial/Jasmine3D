@@ -107,15 +107,9 @@ namespace Jasmine {
 		FlushDrawList();
 	}
 
-	void SceneRenderer::SubmitMesh(MeshComponent meshcmp, TransformComponent transcmp, Ref<MaterialInstance> overrideMaterial)
+	void SceneRenderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform, Ref<MaterialInstance> overrideMaterial)
 	{
-		// TODO: Culling, sorting, etc.
-
-		auto mesh = meshcmp.Mesh;
-		if (!mesh)
-			return;
-
-		s_Data.DrawList.push_back({ mesh, overrideMaterial, transcmp.Transform });
+		s_Data.DrawList.push_back({ mesh, overrideMaterial,transform });
 	}
 
 	static Ref<Shader> equirectangularConversionShader, envFilteringShader, envIrradianceShader;
@@ -209,7 +203,7 @@ namespace Jasmine {
 			// Set lights (TODO: move to light environment and don't do per mesh)
 			baseMaterial->Set("lights", s_Data.SceneData.ActiveLight);
 
-			auto overrideMaterial = nullptr; // dc.Material;
+			Ref<MaterialInstance> overrideMaterial = nullptr; // dc.Material;
 			Renderer::SubmitMesh(dc.Mesh, dc.Transform, overrideMaterial);
 		}
 
@@ -238,7 +232,7 @@ namespace Jasmine {
 		s_Data.CompositeShader->SetFloat("u_Exposure", s_Data.SceneData.SceneCamera.GetExposure());
 		s_Data.CompositeShader->SetInt("u_TextureSamples", s_Data.GeoPass->GetSpecification().TargetFramebuffer->GetSpecification().Samples);
 		s_Data.GeoPass->GetSpecification().TargetFramebuffer->BindTexture();
-		Renderer::SubmitFullscreenQuad(nullptr);
+		Renderer::SubmitFullscreenQuad(Ref<MaterialInstance>());
 		Renderer::EndRenderPass();
 	}
 

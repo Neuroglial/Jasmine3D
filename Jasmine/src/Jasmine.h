@@ -18,6 +18,7 @@
 #include "Jasmine/Core/Math/AABB.h"
 #include "Jasmine/Core/Math/Ray.h"
 #include "imgui/imgui.h"
+#include "ImGuizmo/ImGuizmo.h"
 
 // --- Jasmine Render API ------------------------------
 #include "Jasmine/Renderer/Renderer.h"
@@ -35,3 +36,4 @@
 // Scenes-----------------------------------
 #include "Jasmine/Scene/Entity.h"
 #include "Jasmine/Scene/Scene.h"
+#include "Jasmine/Scene/Components.h"

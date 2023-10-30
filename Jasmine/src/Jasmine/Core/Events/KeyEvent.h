@@ -17,7 +17,7 @@ namespace Jasmine {
 		KeyEvent(int keycode)
 			: m_KeyCode(keycode) {}
 
-		int m_KeyCode;
+		uint32_t m_KeyCode;
 	};
 
 	class KeyPressedEvent : public KeyEvent

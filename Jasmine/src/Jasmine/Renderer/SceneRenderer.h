@@ -4,6 +4,7 @@
 
 #include "Jasmine/Scene/Components.h"
 #include "RenderPass.h"
+#include "Jasmine/Renderer/Mesh.h"
 
 namespace Jasmine {
 
@@ -24,7 +25,7 @@ namespace Jasmine {
 		static void BeginScene(const Scene* scene,const Camera& camera);
 		static void EndScene();
 
-		static void SubmitMesh(MeshComponent meshcmp,TransformComponent transcmp, Ref<MaterialInstance> overrideMaterial);
+		static void SceneRenderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform, Ref<MaterialInstance> overrideMaterial);
 
 		static std::pair<Ref<TextureCube>, Ref<TextureCube>> CreateEnvironmentMap(const std::string& filepath);
 

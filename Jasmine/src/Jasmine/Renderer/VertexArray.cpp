@@ -11,7 +11,7 @@ namespace Jasmine {
 		switch (RendererAPI::Current())
 		{
 			case RendererAPIType::None:    JM_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPIType::OpenGL:  return std::make_shared<OpenGLVertexArray>();
+			case RendererAPIType::OpenGL:  return Ref<OpenGLVertexArray>::Create();
 		}
 
 		JM_CORE_ASSERT(false, "Unknown RendererAPI");

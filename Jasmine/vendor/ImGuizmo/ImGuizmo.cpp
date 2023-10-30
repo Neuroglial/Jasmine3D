@@ -637,15 +637,17 @@ namespace IMGUIZMO_NAMESPACE
 
    Style::Style()
    {
+      const float _scale = 2.1f;
+
       // default values
-      TranslationLineThickness   = 3.0f;
-      TranslationLineArrowSize   = 6.0f;
-      RotationLineThickness      = 2.0f;
-      RotationOuterLineThickness = 3.0f;
-      ScaleLineThickness         = 3.0f;
-      ScaleLineCircleSize        = 6.0f;
-      HatchedAxisLineThickness   = 6.0f;
-      CenterCircleSize           = 6.0f;
+      TranslationLineThickness   = 3.0f * _scale;
+      TranslationLineArrowSize   = 6.0f * _scale;
+      RotationLineThickness      = 2.0f * _scale;
+      RotationOuterLineThickness = 3.0f * _scale;
+      ScaleLineThickness         = 3.0f * _scale;
+      ScaleLineCircleSize        = 6.0f * _scale;
+      HatchedAxisLineThickness   = 4.0f * _scale;
+      CenterCircleSize           = 6.0f * _scale;
 
       // initialize default colors
       Colors[DIRECTION_X]           = ImVec4(0.666f, 0.000f, 0.000f, 1.000f);
@@ -761,7 +763,7 @@ namespace IMGUIZMO_NAMESPACE
       OPERATION mOperation = OPERATION(-1);
 
       bool mAllowAxisFlip = true;
-      float mGizmoSizeClipSpace = 0.1f;
+      float mGizmoSizeClipSpace = 0.175f;
    };
 
    static Context gContext;

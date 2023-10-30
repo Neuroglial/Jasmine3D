@@ -29,7 +29,7 @@ namespace Jasmine {
 
 	Ref<OpenGLShader> OpenGLShader::CreateFromString(const std::string& source)
 	{
-		Ref<OpenGLShader> shader = std::make_shared<OpenGLShader>();
+		Ref<OpenGLShader> shader(new OpenGLShader());
 		shader->Load(source);
 		return shader;
 	}
@@ -227,8 +227,8 @@ namespace Jasmine {
 
 		m_Resources.clear();
 		m_Structs.clear();
-		m_VSMaterialUniformBuffer.reset();
-		m_PSMaterialUniformBuffer.reset();
+		m_VSMaterialUniformBuffer.Reset();
+		m_PSMaterialUniformBuffer.Reset();
 
 		auto& vertexSource = m_ShaderSource[GL_VERTEX_SHADER];
 		auto& fragmentSource = m_ShaderSource[GL_FRAGMENT_SHADER];
@@ -329,14 +329,14 @@ namespace Jasmine {
 				if (domain == ShaderDomain::Vertex)
 				{
 					if (!m_VSMaterialUniformBuffer)
-						m_VSMaterialUniformBuffer.reset(new OpenGLShaderUniformBufferDeclaration("", domain));
+						m_VSMaterialUniformBuffer.Reset(new OpenGLShaderUniformBufferDeclaration("", domain));
 
 					m_VSMaterialUniformBuffer->PushUniform(declaration);
 				}
 				else if (domain == ShaderDomain::Pixel)
 				{
 					if (!m_PSMaterialUniformBuffer)
-						m_PSMaterialUniformBuffer.reset(new OpenGLShaderUniformBufferDeclaration("", domain));
+						m_PSMaterialUniformBuffer.Reset(new OpenGLShaderUniformBufferDeclaration("", domain));
 
 					m_PSMaterialUniformBuffer->PushUniform(declaration);
 				}
@@ -623,7 +623,7 @@ namespace Jasmine {
 		});
 	}
 
-	void OpenGLShader::ResolveAndSetUniforms(const Scope<OpenGLShaderUniformBufferDeclaration>& decl, Buffer buffer)
+	void OpenGLShader::ResolveAndSetUniforms(const Ref<OpenGLShaderUniformBufferDeclaration>& decl, Buffer buffer)
 	{
 		const ShaderUniformList& uniforms = decl->GetUniformDeclarations();
 		for (size_t i = 0; i < uniforms.size(); i++)
@@ -755,6 +755,7 @@ namespace Jasmine {
 				Renderer::Submit([=](){
 					UploadUniformFloat(name, value);
 					});
+				break;
 			}
 			case UniformType::Float3:
 			{
@@ -763,6 +764,7 @@ namespace Jasmine {
 				Renderer::Submit([=](){
 					UploadUniformFloat3(name, values);
 					});
+				break;
 			}
 			case UniformType::Float4:
 			{
@@ -771,6 +773,7 @@ namespace Jasmine {
 				Renderer::Submit([=](){
 					UploadUniformFloat4(name, values);
 					});
+				break;
 			}
 			case UniformType::Matrix4x4:
 			{
@@ -779,6 +782,7 @@ namespace Jasmine {
 				Renderer::Submit([=](){
 					UploadUniformMat4(name, values);
 					});
+				break;
 			}
 			}
 		}
@@ -795,6 +799,13 @@ namespace Jasmine {
 	{
 		Renderer::Submit([=]() {
 			UploadUniformInt(name, value);
+		});
+	}
+
+	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
+	{
+		Renderer::Submit([=]() {
+			UploadUniformFloat3(name, value);
 		});
 	}
 

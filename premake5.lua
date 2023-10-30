@@ -20,8 +20,11 @@ workspace "Jasmine3D"
 	IncludeDir["glm"] = "Jasmine/vendor/glm"
 	IncludeDir["ImGuizmo"] = "Jasmine/vendor/ImGuizmo"
 	IncludeDir["entt"] = "Jasmine/vendor/entt/include"
+	IncludeDir["FastNoise"] = "Jasmine/vendor/FastNoise"
+	IncludeDir["mono"] = "Jasmine/vendor/mono/include"
 	
 	LibraryDir = {}
+	LibraryDir["mono"] = "vendor/mono/lib/mono-2.0-sgen.lib"
 	
 	
 	------Dependencies--------------------------------------------------
@@ -33,9 +36,10 @@ workspace "Jasmine3D"
 	group ""
 	
 	
-	------Core----------------------------------------------------------
-	
+	------Group-Core----------------------------------------------------------
 	group "Core"
+	
+	------Project---------------
 	project "Jasmine"
     		location "Jasmine"
     		kind "StaticLib"
@@ -55,8 +59,10 @@ workspace "Jasmine3D"
 			"%{prj.name}/src/**.c", 
 			"%{prj.name}/src/**.hpp", 
 			"%{prj.name}/src/**.cpp" ,
+			
 			"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
-			"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
+			"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp",
+			"%{prj.name}/vendor/FastNoise/**.cpp"
     		}
     		
     		defines
@@ -78,7 +84,9 @@ workspace "Jasmine3D"
         		"%{prj.name}/vendor/spdlog/include",
         		"%{prj.name}/vendor/stb/include",
         		"%{IncludeDir.ImGuizmo}",
-        		"%{IncludeDir.entt}"
+        		"%{IncludeDir.entt}",
+        		"%{IncludeDir.FastNoise}",
+        		"%{IncludeDir.mono}"
      		}
     
     		links 
@@ -86,11 +94,15 @@ workspace "Jasmine3D"
         		"GLFW",
         		"Glad",
         		"ImGui",
-			"opengl32.lib"
+			"opengl32.lib",
+			"%{LibraryDir.mono}"
     		}
     
     		filter "files:Jasmine/vendor/ImGuizmo/**.cpp"
 		flags { "NoPCH" }
+		
+		filter "files:Jasmine/vendor/FastNoise/**.cpp"
+   		flags { "NoPCH" }
     		
 		filter "system:windows"
      		systemversion "latest"
@@ -112,7 +124,8 @@ workspace "Jasmine3D"
     		filter "configurations:Dist"
         		defines "JM_DIST"
         		optimize "On"
-        		
+      
+      ------Project--------------- 		
       project "Jasmine-ScriptCore"
 		location "Jasmine-ScriptCore"
 		kind "SharedLib"
@@ -129,9 +142,10 @@ workspace "Jasmine3D"
 	group ""
 		
 	
-  	------Tool-----------------------------------------------------------
-  	
+  	------Group-Tool-----------------------------------------------------------
   	group "Tool"
+  	
+  	------Project---------------
 	project "JasEditor"
     		location "JasEditor"
     		kind "ConsoleApp"
@@ -191,7 +205,9 @@ workspace "Jasmine3D"
 			
 			postbuildcommands 
 			{
-				'{COPY} "../Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"'
+				'{COPY} "../Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"',
+				'{COPY} "../Jasmine/vendor/mono/bin/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+				'{COPY} "../Jasmine/vendor/mono/bin/mscorlib.dll" "%{cfg.targetdir}"'
 			}
 
                 
@@ -205,7 +221,9 @@ workspace "Jasmine3D"
 			
 			postbuildcommands 
 			{
-				'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"'
+				'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"',
+				'{COPY} "../Jasmine/vendor/mono/bin/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+				'{COPY} "../Jasmine/vendor/mono/bin/mscorlib.dll" "%{cfg.targetdir}"'
 			}
 
 
@@ -219,15 +237,18 @@ workspace "Jasmine3D"
 			
 			postbuildcommands 
 			{
-				'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"'
+				'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"',
+				'{COPY} "../Jasmine/vendor/mono/bin/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+				'{COPY} "../Jasmine/vendor/mono/bin/mscorlib.dll" "%{cfg.targetdir}"'
 			}
 			
 	group ""
 	
 	
-	------Examples------------------------------------------------------
-	
+	------Group-Examples------------------------------------------------------
 	group "Examples"
+	
+	------Project--------------
 	project "ExampleApp"
 		location "ExampleApp"
 		kind "SharedLib"

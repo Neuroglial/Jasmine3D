@@ -10,7 +10,7 @@ namespace Jasmine {
 		switch (RendererAPI::Current())
 		{
 			case RendererAPIType::None:    return nullptr;
-			case RendererAPIType::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(data, size, usage);
+			case RendererAPIType::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(data, size, usage);
 		}
 		JM_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
@@ -21,7 +21,7 @@ namespace Jasmine {
 		switch (RendererAPI::Current())
 		{
 		case RendererAPIType::None:    return nullptr;
-		case RendererAPIType::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(size, usage);
+		case RendererAPIType::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size, usage);
 		}
 		JM_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
@@ -32,7 +32,7 @@ namespace Jasmine {
 		switch (RendererAPI::Current())
 		{
 			case RendererAPIType::None:    return nullptr;
-			case RendererAPIType::OpenGL:  return std::make_shared<OpenGLIndexBuffer>(data, size);
+			case RendererAPIType::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(data, size);
 		}
 		JM_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;

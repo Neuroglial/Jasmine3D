@@ -56,6 +56,9 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Dist|x64' ">
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\MapGenerator.cs" />
+    <Compile Include="src\Noise.cs" />
+    <Compile Include="src\Script.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Jasmine-ScriptCore\Jasmine-ScriptCore.csproj">

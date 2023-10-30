@@ -93,7 +93,9 @@
     </Link>
     <PostBuildEvent>
       <Command>IF EXIST "..\JasEditor\assets"\ (xcopy /Q /E /Y /I "..\JasEditor\assets" "..\bin\Debug-windows-x86_64\JasEditor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "..\JasEditor\assets" "..\bin\Debug-windows-x86_64\JasEditor\assets" &gt; nul)
-IF EXIST "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)</Command>
+IF EXIST "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)
+IF EXIST "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)
+IF EXIST "..\Jasmine\vendor\mono\bin\mscorlib.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\mscorlib.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\mscorlib.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -119,7 +121,9 @@ IF EXIST "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll"\ (xcopy /Q /E
     </Link>
     <PostBuildEvent>
       <Command>IF EXIST "..\JasEditor\assets"\ (xcopy /Q /E /Y /I "..\JasEditor\assets" "..\bin\Release-windows-x86_64\JasEditor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "..\JasEditor\assets" "..\bin\Release-windows-x86_64\JasEditor\assets" &gt; nul)
-IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul)</Command>
+IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul)
+IF EXIST "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul)
+IF EXIST "..\Jasmine\vendor\mono\bin\mscorlib.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\mscorlib.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\mscorlib.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -145,7 +149,9 @@ IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll"\ (xcopy /Q /
     </Link>
     <PostBuildEvent>
       <Command>IF EXIST "..\JasEditor\assets"\ (xcopy /Q /E /Y /I "..\JasEditor\assets" "..\bin\Dist-windows-x86_64\JasEditor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "..\JasEditor\assets" "..\bin\Dist-windows-x86_64\JasEditor\assets" &gt; nul)
-IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)</Command>
+IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)
+IF EXIST "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)
+IF EXIST "..\Jasmine\vendor\mono\bin\mscorlib.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\mscorlib.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\mscorlib.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

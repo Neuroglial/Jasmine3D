@@ -17,7 +17,7 @@ namespace Jasmine {
 	{
 		Ref<RenderPass> m_ActiveRenderPass;
 		RenderCommandQueue m_CommandQueue;
-		Scope<ShaderLibrary> m_ShaderLibrary;
+		Ref<ShaderLibrary> m_ShaderLibrary;
 		Ref<VertexArray> m_FullscreenQuadVertexArray;
 	};
 
@@ -25,7 +25,7 @@ namespace Jasmine {
 
 	void Renderer::Init()
 	{
-		s_Data.m_ShaderLibrary = std::make_unique<ShaderLibrary>();
+		s_Data.m_ShaderLibrary = Ref<ShaderLibrary>::Create();
 		Renderer::Submit([]() { RendererAPI::Init(); });
 
 		Renderer::GetShaderLibrary()->Load("assets/shaders/JasminePBR_Static.glsl");
@@ -73,7 +73,7 @@ namespace Jasmine {
 		Renderer2D::Init();
 	}
 
-	const Scope<ShaderLibrary>& Renderer::GetShaderLibrary()
+	Ref<ShaderLibrary> Renderer::GetShaderLibrary()
 	{
 		return s_Data.m_ShaderLibrary;
 	}
@@ -120,7 +120,7 @@ namespace Jasmine {
 		s_Data.m_CommandQueue.Execute();
 	}
 
-	void Renderer::BeginRenderPass(const Ref<RenderPass>& renderPass, bool clear)
+	void Renderer::BeginRenderPass(Ref<RenderPass> renderPass, bool clear)
 	{
 		JM_CORE_ASSERT(renderPass, "Render pass cannot be null!");
 
@@ -144,7 +144,7 @@ namespace Jasmine {
 		s_Data.m_ActiveRenderPass = nullptr;
 	}
 
-	void Renderer::SubmitQuad(const Ref<MaterialInstance>& material, const glm::mat4& transform)
+	void Renderer::SubmitQuad(Ref<MaterialInstance> material, const glm::mat4& transform)
 	{
 		bool depthTest = true;
 		if (material)
@@ -160,7 +160,7 @@ namespace Jasmine {
 		Renderer::DrawIndexed(6, PrimitiveType::Triangles, depthTest);
 	}
 
-	void Renderer::SubmitFullscreenQuad(const Ref<MaterialInstance>& material)
+	void Renderer::SubmitFullscreenQuad(Ref<MaterialInstance>& material)
 	{
 		bool depthTest = true;
 		if (material)
@@ -173,7 +173,7 @@ namespace Jasmine {
 		Renderer::DrawIndexed(6, PrimitiveType::Triangles, depthTest);
 	}
 
-	void Renderer::SubmitMesh(const Ref<Mesh>& mesh, const glm::mat4& transform, const Ref<MaterialInstance>& overrideMaterial)
+	void Renderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform, Ref<MaterialInstance> overrideMaterial)
 	{
 		// auto material = overrideMaterial ? overrideMaterial : mesh->GetMaterialInstance();
 		// auto shader = material->GetShader();
@@ -210,7 +210,7 @@ namespace Jasmine {
 		}
 	}
 
-	void Renderer::DrawAABB(const AABB& aabb, const glm::mat4& transform, const glm::vec4& color)
+	void Renderer::DrawAABB(const AABB aabb, const glm::mat4& transform, const glm::vec4& color)
 	{
 		glm::vec4 min = { aabb.Min.x, aabb.Min.y, aabb.Min.z, 1.0f };
 		glm::vec4 max = { aabb.Max.x, aabb.Max.y, aabb.Max.z, 1.0f };
@@ -238,7 +238,7 @@ namespace Jasmine {
 			Renderer2D::DrawLine(corners[i], corners[i + 4], color);
 	}
 
-	void Renderer::DrawAABB(const Ref<Mesh>& mesh, const glm::mat4& transform, const glm::vec4& color)
+	void Renderer::DrawAABB(Ref<Mesh> mesh, const glm::mat4& transform, const glm::vec4& color)
 	{
 		for (Submesh& submesh : mesh->m_Submeshes)
 		{

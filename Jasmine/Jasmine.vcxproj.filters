@@ -37,11 +37,17 @@
     <Filter Include="src\Jasmine\Scene">
       <UniqueIdentifier>{205ACB20-8C70-C9B6-D5E7-54D8413D9A3E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Jasmine\Script">
+      <UniqueIdentifier>{A7AB3D3A-938F-FE8F-FCEF-F8E2E8F2E811}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Jasmine\vendor">
       <UniqueIdentifier>{C023048C-AC07-C5E1-1568-BF34016BAF63}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\FastNoise">
+      <UniqueIdentifier>{EEFAAAA2-DAF3-C9F4-0326-AF79EF7DA900}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor\ImGuizmo">
       <UniqueIdentifier>{73BF7F4C-DF4A-ED10-E85B-700554664911}</UniqueIdentifier>
@@ -96,10 +102,19 @@
     <ClInclude Include="src\Jasmine\Core\Math\AABB.h">
       <Filter>src\Jasmine\Core\Math</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Math\Mat4.h">
+      <Filter>src\Jasmine\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Math\Noise.h">
+      <Filter>src\Jasmine\Core\Math</Filter>
+    </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Math\Ray.h">
       <Filter>src\Jasmine\Core\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\MouseCodes.h">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Ref.h">
       <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Timestep.h">
@@ -186,16 +201,27 @@
     <ClInclude Include="src\Jasmine\Renderer\VertexArray.h">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Scene\Components.h">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\Jasmine\Scene\Entity.h">
       <Filter>src\Jasmine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Scene\Scene.h">
       <Filter>src\Jasmine\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Script\ScriptEngine.h">
+      <Filter>src\Jasmine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Script\ScriptEngineRegistry.h">
+      <Filter>src\Jasmine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Script\ScriptWrappers.h">
+      <Filter>src\Jasmine\Script</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
       <Filter>vendor\ImGuizmo</Filter>
     </ClInclude>
-    <ClInclude Include="src\Jasmine\Scene\Components.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\JMpch.cpp">
@@ -215,6 +241,12 @@
     </ClCompile>
     <ClCompile Include="src\Jasmine\Core\Log.cpp">
       <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Math\Mat4.cpp">
+      <Filter>src\Jasmine\Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Math\Noise.cpp">
+      <Filter>src\Jasmine\Core\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Core\Timestep.cpp">
       <Filter>src\Jasmine\Core</Filter>
@@ -306,8 +338,20 @@
     <ClCompile Include="src\Jasmine\Scene\Scene.cpp">
       <Filter>src\Jasmine\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Jasmine\Script\ScriptEngine.cpp">
+      <Filter>src\Jasmine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Script\ScriptEngineRegistry.cpp">
+      <Filter>src\Jasmine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Script\ScriptWrappers.cpp">
+      <Filter>src\Jasmine\Script</Filter>
+    </ClCompile>
     <ClCompile Include="src\Jasmine\vendor\stb_image.cpp">
       <Filter>src\Jasmine\vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\FastNoise\FastNoise.cpp">
+      <Filter>vendor\FastNoise</Filter>
     </ClCompile>
     <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
       <Filter>vendor\ImGuizmo</Filter>

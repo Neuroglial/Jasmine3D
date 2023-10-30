@@ -27,7 +27,7 @@ namespace Jasmine {
 		float Multiplier = 1.0f;
 	};
 
-	class Scene
+	class Scene :public RefCounted
 	{
 	public:
 		Scene(const std::string& debugName = "Scene");

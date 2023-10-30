@@ -2,10 +2,9 @@
 #include "Scene.h"
 
 #include "Entity.h"
-
 #include "Components.h"
 #include "Jasmine/Renderer/SceneRenderer.h"
-
+#include "Jasmine/Script/ScriptEngine.h"
 #include "Jasmine/Renderer/Renderer2D.h"
 
 namespace Jasmine {
@@ -26,28 +25,26 @@ namespace Jasmine {
 		// HZ_CORE_TRACE("Transform Component constructed!");
 	}
 
-	//TODO 
-	//void OnScriptComponentConstruct(entt::registry& registry, entt::entity entity)
-	//{
-	//	// Note: there should be exactly one scene component per registry
-	//	auto view = registry.view<SceneComponent>();
-	//	uint32_t sceneID = 0;
-	//	for (auto entity : view)
-	//	{
-	//		auto& scene = registry.get<SceneComponent>(entity);
-	//		sceneID = scene.SceneID;
-	//	}
-	//
-	//	ScriptEngine::OnInitEntity(registry.get<ScriptComponent>(entity), (uint32_t)entity, sceneID);
-	//}
+	void OnScriptComponentConstruct(entt::registry& registry, entt::entity entity)
+	{
+		// Note: there should be exactly one scene component per registry
+		auto view = registry.view<SceneComponent>();
+		uint32_t sceneID = 0;
+		for (auto entity : view)
+		{
+			auto& scene = registry.get<SceneComponent>(entity);
+			sceneID = scene.SceneID;
+		}
+
+		ScriptEngine::OnInitEntity(registry.get<ScriptComponent>(entity), (uint32_t)entity, sceneID);
+	}
 
 
 	Scene::Scene(const std::string& debugName)
 		: m_DebugName(debugName),m_SceneID(++s_SceneIDCounter)
 	{
 		m_Registry.on_construct<TransformComponent>().connect<&OnTransformConstruct>();
-		//TODO
-		//m_Registry.on_construct<ScriptComponent>().connect<&OnScriptComponentConstruct>();
+		m_Registry.on_construct<ScriptComponent>().connect<&OnScriptComponentConstruct>();
 
 		m_SceneEntity = m_Registry.create();
 		m_Registry.emplace<SceneComponent>(m_SceneEntity, m_SceneID);
@@ -90,11 +87,11 @@ namespace Jasmine {
 
 		JM_CORE_ASSERT(camera, "Scene does not contain any cameras!");
 		camera->OnUpdate(ts);
-
-		//TODO
-		//auto view = m_Registry.view<ScriptComponent>();
-		//for (auto entity : view)
-		//	ScriptEngine::OnUpdateEntity((uint32_t)entity, ts);
+		
+		// Update all entities
+		auto view = m_Registry.view<ScriptComponent>();
+		for (auto entity : view)
+			ScriptEngine::OnUpdateEntity((uint32_t)entity, ts);
 
 #if 0
 
@@ -120,13 +117,13 @@ namespace Jasmine {
 		/////////////////////////////////////////////////////////////////////
 		m_SkyboxMaterial->Set("u_TextureLod", m_SkyboxLod);
 
-		//// Update all entities
-		//auto entities = m_Registry.view<MeshComponent>();
-		//for (auto entity : entities)
-		//{
-		//	auto& meshComponent = m_Registry.get<MeshComponent>(entity);
-		//	meshComponent.Mesh->OnUpdate(ts);
-		//}
+		// Update all entities
+		auto entities = m_Registry.view<MeshComponent>();
+		for (auto entity : entities)
+		{
+			auto& meshComponent = m_Registry.get<MeshComponent>(entity);
+			meshComponent.Mesh->OnUpdate(ts);
+		}
 
 
 		auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
@@ -139,7 +136,7 @@ namespace Jasmine {
 				meshComponent.Mesh->OnUpdate(ts);
 
 				// TODO: Should we render (logically)
-				SceneRenderer::SubmitMesh(meshComponent, transformComponent, NULL);
+				SceneRenderer::SubmitMesh(meshComponent, transformComponent, nullptr);
 			}
 		}
 		SceneRenderer::EndScene();

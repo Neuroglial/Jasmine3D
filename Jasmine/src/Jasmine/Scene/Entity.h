@@ -34,7 +34,7 @@ namespace Jasmine {
 		template<typename T>
 		bool HasComponent()
 		{
-			return m_Scene->m_Registry.has<T>(m_EntityHandle);
+			return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
 		}
 
 		glm::mat4& Transform() { return m_Scene->m_Registry.get<TransformComponent>(m_EntityHandle); }
