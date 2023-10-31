@@ -141,7 +141,7 @@
     <ClInclude Include="src\Jasmine\Core\Ref.h">
       <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Jasmine\Core\Timestep.h">
+    <ClInclude Include="src\Jasmine\Core\TimeStep.h">
       <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Window.h">
@@ -449,7 +449,7 @@
     <ClCompile Include="src\Jasmine\Core\Math\Noise.cpp">
       <Filter>src\Jasmine\Core\Math</Filter>
     </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\Timestep.cpp">
+    <ClCompile Include="src\Jasmine\Core\TimeStep.cpp">
       <Filter>src\Jasmine\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Core\Window.cpp">

@@ -164,7 +164,7 @@
     <ClInclude Include="src\Jasmine\Core\Math\Ray.h" />
     <ClInclude Include="src\Jasmine\Core\MouseCodes.h" />
     <ClInclude Include="src\Jasmine\Core\Ref.h" />
-    <ClInclude Include="src\Jasmine\Core\Timestep.h" />
+    <ClInclude Include="src\Jasmine\Core\TimeStep.h" />
     <ClInclude Include="src\Jasmine\Core\Window.h" />
     <ClInclude Include="src\Jasmine\Editor\SceneHierarchyPanel.h" />
     <ClInclude Include="src\Jasmine\EntryPoint.h" />
@@ -270,7 +270,7 @@
     <ClCompile Include="src\Jasmine\Core\Log.cpp" />
     <ClCompile Include="src\Jasmine\Core\Math\Mat4.cpp" />
     <ClCompile Include="src\Jasmine\Core\Math\Noise.cpp" />
-    <ClCompile Include="src\Jasmine\Core\Timestep.cpp" />
+    <ClCompile Include="src\Jasmine\Core\TimeStep.cpp" />
     <ClCompile Include="src\Jasmine\Core\Window.cpp" />
     <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp" />
     <ClCompile Include="src\Jasmine\ImGui\ImGuiBuild.cpp" />

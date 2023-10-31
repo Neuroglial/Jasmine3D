@@ -2,6 +2,7 @@
 **/bin/
 !vendor/bin
 !Jasmine/vendor/mono/bin
+!Jasmine/vendor/assimp/bin
 bin-int/
 obj/
 
