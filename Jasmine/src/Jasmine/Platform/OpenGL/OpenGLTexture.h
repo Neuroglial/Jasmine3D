@@ -28,6 +28,7 @@ namespace Jasmine {
 		virtual Buffer GetWriteableBuffer() override;
 
 		virtual const std::string& GetPath() const override { return m_FilePath; }
+
 		virtual bool Loaded() const override { return m_Loaded; }
 
 		virtual RendererID GetRendererID() const override { return m_RendererID; }
@@ -78,9 +79,10 @@ namespace Jasmine {
 	private:
 		RendererID m_RendererID;
 		TextureFormat m_Format;
-		unsigned int m_Width, m_Height;
+		uint32_t m_Width, m_Height;
 
 		unsigned char* m_ImageData;
+
 		std::string m_FilePath;
 	};
 }

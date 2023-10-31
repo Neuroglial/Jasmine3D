@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Jasmine/Scene/Entity.h"
 #include "Jasmine/Scene/Scene.h"
+#include "Jasmine/Scene/Entity.h"
 #include "Jasmine/Renderer/Mesh.h"
 
 namespace Jasmine {
@@ -13,6 +13,8 @@ namespace Jasmine {
 
 		void SetContext(const Ref<Scene>& scene);
 		void SetSelected(Entity entity);
+		void SetSelectionChangedCallback(const std::function<void(Entity)>& func) { m_SelectionChangedCallback = func; }
+		void SetEntityDeletedCallback(const std::function<void(Entity)>& func) { m_EntityDeletedCallback = func; }
 
 		void OnImGuiRender();
 	private:
@@ -23,6 +25,8 @@ namespace Jasmine {
 	private:
 		Ref<Scene> m_Context;
 		Entity m_SelectionContext;
+
+		std::function<void(Entity)> m_SelectionChangedCallback, m_EntityDeletedCallback;
 	};
 
 }

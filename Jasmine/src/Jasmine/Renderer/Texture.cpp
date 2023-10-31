@@ -40,8 +40,8 @@ namespace Jasmine {
 	{
 		switch (RendererAPI::Current())
 		{
-		case RendererAPIType::None: return nullptr;
-		case RendererAPIType::OpenGL: return Ref<OpenGLTextureCube>::Create(path);
+			case RendererAPIType::None: return nullptr;
+			case RendererAPIType::OpenGL: return Ref<OpenGLTextureCube>::Create(path);
 		}
 		return nullptr;
 	}

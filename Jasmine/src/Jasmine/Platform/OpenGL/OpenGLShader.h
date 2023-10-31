@@ -3,7 +3,6 @@
 #include "Jasmine/Renderer/Shader.h"
 #include <glad/glad.h>
 
-#include "Jasmine/Renderer/Renderer.h"
 #include "OpenGLShaderUniform.h"
 
 namespace Jasmine {
@@ -58,7 +57,7 @@ namespace Jasmine {
 		void ResolveAndSetUniformField(const OpenGLShaderUniformDeclaration& field, byte* data, int32_t offset);
 
 		void UploadUniformInt(uint32_t location, int32_t value);
-		void UploadUniformIntArray(uint32_t location, int32_t* values, uint32_t count);
+		void UploadUniformIntArray(uint32_t location, int32_t* values, int32_t count);
 		void UploadUniformFloat(uint32_t location, float value);
 		void UploadUniformFloat2(uint32_t location, const glm::vec2& value);
 		void UploadUniformFloat3(uint32_t location, const glm::vec3& value);
@@ -70,7 +69,7 @@ namespace Jasmine {
 		void UploadUniformStruct(OpenGLShaderUniformDeclaration* uniform, byte* buffer, uint32_t offset);
 
 		void UploadUniformInt(const std::string& name, int32_t value);
-		void UploadUniformIntArray(const std::string& name, int32_t* values, int32_t count);
+		void UploadUniformIntArray(const std::string& name, int32_t* values, uint32_t count);
 
 		void UploadUniformFloat(const std::string& name, float value);
 		void UploadUniformFloat2(const std::string& name, const glm::vec2& value);

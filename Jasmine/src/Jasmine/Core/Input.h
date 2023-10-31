@@ -1,9 +1,6 @@
 #pragma once
 
-#include "JMpch.h"
-#include <glm/glm.hpp>
-#include "Jasmine/Core/KeyCodes.h"
-#include "Jasmine/Core/MouseCodes.h"
+#include "KeyCodes.h"
 
 namespace Jasmine {
 
@@ -11,11 +8,11 @@ namespace Jasmine {
 	{
 	public:
 		static bool IsKeyPressed(KeyCode keycode);
-		static bool IsMouseButtonPressed(MouseCode button);
-		static glm::vec2 GetMousePosition();
+
+		static bool IsMouseButtonPressed(int button);
 		static float GetMouseX();
 		static float GetMouseY();
-		static glm::vec2 GetWindowSize();
+		static std::pair<float, float> GetMousePosition();
 	};
 
 }

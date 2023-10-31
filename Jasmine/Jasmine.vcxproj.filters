@@ -40,8 +40,8 @@
     <Filter Include="src\Jasmine\Script">
       <UniqueIdentifier>{A7AB3D3A-938F-FE8F-FCEF-F8E2E8F2E811}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Jasmine\vendor">
-      <UniqueIdentifier>{C023048C-AC07-C5E1-1568-BF34016BAF63}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Vendor">
+      <UniqueIdentifier>{A00F5F41-8CF3-1F97-F553-1AEAE1560A19}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
@@ -135,7 +135,7 @@
     <ClInclude Include="src\Jasmine\Core\Math\Ray.h">
       <Filter>src\Jasmine\Core\Math</Filter>
     </ClInclude>
-    <ClInclude Include="src\Jasmine\Core\MouseCodes.h">
+    <ClInclude Include="src\Jasmine\Core\Platform.h">
       <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Ref.h">
@@ -144,8 +144,17 @@
     <ClInclude Include="src\Jasmine\Core\TimeStep.h">
       <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\Timer.h">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Core\UUID.h">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Window.h">
       <Filter>src\Jasmine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Editor\EditorCamera.h">
+      <Filter>src\Jasmine\Editor</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Editor\SceneHierarchyPanel.h">
       <Filter>src\Jasmine\Editor</Filter>
@@ -156,10 +165,16 @@
     <ClInclude Include="src\Jasmine\ImGui\ImGuiLayer.h">
       <Filter>src\Jasmine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLBuffer.h">
-      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    <ClInclude Include="src\Jasmine\ImGui\ImGuizmo.h">
+      <Filter>src\Jasmine\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.h">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLIndexBuffer.h">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLPipeline.h">
       <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.h">
@@ -174,14 +189,11 @@
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h">
       <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.h">
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexBuffer.h">
       <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h">
       <Filter>src\Jasmine\Platform\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Jasmine\Renderer\Buffer.h">
-      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Camera.h">
       <Filter>src\Jasmine\Renderer</Filter>
@@ -189,10 +201,16 @@
     <ClInclude Include="src\Jasmine\Renderer\Framebuffer.h">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\IndexBuffer.h">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Material.h">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Mesh.h">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Renderer\Pipeline.h">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\RenderCommandQueue.h">
@@ -222,7 +240,7 @@
     <ClInclude Include="src\Jasmine\Renderer\Texture.h">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Jasmine\Renderer\VertexArray.h">
+    <ClInclude Include="src\Jasmine\Renderer\VertexBuffer.h">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Scene\Components.h">
@@ -232,6 +250,12 @@
       <Filter>src\Jasmine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Scene\Scene.h">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Scene\SceneCamera.h">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Jasmine\Scene\SceneSerializer.h">
       <Filter>src\Jasmine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Script\ScriptEngine.h">
@@ -452,8 +476,14 @@
     <ClCompile Include="src\Jasmine\Core\TimeStep.cpp">
       <Filter>src\Jasmine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\UUID.cpp">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Jasmine\Core\Window.cpp">
       <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Editor\EditorCamera.cpp">
+      <Filter>src\Jasmine\Editor</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp">
       <Filter>src\Jasmine\Editor</Filter>
@@ -464,10 +494,16 @@
     <ClCompile Include="src\Jasmine\ImGui\ImGuiLayer.cpp">
       <Filter>src\Jasmine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLBuffer.cpp">
-      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    <ClCompile Include="src\Jasmine\ImGui\ImGuizmo.cpp">
+      <Filter>src\Jasmine\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLIndexBuffer.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLPipeline.cpp">
       <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.cpp">
@@ -485,7 +521,7 @@
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.cpp">
       <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.cpp">
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexBuffer.cpp">
       <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsInput.cpp">
@@ -494,19 +530,22 @@
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Jasmine\Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Buffer.cpp">
-      <Filter>src\Jasmine\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\Jasmine\Renderer\Camera.cpp">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Renderer\Framebuffer.cpp">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\IndexBuffer.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Jasmine\Renderer\Material.cpp">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Renderer\Mesh.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Pipeline.cpp">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Renderer\RenderCommandQueue.cpp">
@@ -530,13 +569,19 @@
     <ClCompile Include="src\Jasmine\Renderer\Texture.cpp">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\VertexArray.cpp">
+    <ClCompile Include="src\Jasmine\Renderer\VertexBuffer.cpp">
       <Filter>src\Jasmine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Scene\Entity.cpp">
       <Filter>src\Jasmine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Scene\Scene.cpp">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Scene\SceneCamera.cpp">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Scene\SceneSerializer.cpp">
       <Filter>src\Jasmine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Jasmine\Script\ScriptEngine.cpp">
@@ -548,8 +593,8 @@
     <ClCompile Include="src\Jasmine\Script\ScriptWrappers.cpp">
       <Filter>src\Jasmine\Script</Filter>
     </ClCompile>
-    <ClCompile Include="src\Jasmine\vendor\stb_image.cpp">
-      <Filter>src\Jasmine\vendor</Filter>
+    <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp">
+      <Filter>src\Jasmine\Vendor</Filter>
     </ClCompile>
     <ClCompile Include="vendor\FastNoise\FastNoise.cpp">
       <Filter>vendor\FastNoise</Filter>

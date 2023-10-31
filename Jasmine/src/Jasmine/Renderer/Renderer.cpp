@@ -18,15 +18,18 @@ namespace Jasmine {
 		Ref<RenderPass> m_ActiveRenderPass;
 		RenderCommandQueue m_CommandQueue;
 		Ref<ShaderLibrary> m_ShaderLibrary;
-		Ref<VertexArray> m_FullscreenQuadVertexArray;
+
+		Ref<VertexBuffer> m_FullscreenQuadVertexBuffer;
+		Ref<IndexBuffer> m_FullscreenQuadIndexBuffer;
+		Ref<Pipeline> m_FullscreenQuadPipeline;
 	};
 
 	static RendererData s_Data;
-
+	
 	void Renderer::Init()
 	{
 		s_Data.m_ShaderLibrary = Ref<ShaderLibrary>::Create();
-		Renderer::Submit([]() { RendererAPI::Init(); });
+		Renderer::Submit([](){ RendererAPI::Init(); });
 
 		Renderer::GetShaderLibrary()->Load("assets/shaders/JasminePBR_Static.glsl");
 		Renderer::GetShaderLibrary()->Load("assets/shaders/JasminePBR_Anim.glsl");
@@ -57,18 +60,16 @@ namespace Jasmine {
 		data[3].Position = glm::vec3(x, y + height, 0.1f);
 		data[3].TexCoord = glm::vec2(0, 1);
 
-		s_Data.m_FullscreenQuadVertexArray = VertexArray::Create();
-		auto quadVB = VertexBuffer::Create(data, 4 * sizeof(QuadVertex));
-		quadVB->SetLayout({
+		PipelineSpecification pipelineSpecification;
+		pipelineSpecification.Layout = {
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
-			});
+		};
+		s_Data.m_FullscreenQuadPipeline = Pipeline::Create(pipelineSpecification);
 
+		s_Data.m_FullscreenQuadVertexBuffer = VertexBuffer::Create(data, 4 * sizeof(QuadVertex));
 		uint32_t indices[6] = { 0, 1, 2, 2, 3, 0, };
-		auto quadIB = IndexBuffer::Create(indices, 6 * sizeof(uint32_t));
-
-		s_Data.m_FullscreenQuadVertexArray->AddVertexBuffer(quadVB);
-		s_Data.m_FullscreenQuadVertexArray->SetIndexBuffer(quadIB);
+		s_Data.m_FullscreenQuadIndexBuffer = IndexBuffer::Create(indices, 6 * sizeof(uint32_t));
 
 		Renderer2D::Init();
 	}
@@ -80,16 +81,16 @@ namespace Jasmine {
 
 	void Renderer::Clear()
 	{
-		Renderer::Submit([]() {
+		Renderer::Submit([](){
 			RendererAPI::Clear(0.0f, 0.0f, 0.0f, 1.0f);
-			});
+		});
 	}
 
 	void Renderer::Clear(float r, float g, float b, float a)
 	{
 		Renderer::Submit([=]() {
 			RendererAPI::Clear(r, g, b, a);
-			});
+		});
 	}
 
 	void Renderer::ClearMagenta()
@@ -105,14 +106,14 @@ namespace Jasmine {
 	{
 		Renderer::Submit([=]() {
 			RendererAPI::DrawIndexed(count, type, depthTest);
-			});
+		});
 	}
 
 	void Renderer::SetLineThickness(float thickness)
 	{
 		Renderer::Submit([=]() {
 			RendererAPI::SetLineThickness(thickness);
-			});
+		});
 	}
 
 	void Renderer::WaitAndRender()
@@ -126,14 +127,14 @@ namespace Jasmine {
 
 		// TODO: Convert all of this into a render command buffer
 		s_Data.m_ActiveRenderPass = renderPass;
-
+		
 		renderPass->GetSpecification().TargetFramebuffer->Bind();
 		if (clear)
 		{
 			const glm::vec4& clearColor = renderPass->GetSpecification().TargetFramebuffer->GetSpecification().ClearColor;
 			Renderer::Submit([=]() {
 				RendererAPI::Clear(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-				});
+			});
 		}
 	}
 
@@ -156,11 +157,13 @@ namespace Jasmine {
 			shader->SetMat4("u_Transform", transform);
 		}
 
-		s_Data.m_FullscreenQuadVertexArray->Bind();
+		s_Data.m_FullscreenQuadVertexBuffer->Bind();
+		s_Data.m_FullscreenQuadPipeline->Bind();
+		s_Data.m_FullscreenQuadIndexBuffer->Bind();
 		Renderer::DrawIndexed(6, PrimitiveType::Triangles, depthTest);
 	}
 
-	void Renderer::SubmitFullscreenQuad(Ref<MaterialInstance>& material)
+	void Renderer::SubmitFullscreenQuad(Ref<MaterialInstance> material)
 	{
 		bool depthTest = true;
 		if (material)
@@ -169,7 +172,9 @@ namespace Jasmine {
 			depthTest = material->GetFlag(MaterialFlag::DepthTest);
 		}
 
-		s_Data.m_FullscreenQuadVertexArray->Bind();
+		s_Data.m_FullscreenQuadVertexBuffer->Bind();
+		s_Data.m_FullscreenQuadPipeline->Bind();
+		s_Data.m_FullscreenQuadIndexBuffer->Bind();
 		Renderer::DrawIndexed(6, PrimitiveType::Triangles, depthTest);
 	}
 
@@ -177,15 +182,16 @@ namespace Jasmine {
 	{
 		// auto material = overrideMaterial ? overrideMaterial : mesh->GetMaterialInstance();
 		// auto shader = material->GetShader();
-
 		// TODO: Sort this out
-		mesh->m_VertexArray->Bind();
+		mesh->m_VertexBuffer->Bind();
+		mesh->m_Pipeline->Bind();
+		mesh->m_IndexBuffer->Bind();
 
 		auto& materials = mesh->GetMaterials();
 		for (Submesh& submesh : mesh->m_Submeshes)
 		{
 			// Material
-			auto material = materials[submesh.MaterialIndex];
+			auto material = overrideMaterial ? overrideMaterial : materials[submesh.MaterialIndex];
 			auto shader = material->GetShader();
 			material->Bind();
 
@@ -199,18 +205,28 @@ namespace Jasmine {
 			}
 			shader->SetMat4("u_Transform", transform * submesh.Transform);
 
-			Renderer::Submit([&submesh, material]() {
-				if (material->GetFlag(MaterialFlag::DepthTest))
+			Renderer::Submit([submesh, material]() {
+				if (material->GetFlag(MaterialFlag::DepthTest))	
 					glEnable(GL_DEPTH_TEST);
 				else
 					glDisable(GL_DEPTH_TEST);
 
 				glDrawElementsBaseVertex(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.BaseIndex), submesh.BaseVertex);
-				});
+			});
 		}
 	}
 
-	void Renderer::DrawAABB(const AABB aabb, const glm::mat4& transform, const glm::vec4& color)
+	void Renderer::DrawAABB(Ref<Mesh> mesh, const glm::mat4& transform, const glm::vec4& color)
+	{
+		for (Submesh& submesh : mesh->m_Submeshes)
+		{
+			auto& aabb = submesh.BoundingBox;
+			auto aabbTransform = transform * submesh.Transform;
+			DrawAABB(aabb, aabbTransform);
+		}
+	}
+
+	void Renderer::DrawAABB(const AABB& aabb, const glm::mat4& transform, const glm::vec4& color /*= glm::vec4(1.0f)*/)
 	{
 		glm::vec4 min = { aabb.Min.x, aabb.Min.y, aabb.Min.z, 1.0f };
 		glm::vec4 max = { aabb.Max.x, aabb.Max.y, aabb.Max.z, 1.0f };
@@ -236,17 +252,6 @@ namespace Jasmine {
 
 		for (uint32_t i = 0; i < 4; i++)
 			Renderer2D::DrawLine(corners[i], corners[i + 4], color);
-	}
-
-	void Renderer::DrawAABB(Ref<Mesh> mesh, const glm::mat4& transform, const glm::vec4& color)
-	{
-		for (Submesh& submesh : mesh->m_Submeshes)
-		{
-			auto& aabb = submesh.BoundingBox;
-
-			auto aabbTransform = transform * submesh.Transform;
-			DrawAABB(aabb, aabbTransform);
-		}
 	}
 
 	RenderCommandQueue& Renderer::GetRenderCommandQueue()

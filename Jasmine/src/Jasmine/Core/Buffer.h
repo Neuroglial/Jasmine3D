@@ -19,6 +19,14 @@ namespace Jasmine {
 		{
 		}
 
+		static Buffer Copy(void* data, uint32_t size)
+		{
+			Buffer buffer;
+			buffer.Allocate(size);
+			memcpy(buffer.Data, data, size);
+			return buffer;
+		}
+
 		void Allocate(uint32_t size)
 		{
 			delete[] Data;
@@ -37,12 +45,10 @@ namespace Jasmine {
 				memset(Data, 0, Size);
 		}
 
-		static Buffer Copy(void* data, uint32_t size)
+		template<typename T>
+		T& Read(uint32_t offset = 0)
 		{
-			Buffer buffer;
-			buffer.Allocate(size);
-			memcpy(buffer.Data, data, size);
-			return buffer;
+			return *(T*)(Data + offset);
 		}
 
 		void Write(void* data, uint32_t size, uint32_t offset = 0)

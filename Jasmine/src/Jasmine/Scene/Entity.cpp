@@ -3,9 +3,4 @@
 
 namespace Jasmine {
 
-	Entity::~Entity()
-	{
-
-	}
-
 }

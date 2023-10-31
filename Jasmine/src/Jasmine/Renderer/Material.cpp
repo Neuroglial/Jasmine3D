@@ -3,7 +3,6 @@
 
 namespace Jasmine {
 
-
 	//////////////////////////////////////////////////////////////////////////////////
 	// Material
 	//////////////////////////////////////////////////////////////////////////////////
@@ -12,7 +11,6 @@ namespace Jasmine {
 	{
 		return Ref<Material>::Create(shader);
 	}
-
 
 	Material::Material(const Ref<Shader>& shader)
 		: m_Shader(shader)
@@ -114,7 +112,7 @@ namespace Jasmine {
 		BindTextures();
 	}
 
-	void Material::BindTextures() const
+	void Material::BindTextures()
 	{
 		for (size_t i = 0; i < m_Textures.size(); i++)
 		{
@@ -123,7 +121,6 @@ namespace Jasmine {
 				texture->Bind(i);
 		}
 	}
-
 
 	//////////////////////////////////////////////////////////////////////////////////
 	// MaterialInstance
@@ -134,8 +131,8 @@ namespace Jasmine {
 		return Ref<MaterialInstance>::Create(material);
 	}
 
-	MaterialInstance::MaterialInstance(const Ref<Material>& material)
-		: m_Material(material)
+	MaterialInstance::MaterialInstance(const Ref<Material>& material, const std::string& name)
+		: m_Material(material), m_Name(name)
 	{
 		m_Material->m_MaterialInstances.insert(this);
 		AllocateStorage();
@@ -221,4 +218,5 @@ namespace Jasmine {
 				texture->Bind(i);
 		}
 	}
+
 }

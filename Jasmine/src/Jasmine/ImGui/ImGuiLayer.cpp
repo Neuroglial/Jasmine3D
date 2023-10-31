@@ -5,8 +5,8 @@
 #include "ImGuizmo.h"
 
 #define IMGUI_IMPL_API
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 #include "Jasmine/Core/Application.h"
 #include <GLFW/glfw3.h>
@@ -104,7 +104,6 @@ namespace Jasmine {
 	void ImGuiLayer::OnImGuiRender()
 	{
 	}
-
 
 	void ImGuiLayer::SetDarkThemeColors()
 	{

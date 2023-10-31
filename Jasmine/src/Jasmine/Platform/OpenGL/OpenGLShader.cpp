@@ -7,6 +7,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Jasmine/Renderer/Renderer.h"
+
 namespace Jasmine {
 
 #define UNIFORM_LOGGING 0
@@ -29,18 +31,43 @@ namespace Jasmine {
 
 	Ref<OpenGLShader> OpenGLShader::CreateFromString(const std::string& source)
 	{
-		Ref<OpenGLShader> shader(new OpenGLShader());
+		Ref<OpenGLShader> shader = Ref<OpenGLShader>::Create();
 		shader->Load(source);
 		return shader;
 	}
 
-
 	void OpenGLShader::Reload()
 	{
 		std::string source = ReadShaderFromFile(m_AssetPath);
-		m_ShaderSource = PreProcess(source);
-
 		Load(source);
+	}
+
+	void OpenGLShader::Load(const std::string& source)
+	{
+		m_ShaderSource = PreProcess(source);
+		if (!m_IsCompute)
+			Parse();
+
+		Renderer::Submit([=]()
+		{
+			if (m_RendererID)
+				glDeleteProgram(m_RendererID);
+
+			CompileAndUploadShader();
+			if (!m_IsCompute)
+			{
+				ResolveUniforms();
+				ValidateUniforms();
+			}
+
+			if (m_Loaded)
+			{
+				for (auto& callback : m_ShaderReloadedCallbacks)
+					callback();
+			}
+
+			m_Loaded = true;
+		});
 	}
 
 	void OpenGLShader::AddShaderReloadedCallback(const ShaderReloadedCallback& callback)
@@ -50,32 +77,8 @@ namespace Jasmine {
 
 	void OpenGLShader::Bind()
 	{
-		Renderer::Submit([=](){
+		Renderer::Submit([=]() {
 			glUseProgram(m_RendererID);
-		});
-	}
-
-	void OpenGLShader::Load(const std::string& source)
-	{
-		m_ShaderSource = PreProcess(source);
-		if (!m_IsCompute)
-			Parse();
-
-		Renderer::Submit([=](){
-			if (m_RendererID)
-				glDeleteProgram(m_RendererID);
-			CompileAndUploadShader();
-			if (!m_IsCompute)
-			{
-				ResolveUniforms();
-				ValidateUniforms();
-			}
-			if (m_Loaded)
-			{
-				for (auto& callback : m_ShaderReloadedCallbacks)
-					callback();
-			}
-			m_Loaded = true;
 		});
 	}
 
@@ -89,13 +92,12 @@ namespace Jasmine {
 			result.resize(in.tellg());
 			in.seekg(0, std::ios::beg);
 			in.read(&result[0], result.size());
-			in.close();
 		}
 		else
 		{
 			JM_CORE_ASSERT(false, "Could not load shader!");
 		}
-
+		in.close();
 		return result;
 	}
 
@@ -609,7 +611,7 @@ namespace Jasmine {
 
 	void OpenGLShader::SetVSMaterialUniformBuffer(Buffer buffer)
 	{
-		Renderer::Submit([this,buffer](){
+		Renderer::Submit([this, buffer]() {
 			glUseProgram(m_RendererID);
 			ResolveAndSetUniforms(m_VSMaterialUniformBuffer, buffer);
 		});
@@ -617,7 +619,7 @@ namespace Jasmine {
 
 	void OpenGLShader::SetPSMaterialUniformBuffer(Buffer buffer)
 	{
-		Renderer::Submit([this,buffer](){
+		Renderer::Submit([this, buffer]() {
 			glUseProgram(m_RendererID);
 			ResolveAndSetUniforms(m_PSMaterialUniformBuffer, buffer);
 		});
@@ -748,49 +750,45 @@ namespace Jasmine {
 			const UniformDecl& decl = uniformBuffer.GetUniforms()[i];
 			switch (decl.Type)
 			{
-			case UniformType::Float:
-			{
-				const std::string& name = decl.Name;
-				float value = *(float*)(uniformBuffer.GetBuffer() + decl.Offset);
-				Renderer::Submit([=](){
-					UploadUniformFloat(name, value);
+				case UniformType::Float:
+				{
+					const std::string& name = decl.Name;
+					float value = *(float*)(uniformBuffer.GetBuffer() + decl.Offset);
+					Renderer::Submit([=]() {
+						UploadUniformFloat(name, value);
 					});
-				break;
-			}
-			case UniformType::Float3:
-			{
-				const std::string& name = decl.Name;
-				glm::vec3& values = *(glm::vec3*)(uniformBuffer.GetBuffer() + decl.Offset);
-				Renderer::Submit([=](){
-					UploadUniformFloat3(name, values);
+				}
+				case UniformType::Float3:
+				{
+					const std::string& name = decl.Name;
+					glm::vec3& values = *(glm::vec3*)(uniformBuffer.GetBuffer() + decl.Offset);
+					Renderer::Submit([=]() {
+						UploadUniformFloat3(name, values);
 					});
-				break;
-			}
-			case UniformType::Float4:
-			{
-				const std::string& name = decl.Name;
-				glm::vec4& values = *(glm::vec4*)(uniformBuffer.GetBuffer() + decl.Offset);
-				Renderer::Submit([=](){
-					UploadUniformFloat4(name, values);
+				}
+				case UniformType::Float4:
+				{
+					const std::string& name = decl.Name;
+					glm::vec4& values = *(glm::vec4*)(uniformBuffer.GetBuffer() + decl.Offset);
+					Renderer::Submit([=]() {
+						UploadUniformFloat4(name, values);
 					});
-				break;
-			}
-			case UniformType::Matrix4x4:
-			{
-				const std::string& name = decl.Name;
-				glm::mat4& values = *(glm::mat4*)(uniformBuffer.GetBuffer() + decl.Offset);
-				Renderer::Submit([=](){
-					UploadUniformMat4(name, values);
+				}
+				case UniformType::Matrix4x4:
+				{
+					const std::string& name = decl.Name;
+					glm::mat4& values = *(glm::mat4*)(uniformBuffer.GetBuffer() + decl.Offset);
+					Renderer::Submit([=]() {
+						UploadUniformMat4(name, values);
 					});
-				break;
-			}
+				}
 			}
 		}
 	}
 
 	void OpenGLShader::SetFloat(const std::string& name, float value)
 	{
-		Renderer::Submit([=](){
+		Renderer::Submit([=]() {
 			UploadUniformFloat(name, value);
 		});
 	}
@@ -811,7 +809,7 @@ namespace Jasmine {
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
-		Renderer::Submit([=](){
+		Renderer::Submit([=]() {
 			UploadUniformMat4(name, value);
 		});
 	}
@@ -842,7 +840,7 @@ namespace Jasmine {
 		glUniform1i(location, value);
 	}
 
-	void OpenGLShader::UploadUniformIntArray(uint32_t location, int32_t* values, uint32_t count)
+	void OpenGLShader::UploadUniformIntArray(uint32_t location, int32_t* values, int32_t count)
 	{
 		glUniform1iv(location, count, values);
 	}
@@ -900,7 +898,7 @@ namespace Jasmine {
 		glUniform1i(location, value);
 	}
 
-	void OpenGLShader::UploadUniformIntArray(const std::string& name, int32_t* values, int32_t count)
+	void OpenGLShader::UploadUniformIntArray(const std::string& name, int32_t* values, uint32_t count)
 	{
 		int32_t location = GetUniformLocation(name);
 		glUniform1iv(location, count, values);
@@ -912,16 +910,6 @@ namespace Jasmine {
 		auto location = glGetUniformLocation(m_RendererID, name.c_str());
 		if (location != -1)
 			glUniform1f(location, value);
-		else
-			JM_LOG_UNIFORM("Uniform '{0}' not found!", name);
-	}
-
-	void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
-	{
-		glUseProgram(m_RendererID);
-		auto location = glGetUniformLocation(m_RendererID, name.c_str());
-		if (location != -1)
-			glUniform2f(location, value.x, value.y);
 		else
 			JM_LOG_UNIFORM("Uniform '{0}' not found!", name);
 	}

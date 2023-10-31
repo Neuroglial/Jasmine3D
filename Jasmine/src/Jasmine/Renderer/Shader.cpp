@@ -63,7 +63,7 @@ namespace Jasmine {
 		m_Shaders[name] = Ref<Shader>(Shader::Create(path));
 	}
 
-	Ref<Shader> ShaderLibrary::Get(const std::string& name) const
+	const Ref<Shader>& ShaderLibrary::Get(const std::string& name) const
 	{
 		JM_CORE_ASSERT(m_Shaders.find(name) != m_Shaders.end());
 		return m_Shaders.at(name);

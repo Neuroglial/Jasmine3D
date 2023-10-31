@@ -76,7 +76,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>JMpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;IMGUI_DEFINE_MATH_OPERATORS;NOMINMAX;JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;vendor\assimp\include;vendor\spdlog\include;vendor\stb\include;vendor\yaml-cpp\include;vendor\GLFW\include;vendor\Glad\include;vendor\glm;vendor\ImGui;vendor\ImGuizmo;vendor\entt\include;vendor\FastNoise;vendor\mono\include;vendor\Box2D\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -97,7 +97,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>JMpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;IMGUI_DEFINE_MATH_OPERATORS;NOMINMAX;JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;vendor\assimp\include;vendor\spdlog\include;vendor\stb\include;vendor\yaml-cpp\include;vendor\GLFW\include;vendor\Glad\include;vendor\glm;vendor\ImGui;vendor\ImGuizmo;vendor\entt\include;vendor\FastNoise;vendor\mono\include;vendor\Box2D\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -122,7 +122,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>JMpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;IMGUI_DEFINE_MATH_OPERATORS;NOMINMAX;JM_PLATFORM_WINDOWS;JM_BUILD_DLL;JM_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;vendor\assimp\include;vendor\spdlog\include;vendor\stb\include;vendor\yaml-cpp\include;vendor\GLFW\include;vendor\Glad\include;vendor\glm;vendor\ImGui;vendor\ImGuizmo;vendor\entt\include;vendor\FastNoise;vendor\mono\include;vendor\Box2D\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -162,26 +162,32 @@
     <ClInclude Include="src\Jasmine\Core\Math\Mat4.h" />
     <ClInclude Include="src\Jasmine\Core\Math\Noise.h" />
     <ClInclude Include="src\Jasmine\Core\Math\Ray.h" />
-    <ClInclude Include="src\Jasmine\Core\MouseCodes.h" />
+    <ClInclude Include="src\Jasmine\Core\Platform.h" />
     <ClInclude Include="src\Jasmine\Core\Ref.h" />
     <ClInclude Include="src\Jasmine\Core\TimeStep.h" />
+    <ClInclude Include="src\Jasmine\Core\Timer.h" />
+    <ClInclude Include="src\Jasmine\Core\UUID.h" />
     <ClInclude Include="src\Jasmine\Core\Window.h" />
+    <ClInclude Include="src\Jasmine\Editor\EditorCamera.h" />
     <ClInclude Include="src\Jasmine\Editor\SceneHierarchyPanel.h" />
     <ClInclude Include="src\Jasmine\EntryPoint.h" />
     <ClInclude Include="src\Jasmine\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLBuffer.h" />
+    <ClInclude Include="src\Jasmine\ImGui\ImGuizmo.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.h" />
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLIndexBuffer.h" />
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLPipeline.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.h" />
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h" />
-    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexBuffer.h" />
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h" />
-    <ClInclude Include="src\Jasmine\Renderer\Buffer.h" />
     <ClInclude Include="src\Jasmine\Renderer\Camera.h" />
     <ClInclude Include="src\Jasmine\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Jasmine\Renderer\IndexBuffer.h" />
     <ClInclude Include="src\Jasmine\Renderer\Material.h" />
     <ClInclude Include="src\Jasmine\Renderer\Mesh.h" />
+    <ClInclude Include="src\Jasmine\Renderer\Pipeline.h" />
     <ClInclude Include="src\Jasmine\Renderer\RenderCommandQueue.h" />
     <ClInclude Include="src\Jasmine\Renderer\RenderPass.h" />
     <ClInclude Include="src\Jasmine\Renderer\Renderer.h" />
@@ -191,10 +197,12 @@
     <ClInclude Include="src\Jasmine\Renderer\Shader.h" />
     <ClInclude Include="src\Jasmine\Renderer\ShaderUniform.h" />
     <ClInclude Include="src\Jasmine\Renderer\Texture.h" />
-    <ClInclude Include="src\Jasmine\Renderer\VertexArray.h" />
+    <ClInclude Include="src\Jasmine\Renderer\VertexBuffer.h" />
     <ClInclude Include="src\Jasmine\Scene\Components.h" />
     <ClInclude Include="src\Jasmine\Scene\Entity.h" />
     <ClInclude Include="src\Jasmine\Scene\Scene.h" />
+    <ClInclude Include="src\Jasmine\Scene\SceneCamera.h" />
+    <ClInclude Include="src\Jasmine\Scene\SceneSerializer.h" />
     <ClInclude Include="src\Jasmine\Script\ScriptEngine.h" />
     <ClInclude Include="src\Jasmine\Script\ScriptEngineRegistry.h" />
     <ClInclude Include="src\Jasmine\Script\ScriptWrappers.h" />
@@ -271,25 +279,30 @@
     <ClCompile Include="src\Jasmine\Core\Math\Mat4.cpp" />
     <ClCompile Include="src\Jasmine\Core\Math\Noise.cpp" />
     <ClCompile Include="src\Jasmine\Core\TimeStep.cpp" />
+    <ClCompile Include="src\Jasmine\Core\UUID.cpp" />
     <ClCompile Include="src\Jasmine\Core\Window.cpp" />
+    <ClCompile Include="src\Jasmine\Editor\EditorCamera.cpp" />
     <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp" />
     <ClCompile Include="src\Jasmine\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Jasmine\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Jasmine\ImGui\ImGuizmo.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.cpp" />
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLIndexBuffer.cpp" />
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLPipeline.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.cpp" />
     <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.cpp" />
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexBuffer.cpp" />
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Jasmine\Platform\Windows\WindowsWindow.cpp" />
-    <ClCompile Include="src\Jasmine\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Camera.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\IndexBuffer.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Material.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Mesh.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\Pipeline.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\RenderCommandQueue.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\RenderPass.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Renderer.cpp" />
@@ -297,17 +310,20 @@
     <ClCompile Include="src\Jasmine\Renderer\SceneRenderer.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Shader.cpp" />
     <ClCompile Include="src\Jasmine\Renderer\Texture.cpp" />
-    <ClCompile Include="src\Jasmine\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Jasmine\Renderer\VertexBuffer.cpp" />
     <ClCompile Include="src\Jasmine\Scene\Entity.cpp" />
     <ClCompile Include="src\Jasmine\Scene\Scene.cpp" />
+    <ClCompile Include="src\Jasmine\Scene\SceneCamera.cpp" />
+    <ClCompile Include="src\Jasmine\Scene\SceneSerializer.cpp" />
     <ClCompile Include="src\Jasmine\Script\ScriptEngine.cpp" />
     <ClCompile Include="src\Jasmine\Script\ScriptEngineRegistry.cpp" />
     <ClCompile Include="src\Jasmine\Script\ScriptWrappers.cpp" />
-    <ClCompile Include="src\Jasmine\vendor\stb_image.cpp" />
+    <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp" />
     <ClCompile Include="vendor\FastNoise\FastNoise.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
+      <ObjectFileName>$(IntDir)\ImGuizmo1.obj</ObjectFileName>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="vendor\yaml-cpp\src\binary.cpp">

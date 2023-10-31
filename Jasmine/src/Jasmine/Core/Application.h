@@ -35,13 +35,17 @@ namespace Jasmine {
 		void PushOverlay(Layer* layer);
 		void RenderImGui();
 
-		std::string OpenFile(const std::string& filter) const;
+		std::string OpenFile(const char* filter = "All\0*.*\0") const;
+		std::string SaveFile(const char* filter = "All\0*.*\0") const;
 
 		inline Window& GetWindow() { return *m_Window; }
 		
 		static inline Application& Get() { return *s_Instance; }
 
 		float GetTime() const; // TODO: This should be in "Platform"
+
+		static const char* GetConfigurationName();
+		static const char* GetPlatformName();
 	private:
 		bool OnWindowResize(WindowResizeEvent& e);
 		bool OnWindowClose(WindowCloseEvent& e);
@@ -50,7 +54,7 @@ namespace Jasmine {
 		bool m_Running = true, m_Minimized = false;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
-		Timestep m_Timestep;
+		Timestep m_TimeStep;
 
 		float m_LastFrameTime = 0.0f;
 

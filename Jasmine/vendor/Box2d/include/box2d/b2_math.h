@@ -23,10 +23,8 @@
 #ifndef B2_MATH_H
 #define B2_MATH_H
 
-#include <math.h>
-
-#include "b2_api.h"
 #include "b2_settings.h"
+#include <math.h>
 
 /// This function is used to ensure that a floating point number is not a NaN or infinity.
 inline bool b2IsValid(float x)
@@ -38,10 +36,10 @@ inline bool b2IsValid(float x)
 #define	b2Atan2(y, x)	atan2f(y, x)
 
 /// A 2D column vector.
-struct B2_API b2Vec2
+struct b2Vec2
 {
 	/// Default constructor does nothing (for performance).
-	b2Vec2() = default;
+	b2Vec2() {}
 
 	/// Construct using coordinates.
 	b2Vec2(float xIn, float yIn) : x(xIn), y(yIn) {}
@@ -54,7 +52,7 @@ struct B2_API b2Vec2
 
 	/// Negate this vector.
 	b2Vec2 operator -() const { b2Vec2 v; v.Set(-x, -y); return v; }
-
+	
 	/// Read from and indexed element.
 	float operator () (int32 i) const
 	{
@@ -72,7 +70,7 @@ struct B2_API b2Vec2
 	{
 		x += v.x; y += v.y;
 	}
-
+	
 	/// Subtract a vector from this vector.
 	void operator -= (const b2Vec2& v)
 	{
@@ -129,10 +127,10 @@ struct B2_API b2Vec2
 };
 
 /// A 2D column vector with 3 elements.
-struct B2_API b2Vec3
+struct b2Vec3
 {
 	/// Default constructor does nothing (for performance).
-	b2Vec3() = default;
+	b2Vec3() {}
 
 	/// Construct using coordinates.
 	b2Vec3(float xIn, float yIn, float zIn) : x(xIn), y(yIn), z(zIn) {}
@@ -168,10 +166,10 @@ struct B2_API b2Vec3
 };
 
 /// A 2-by-2 matrix. Stored in column-major order.
-struct B2_API b2Mat22
+struct b2Mat22
 {
 	/// The default constructor does nothing (for performance).
-	b2Mat22() = default;
+	b2Mat22() {}
 
 	/// Construct this matrix using columns.
 	b2Mat22(const b2Vec2& c1, const b2Vec2& c2)
@@ -242,10 +240,10 @@ struct B2_API b2Mat22
 };
 
 /// A 3-by-3 matrix. Stored in column-major order.
-struct B2_API b2Mat33
+struct b2Mat33
 {
 	/// The default constructor does nothing (for performance).
-	b2Mat33() = default;
+	b2Mat33() {}
 
 	/// Construct this matrix using columns.
 	b2Mat33(const b2Vec3& c1, const b2Vec3& c2, const b2Vec3& c3)
@@ -284,9 +282,9 @@ struct B2_API b2Mat33
 };
 
 /// Rotation
-struct B2_API b2Rot
+struct b2Rot
 {
-	b2Rot() = default;
+	b2Rot() {}
 
 	/// Initialize from an angle in radians
 	explicit b2Rot(float angle)
@@ -335,10 +333,10 @@ struct B2_API b2Rot
 
 /// A transform contains translation and rotation. It is used to represent
 /// the position and orientation of rigid frames.
-struct B2_API b2Transform
+struct b2Transform
 {
 	/// The default constructor does nothing.
-	b2Transform() = default;
+	b2Transform() {}
 
 	/// Initialize using a position vector and a rotation.
 	b2Transform(const b2Vec2& position, const b2Rot& rotation) : p(position), q(rotation) {}
@@ -365,10 +363,8 @@ struct B2_API b2Transform
 /// Shapes are defined with respect to the body origin, which may
 /// no coincide with the center of mass. However, to support dynamics
 /// we must interpolate the center of mass position.
-struct B2_API b2Sweep
+struct b2Sweep
 {
-	b2Sweep() = default;
-
 	/// Get the interpolated transform at a specific time.
 	/// @param transform the output transform
 	/// @param beta is a factor in [0,1], where 0 indicates alpha0.
@@ -391,7 +387,7 @@ struct B2_API b2Sweep
 };
 
 /// Useful constant
-extern B2_API const b2Vec2 b2Vec2_zero;
+extern const b2Vec2 b2Vec2_zero;
 
 /// Perform the dot product on two vectors.
 inline float b2Dot(const b2Vec2& a, const b2Vec2& b)
@@ -685,7 +681,6 @@ inline bool b2IsPowerOfTwo(uint32 x)
 	return result;
 }
 
-// https://fgiesen.wordpress.com/2012/08/15/linear-interpolation-past-present-and-future/
 inline void b2Sweep::GetTransform(b2Transform* xf, float beta) const
 {
 	xf->p = (1.0f - beta) * c0 + beta * c;

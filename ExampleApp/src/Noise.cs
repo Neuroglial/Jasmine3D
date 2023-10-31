@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 using Jasmine;
 
@@ -20,7 +24,7 @@ namespace Example
 					 float sampleX = x / scale;
 					 float sampleY = y / scale;
 
-					 float perlinValue = Hazel.Noise.PerlinNoise(sampleX, sampleY);
+					 float perlinValue = Jasmine.Noise.PerlinNoise(sampleX, sampleY);
 					 noiseMap[x, y] = perlinValue;
 				 }
 			 }

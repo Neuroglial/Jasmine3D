@@ -2,7 +2,7 @@
 
 ## User Data
 The `b2Fixture`, `b2Body`, and `b2Joint` classes allow you to attach user data
-as a uintptr_t. This is handy when you are examining Box2D data
+as a void pointer. This is handy when you are examining Box2D data
 structures and you want to determine how they relate to the objects in
 your game engine.
 
@@ -13,11 +13,9 @@ you can get the body. If you have the body, you can get the actor.
 ```cpp
 GameActor* actor = GameCreateActor();
 b2BodyDef bodyDef;
-bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(actor);
+bodyDef.userData = actor;
 actor->body = myWorld->CreateBody(&bodyDef);
 ```
-
-You can also use this to hold an integral value rather than a pointer.
 
 Here are some examples of cases where you would need the user data:
 -   Applying damage to an actor using a collision result.
@@ -32,7 +30,7 @@ bodies. Don't store an actor pointer on one body, and a foo pointer on
 another body. Casting an actor pointer to a foo pointer may lead to a
 crash.
 
-User data pointers are 0 by default.
+User data pointers are null by default.
 
 For fixtures you might consider defining a user data structure that lets
 you store game specific information, such as material type, effects
@@ -50,7 +48,7 @@ myData->materialIndex = 2;
 
 b2FixtureDef fixtureDef;
 fixtureDef.shape = &someShape;
-fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(myData);
+fixtureDef.userData = myData;
 
 b2Fixture* fixture = body->CreateFixture(&fixtureDef);
 // ...
@@ -58,11 +56,6 @@ b2Fixture* fixture = body->CreateFixture(&fixtureDef);
 delete fixture->GetUserData();
 body->DestroyFixture(fixture);
 ```
-
-## Custom User Data
-You can define custom data structures that are embedded in the Box2D data
-structures. This is done by defining `B2_USER_SETTINGS` and providing the
-file `b2_user_settings.h`. See `b2_settings.h` for details.
 
 ## Implicit Destruction
 Box2D doesn't use reference counting. So if you destroy a body it is

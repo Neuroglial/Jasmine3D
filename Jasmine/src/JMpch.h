@@ -17,3 +17,6 @@
 #include <Jasmine/Core/Base.h>
 #include <Jasmine/Core/Log.h>
 #include <Jasmine/Core/Events/Event.h>
+
+// Math
+#include <Jasmine/Core/Math/Mat4.h>

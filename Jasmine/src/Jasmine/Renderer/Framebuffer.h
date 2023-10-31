@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+
 #include "Jasmine/Renderer/RendererAPI.h"
 
 namespace Jasmine {
@@ -19,12 +20,12 @@ namespace Jasmine {
 		glm::vec4 ClearColor;
 		FramebufferFormat Format;
 		uint32_t Samples = 1; // multisampling
-
+		
 		// SwapChainTarget = screen buffer (i.e. no framebuffer)
 		bool SwapChainTarget = false;
 	};
 
-	class Framebuffer: public RefCounted
+	class Framebuffer : public RefCounted
 	{
 	public:
 		virtual ~Framebuffer() {}

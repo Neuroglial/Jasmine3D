@@ -74,6 +74,7 @@ workspace "Jasmine3D"
     		defines
 		{
 			"_CRT_SECURE_NO_WARNINGS",
+			"IMGUI_DEFINE_MATH_OPERATORS",
 			"NOMINMAX"
 		}
 

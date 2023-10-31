@@ -10,13 +10,13 @@ namespace Jasmine {
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
 		: m_Specification(spec)
 	{
-		Resize(spec.Width, spec.Height,true);
+		Resize(spec.Width, spec.Height, true);
 	}
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
-		Renderer::Submit([id = m_RendererID](){
-			glDeleteFramebuffers(1, &id);
+		Renderer::Submit([this]() {
+			glDeleteFramebuffers(1, &m_RendererID);
 		});
 	}
 
@@ -27,7 +27,8 @@ namespace Jasmine {
 
 		m_Specification.Width = width;
 		m_Specification.Height = height;
-		Renderer::Submit([this](){
+		Renderer::Submit([this]()
+		{
 			if (m_RendererID)
 			{
 				glDeleteFramebuffers(1, &m_RendererID);
@@ -53,6 +54,8 @@ namespace Jasmine {
 				{
 					glTexStorage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_Specification.Samples, GL_RGBA8, m_Specification.Width, m_Specification.Height, GL_FALSE);
 				}
+				// glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				// glTexParameteri(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 			}
 			else
@@ -91,6 +94,7 @@ namespace Jasmine {
 				);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachment, 0);
 			}
+
 			if (multisample)
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_ColorAttachment, 0);
 			else
@@ -106,7 +110,7 @@ namespace Jasmine {
 
 	void OpenGLFramebuffer::Bind() const
 	{
-		Renderer::Submit([=](){
+		Renderer::Submit([=]() {
 			glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 			glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 		});
@@ -114,14 +118,14 @@ namespace Jasmine {
 
 	void OpenGLFramebuffer::Unbind() const
 	{
-		Renderer::Submit([](){
+		Renderer::Submit([=]() {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		});
 	}
 
 	void OpenGLFramebuffer::BindTexture(uint32_t slot) const
 	{
-		Renderer::Submit([=](){
+		Renderer::Submit([=]() {
 			glBindTextureUnit(slot, m_ColorAttachment);
 		});
 	}

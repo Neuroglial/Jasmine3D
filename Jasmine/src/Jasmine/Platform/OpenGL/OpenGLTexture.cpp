@@ -29,19 +29,21 @@ namespace Jasmine {
 		: m_Format(format), m_Width(width), m_Height(height), m_Wrap(wrap)
 	{
 		Ref<OpenGLTexture2D> instance = this;
-		Renderer::Submit([instance]() mutable{
-				glGenTextures(1, &instance->m_RendererID);
-				glBindTexture(GL_TEXTURE_2D, instance->m_RendererID);
+		Renderer::Submit([instance]() mutable
+		{
+			glGenTextures(1, &instance->m_RendererID);
+			glBindTexture(GL_TEXTURE_2D, instance->m_RendererID);
 
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				GLenum wrap = instance->m_Wrap == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT;
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-				glTextureParameterf(instance->m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, RendererAPI::GetCapabilities().MaxAnisotropy);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GLenum wrap = instance->m_Wrap == TextureWrap::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT;
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+			glTextureParameterf(instance->m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, RendererAPI::GetCapabilities().MaxAnisotropy);
 
-				glTexImage2D(GL_TEXTURE_2D, 0, JasmineToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height, 0, JasmineToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, nullptr);
-				glBindTexture(GL_TEXTURE_2D, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0, JasmineToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height, 0, JasmineToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, nullptr);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
 		});
 
 		m_ImageData.Allocate(width * height * Texture::GetBPP(m_Format));
@@ -75,7 +77,9 @@ namespace Jasmine {
 		m_Height = height;
 
 		Ref<OpenGLTexture2D> instance = this;
-		Renderer::Submit([instance, srgb]() mutable{
+		Renderer::Submit([instance, srgb]() mutable
+		{
+			// TODO: Consolidate properly
 			if (srgb)
 			{
 				glCreateTextures(GL_TEXTURE_2D, 1, &instance->m_RendererID);
@@ -96,8 +100,8 @@ namespace Jasmine {
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE); 
 				GLenum internalFormat = JasmineToOpenGLTextureFormat(instance->m_Format);
 				GLenum format = srgb ? GL_SRGB8 : (instance->m_IsHDR ? GL_RGB : JasmineToOpenGLTextureFormat(instance->m_Format)); // HDR = GL_RGB for now
 				GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
@@ -123,7 +127,7 @@ namespace Jasmine {
 		Ref<const OpenGLTexture2D> instance = this;
 		Renderer::Submit([instance, slot]() {
 			glBindTextureUnit(slot, instance->m_RendererID);
-			});
+		});
 	}
 
 	void OpenGLTexture2D::Lock()
@@ -137,7 +141,7 @@ namespace Jasmine {
 		Ref<OpenGLTexture2D> instance = this;
 		Renderer::Submit([instance]() {
 			glTextureSubImage2D(instance->m_RendererID, 0, 0, 0, instance->m_Width, instance->m_Height, JasmineToOpenGLTextureFormat(instance->m_Format), GL_UNSIGNED_BYTE, instance->m_ImageData.Data);
-			});
+		});
 	}
 
 	void OpenGLTexture2D::Resize(uint32_t width, uint32_t height)
@@ -172,9 +176,9 @@ namespace Jasmine {
 		m_Format = format;
 
 		uint32_t levels = Texture::CalculateMipMapCount(width, height);
-
 		Ref<OpenGLTextureCube> instance = this;
-		Renderer::Submit([instance, levels]() mutable{
+		Renderer::Submit([instance, levels]() mutable
+		{
 			glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &instance->m_RendererID);
 			glTextureStorage2D(instance->m_RendererID, levels, JasmineToOpenGLTextureFormat(instance->m_Format), instance->m_Width, instance->m_Height);
 			glTextureParameteri(instance->m_RendererID, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
@@ -184,9 +188,8 @@ namespace Jasmine {
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 			// glTextureParameterf(m_RendererID, GL_TEXTURE_MAX_ANISOTROPY, 16);
-			});
+		});
 	}
-
 
 	// TODO: Revisit this, as currently env maps are being loaded as equirectangular 2D images
 	//       so this is an old path
@@ -248,7 +251,8 @@ namespace Jasmine {
 		}
 
 		Ref<OpenGLTextureCube> instance = this;
-		Renderer::Submit([instance, faceWidth, faceHeight, faces]() mutable{
+		Renderer::Submit([instance, faceWidth, faceHeight, faces]() mutable
+		{
 			glGenTextures(1, &instance->m_RendererID);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, instance->m_RendererID);
 

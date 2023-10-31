@@ -56,21 +56,21 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Dist|x64' ">
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\Jasmine\Core\Input.cs" />
-    <Compile Include="src\Jasmine\Core\KeyCodes.cs" />
-    <Compile Include="src\Jasmine\Math\Matrix4.cs" />
-    <Compile Include="src\Jasmine\Math\Noise.cs" />
-    <Compile Include="src\Jasmine\Math\Vector2.cs" />
-    <Compile Include="src\Jasmine\Math\Vector3.cs" />
-    <Compile Include="src\Jasmine\Math\Vector4.cs" />
-    <Compile Include="src\Jasmine\Renderer\Color.cs" />
-    <Compile Include="src\Jasmine\Renderer\Material.cs" />
-    <Compile Include="src\Jasmine\Renderer\Mesh.cs" />
-    <Compile Include="src\Jasmine\Renderer\MeshFactory.cs" />
-    <Compile Include="src\Jasmine\Renderer\SpriteRenderer.cs" />
-    <Compile Include="src\Jasmine\Renderer\Texture2D.cs" />
-    <Compile Include="src\Jasmine\Scene\Components.cs" />
-    <Compile Include="src\Jasmine\Scene\Entity.cs" />
+    <Compile Include="src\Hazel\Entity.cs" />
+    <Compile Include="src\Hazel\Input.cs" />
+    <Compile Include="src\Hazel\KeyCodes.cs" />
+    <Compile Include="src\Hazel\Math\Matrix4.cs" />
+    <Compile Include="src\Hazel\Math\Noise.cs" />
+    <Compile Include="src\Hazel\Math\Vector2.cs" />
+    <Compile Include="src\Hazel\Math\Vector3.cs" />
+    <Compile Include="src\Hazel\Math\Vector4.cs" />
+    <Compile Include="src\Hazel\Renderer\Color.cs" />
+    <Compile Include="src\Hazel\Renderer\Material.cs" />
+    <Compile Include="src\Hazel\Renderer\Mesh.cs" />
+    <Compile Include="src\Hazel\Renderer\MeshFactory.cs" />
+    <Compile Include="src\Hazel\Renderer\Texture2D.cs" />
+    <Compile Include="src\Hazel\Scene\Component.cs" />
+    <Compile Include="src\Hazel\SpriteRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

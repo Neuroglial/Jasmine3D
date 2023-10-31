@@ -19,13 +19,18 @@ namespace Jasmine { namespace Script {
 	bool Jasmine_Input_IsKeyPressed(KeyCode key);
 
 	// Entity
-	void Jasmine_Entity_GetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform);
-	void Jasmine_Entity_SetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform);
-	void Jasmine_Entity_CreateComponent(uint32_t sceneID, uint32_t entityID, void* type);
-	bool Jasmine_Entity_HasComponent(uint32_t sceneID, uint32_t entityID, void* type);
+	void Jasmine_Entity_GetTransform(uint64_t entityID, glm::mat4* outTransform);
+	void Jasmine_Entity_SetTransform(uint64_t entityID, glm::mat4* inTransform);
+	void Jasmine_Entity_CreateComponent(uint64_t entityID, void* type);
+	bool Jasmine_Entity_HasComponent(uint64_t entityID, void* type);
+	uint64_t Jasmine_Entity_FindEntityByTag(MonoString* tag);
 
-	void* Jasmine_MeshComponent_GetMesh(uint32_t sceneID, uint32_t entityID);
-	void Jasmine_MeshComponent_SetMesh(uint32_t sceneID, uint32_t entityID, Ref<Mesh>* inMesh);
+	void* Jasmine_MeshComponent_GetMesh(uint64_t entityID);
+	void Jasmine_MeshComponent_SetMesh(uint64_t entityID, Ref<Mesh>* inMesh);
+
+	void Jasmine_RigidBody2DComponent_ApplyLinearImpulse(uint64_t entityID, glm::vec2* impulse, glm::vec2* offset, bool wake);
+	void Jasmine_RigidBody2DComponent_GetLinearVelocity(uint64_t entityID, glm::vec2* outVelocity);
+	void Jasmine_RigidBody2DComponent_SetLinearVelocity(uint64_t entityID, glm::vec2* velocity);
 
 	// Renderer
 	// Texture2D
@@ -41,6 +46,7 @@ namespace Jasmine { namespace Script {
 	void Jasmine_MaterialInstance_Destructor(Ref<MaterialInstance>* _this);
 	void Jasmine_MaterialInstance_SetFloat(Ref<MaterialInstance>* _this, MonoString* uniform, float value);
 	void Jasmine_MaterialInstance_SetVector3(Ref<MaterialInstance>* _this, MonoString* uniform, glm::vec3* value);
+	void Jasmine_MaterialInstance_SetVector4(Ref<MaterialInstance>* _this, MonoString* uniform, glm::vec4* value);
 	void Jasmine_MaterialInstance_SetTexture(Ref<MaterialInstance>* _this, MonoString* uniform, Ref<Texture2D>* texture);
 
 	// Mesh

@@ -21,7 +21,7 @@ namespace Jasmine {
 		static void SetClearColor(float r, float g, float b, float a);
 
 		static void DrawIndexed(uint32_t count, PrimitiveType type, bool depthTest = true);
-
+		
 		// For OpenGL
 		static void SetLineThickness(float thickness);
 
@@ -42,7 +42,7 @@ namespace Jasmine {
 				// however some items like uniforms which contain std::strings still exist for now
 				// static_assert(std::is_trivially_destructible_v<FuncT>, "FuncT must be trivially destructible");
 				pFunc->~FuncT();
-				};
+			};
 			auto storageBuffer = GetRenderCommandQueue().Allocate(renderCmd, sizeof(func));
 			new (storageBuffer) FuncT(std::forward<FuncT>(func));
 		}
@@ -59,10 +59,10 @@ namespace Jasmine {
 		static void EndRenderPass();
 
 		static void SubmitQuad(Ref<MaterialInstance> material, const glm::mat4& transform = glm::mat4(1.0f));
-		static void SubmitFullscreenQuad(Ref<MaterialInstance>& material);
-		static void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform, Ref<MaterialInstance> overrideMaterial = nullptr );
+		static void SubmitFullscreenQuad(Ref<MaterialInstance> material);
+		static void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform, Ref<MaterialInstance> overrideMaterial = nullptr);
 
-		static void DrawAABB(const AABB aabb, const glm::mat4& transform, const glm::vec4& color = glm::vec4(1.0f));
+		static void DrawAABB(const AABB& aabb, const glm::mat4& transform, const glm::vec4& color = glm::vec4(1.0f));
 		static void DrawAABB(Ref<Mesh> mesh, const glm::mat4& transform, const glm::vec4& color = glm::vec4(1.0f));
 	private:
 		static RenderCommandQueue& GetRenderCommandQueue();

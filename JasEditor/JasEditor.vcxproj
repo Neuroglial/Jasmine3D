@@ -156,7 +156,7 @@ IF EXIST "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
-    <ClCompile Include="src\JmEditor.cpp" />
+    <ClCompile Include="src\JasEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Jasmine\Jasmine.vcxproj">

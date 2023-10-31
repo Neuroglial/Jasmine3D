@@ -21,7 +21,7 @@ namespace Jasmine {
 		Repeat = 2
 	};
 
-	class Texture: public RefCounted
+	class Texture : public RefCounted
 	{
 	public:
 		virtual ~Texture() {}

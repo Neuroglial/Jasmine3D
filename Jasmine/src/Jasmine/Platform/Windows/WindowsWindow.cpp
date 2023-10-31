@@ -5,7 +5,6 @@
 #include "Jasmine/Core/Events/ApplicationEvent.h"
 #include "Jasmine/Core/Events/KeyEvent.h"
 #include "Jasmine/Core/Events/MouseEvent.h"
-#include "../vendor/stb/include/stb_image.h"
 
 #include <imgui.h>
 
@@ -56,17 +55,6 @@ namespace Jasmine {
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		JM_CORE_ASSERT(status, "Failed to initialize Glad!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		SetVSync(true);
-
-		GLFWimage icon[3];
-		icon[0].pixels = stbi_load("../Jasmine/assets/textures/logo/JM_logo_16.png", &icon[0].width, &icon[0].height, 0, 4);
-		icon[1].pixels = stbi_load("../Jasmine/assets/textures/logo/JM_logo_32.png", &icon[1].width, &icon[1].height, 0, 4);
-		icon[2].pixels = stbi_load("../Jasmine/assets/textures/logo/JM_logo_48.png", &icon[2].width, &icon[2].height, 0, 4);
-		glfwSetWindowIcon(m_Window, 3, icon);
-		stbi_image_free(icon[0].pixels);
-		stbi_image_free(icon[1].pixels);
-		stbi_image_free(icon[2].pixels);
-
 
 		// Set GLFW callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
@@ -95,19 +83,19 @@ namespace Jasmine {
 			{
 				case GLFW_PRESS:
 				{
-					KeyPressedEvent event(key, 0);
+					KeyPressedEvent event((KeyCode)key, 0);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					KeyReleasedEvent event(key);
+					KeyReleasedEvent event((KeyCode)key);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_REPEAT:
 				{
-					KeyPressedEvent event(key, 1);
+					KeyPressedEvent event((KeyCode)key, 1);
 					data.EventCallback(event);
 					break;
 				}
@@ -118,7 +106,7 @@ namespace Jasmine {
 		{
 			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
 
-			KeyTypedEvent event((int)codepoint);
+			KeyTypedEvent event((KeyCode)codepoint);
 			data.EventCallback(event);
 		});
 
@@ -173,13 +161,20 @@ namespace Jasmine {
 			int width, height;
 			glfwGetWindowSize(m_Window, &width, &height);
 			m_Data.Width = width;
-			m_Data.Height = height;
+			m_Data.Height= height;
 		}
 	}
 
 	void WindowsWindow::Shutdown()
 	{
 		
+	}
+
+	inline std::pair<float, float> WindowsWindow::GetWindowPos() const
+	{
+		int x, y;
+		glfwGetWindowPos(m_Window, &x, &y);
+		return { x, y };
 	}
 
 	void WindowsWindow::OnUpdate()
@@ -196,13 +191,6 @@ namespace Jasmine {
 		m_LastFrameTime = time;
 	}
 
-	glm::ivec2 WindowsWindow::GetWindowPos() const
-	{
-		int xpos, ypos;
-		glfwGetWindowPos(m_Window, &xpos, &ypos);
-		return { xpos,ypos };
-	}
-
 	void WindowsWindow::SetVSync(bool enabled)
 	{
 		if (enabled)
@@ -216,6 +204,12 @@ namespace Jasmine {
 	bool WindowsWindow::IsVSync() const
 	{
 		return m_Data.VSync;
+	}
+
+	void WindowsWindow::SetTitle(const std::string& title)
+	{
+		m_Data.Title = title;
+		glfwSetWindowTitle(m_Window, m_Data.Title.c_str());
 	}
 
 }

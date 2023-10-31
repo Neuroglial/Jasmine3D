@@ -38,6 +38,8 @@ namespace Jasmine {
 		Component_RegisterType(ScriptComponent);
 		Component_RegisterType(CameraComponent);
 		Component_RegisterType(SpriteRendererComponent);
+		Component_RegisterType(RigidBody2DComponent);
+		Component_RegisterType(BoxCollider2DComponent);
 	}
 
 	void ScriptEngineRegistry::RegisterAll()
@@ -50,9 +52,14 @@ namespace Jasmine {
 		mono_add_internal_call("Jasmine.Entity::SetTransform_Native", Jasmine::Script::Jasmine_Entity_SetTransform);
 		mono_add_internal_call("Jasmine.Entity::CreateComponent_Native", Jasmine::Script::Jasmine_Entity_CreateComponent);
 		mono_add_internal_call("Jasmine.Entity::HasComponent_Native", Jasmine::Script::Jasmine_Entity_HasComponent);
-		
+		mono_add_internal_call("Jasmine.Entity::FindEntityByTag_Native", Jasmine::Script::Jasmine_Entity_FindEntityByTag);
+
 		mono_add_internal_call("Jasmine.MeshComponent::GetMesh_Native", Jasmine::Script::Jasmine_MeshComponent_GetMesh);
 		mono_add_internal_call("Jasmine.MeshComponent::SetMesh_Native", Jasmine::Script::Jasmine_MeshComponent_SetMesh);
+
+		mono_add_internal_call("Jasmine.RigidBody2DComponent::ApplyLinearImpulse_Native", Jasmine::Script::Jasmine_RigidBody2DComponent_ApplyLinearImpulse);
+		mono_add_internal_call("Jasmine.RigidBody2DComponent::GetLinearVelocity_Native", Jasmine::Script::Jasmine_RigidBody2DComponent_GetLinearVelocity);
+		mono_add_internal_call("Jasmine.RigidBody2DComponent::SetLinearVelocity_Native", Jasmine::Script::Jasmine_RigidBody2DComponent_SetLinearVelocity);
 
 		mono_add_internal_call("Jasmine.Input::IsKeyPressed_Native", Jasmine::Script::Jasmine_Input_IsKeyPressed);
 
@@ -67,6 +74,7 @@ namespace Jasmine {
 		mono_add_internal_call("Jasmine.MaterialInstance::Destructor_Native", Jasmine::Script::Jasmine_MaterialInstance_Destructor);
 		mono_add_internal_call("Jasmine.MaterialInstance::SetFloat_Native", Jasmine::Script::Jasmine_MaterialInstance_SetFloat);
 		mono_add_internal_call("Jasmine.MaterialInstance::SetVector3_Native", Jasmine::Script::Jasmine_MaterialInstance_SetVector3);
+		mono_add_internal_call("Jasmine.MaterialInstance::SetVector4_Native", Jasmine::Script::Jasmine_MaterialInstance_SetVector4);
 		mono_add_internal_call("Jasmine.MaterialInstance::SetTexture_Native", Jasmine::Script::Jasmine_MaterialInstance_SetTexture);
 
 		mono_add_internal_call("Jasmine.Mesh::Constructor_Native", Jasmine::Script::Jasmine_Mesh_Constructor);

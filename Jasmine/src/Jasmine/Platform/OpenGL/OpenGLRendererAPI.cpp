@@ -1,8 +1,9 @@
 #include "JMpch.h"
 #include "Jasmine/Renderer/RendererAPI.h"
-#include "Jasmine/Renderer/Shader.h"
 
 #include <Glad/glad.h>
+
+#include "Jasmine/Renderer/Shader.h"
 
 namespace Jasmine {
 
@@ -10,19 +11,19 @@ namespace Jasmine {
 	{
 		switch (severity)
 		{
-		case GL_DEBUG_SEVERITY_HIGH:
-			JM_CORE_ERROR("[OpenGL Debug HIGH] {0}", message);
-			JM_CORE_ASSERT(false, "GL_DEBUG_SEVERITY_HIGH");
-			break;
-		case GL_DEBUG_SEVERITY_MEDIUM:
-			JM_CORE_WARN("[OpenGL Debug MEDIUM] {0}", message);
-			break;
-		case GL_DEBUG_SEVERITY_LOW:
-			JM_CORE_INFO("[OpenGL Debug LOW] {0}", message);
-			break;
-		case GL_DEBUG_SEVERITY_NOTIFICATION:
-			// JM_CORE_TRACE("[OpenGL Debug NOTIFICATION] {0}", message);
-			break;
+			case GL_DEBUG_SEVERITY_HIGH:
+				JM_CORE_ERROR("[OpenGL Debug HIGH] {0}", message);
+				JM_CORE_ASSERT(false, "GL_DEBUG_SEVERITY_HIGH");
+				break;
+			case GL_DEBUG_SEVERITY_MEDIUM:
+				JM_CORE_WARN("[OpenGL Debug MEDIUM] {0}", message);
+				break;
+			case GL_DEBUG_SEVERITY_LOW:
+				JM_CORE_INFO("[OpenGL Debug LOW] {0}", message);
+				break;
+			case GL_DEBUG_SEVERITY_NOTIFICATION:
+				// JM_CORE_TRACE("[OpenGL Debug NOTIFICATION] {0}", message);
+				break;
 		}
 	}
 
@@ -45,6 +46,7 @@ namespace Jasmine {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glEnable(GL_MULTISAMPLE);
+		glEnable(GL_STENCIL_TEST);
 
 		auto& caps = RendererAPI::GetCapabilities();
 
@@ -54,6 +56,7 @@ namespace Jasmine {
 
 		glGetIntegerv(GL_MAX_SAMPLES, &caps.MaxSamples);
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &caps.MaxAnisotropy);
+
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &caps.MaxTextureUnits);
 
 		GLenum error = glGetError();
@@ -77,7 +80,7 @@ namespace Jasmine {
 	void RendererAPI::Clear(float r, float g, float b, float a)
 	{
 		glClearColor(r, g, b, a);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
 	void RendererAPI::SetClearColor(float r, float g, float b, float a)
@@ -85,7 +88,7 @@ namespace Jasmine {
 		glClearColor(r, g, b, a);
 	}
 
-	void RendererAPI::DrawIndexed(uint32_t count, PrimitiveType type, bool depthTest)	
+	void RendererAPI::DrawIndexed(uint32_t count, PrimitiveType type, bool depthTest)
 	{
 		if (!depthTest)
 			glDisable(GL_DEPTH_TEST);
@@ -93,12 +96,12 @@ namespace Jasmine {
 		GLenum glPrimitiveType = 0;
 		switch (type)
 		{
-		case PrimitiveType::Triangles:
-			glPrimitiveType = GL_TRIANGLES;
-			break;
-		case PrimitiveType::Lines:
-			glPrimitiveType = GL_LINES;
-			break;
+			case PrimitiveType::Triangles:
+				glPrimitiveType = GL_TRIANGLES;
+				break;
+			case PrimitiveType::Lines:
+				glPrimitiveType = GL_LINES;
+				break;
 		}
 
 		glDrawElements(glPrimitiveType, count, GL_UNSIGNED_INT, nullptr);

@@ -12,8 +12,9 @@
 #include "Jasmine/Core/Input.h"
 #include <mono/jit/jit.h>
 
+#include <box2d/box2d.h>
+
 namespace Jasmine {
-	extern std::unordered_map<uint32_t, Scene*> s_ActiveScenes;
 	extern std::unordered_map<MonoType*, std::function<bool(Entity&)>> s_HasComponentFuncs;
 	extern std::unordered_map<MonoType*, std::function<void(Entity&)>> s_CreateComponentFuncs;
 }
@@ -57,65 +58,134 @@ namespace Jasmine { namespace Script {
 	// Entity //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	void Jasmine_Entity_GetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform)
+	void Jasmine_Entity_GetTransform(uint64_t entityID, glm::mat4* outTransform)
 	{
-		JM_CORE_ASSERT(s_ActiveScenes.find(sceneID) != s_ActiveScenes.end(), "Invalid Scene ID!");
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
 
-		Scene* scene = s_ActiveScenes[sceneID];
-		Entity entity((entt::entity)entityID, scene);
+		Entity entity = entityMap.at(entityID);
 		auto& transformComponent = entity.GetComponent<TransformComponent>();
 		memcpy(outTransform, glm::value_ptr(transformComponent.Transform), sizeof(glm::mat4));
 	}
 
-	void Jasmine_Entity_SetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform)
+	void Jasmine_Entity_SetTransform(uint64_t entityID, glm::mat4* inTransform)
 	{
-		JM_CORE_ASSERT(s_ActiveScenes.find(sceneID) != s_ActiveScenes.end(), "Invalid Scene ID!");
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
 
-		Scene* scene = s_ActiveScenes[sceneID];
-		Entity entity((entt::entity)entityID, scene);
+		Entity entity = entityMap.at(entityID);
 		auto& transformComponent = entity.GetComponent<TransformComponent>();
 		memcpy(glm::value_ptr(transformComponent.Transform), inTransform, sizeof(glm::mat4));
 	}
 
-	void Jasmine_Entity_CreateComponent(uint32_t sceneID, uint32_t entityID, void* type)
+	void Jasmine_Entity_CreateComponent(uint64_t entityID, void* type)
 	{
-		JM_CORE_ASSERT(s_ActiveScenes.find(sceneID) != s_ActiveScenes.end(), "Invalid Scene ID!");
-		MonoType* monoType = mono_reflection_type_get_type((MonoReflectionType*)type);
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
 
-		Scene* scene = s_ActiveScenes[sceneID];
-		Entity entity((entt::entity)entityID, scene);
+		Entity entity = entityMap.at(entityID);
+		MonoType* monoType = mono_reflection_type_get_type((MonoReflectionType*)type);
 		s_CreateComponentFuncs[monoType](entity);
 	}
 
-	bool Jasmine_Entity_HasComponent(uint32_t sceneID, uint32_t entityID, void* type)
+	bool Jasmine_Entity_HasComponent(uint64_t entityID, void* type)
 	{
-		JM_CORE_ASSERT(s_ActiveScenes.find(sceneID) != s_ActiveScenes.end(), "Invalid Scene ID!");
-		MonoType* monoType = mono_reflection_type_get_type((MonoReflectionType*)type);
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
 
-		Scene* scene = s_ActiveScenes[sceneID];
-		Entity entity((entt::entity)entityID, scene);
+		Entity entity = entityMap.at(entityID);
+		MonoType* monoType = mono_reflection_type_get_type((MonoReflectionType*)type);
 		bool result = s_HasComponentFuncs[monoType](entity);
 		return result;
 	}
 
-	void* Jasmine_MeshComponent_GetMesh(uint32_t sceneID, uint32_t entityID)
+	uint64_t Jasmine_Entity_FindEntityByTag(MonoString* tag)
 	{
-		JM_CORE_ASSERT(s_ActiveScenes.find(sceneID) != s_ActiveScenes.end(), "Invalid Scene ID!");
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
 
-		Scene* scene = s_ActiveScenes[sceneID];
-		Entity entity((entt::entity)entityID, scene);
+		Entity entity = scene->FindEntityByTag(mono_string_to_utf8(tag));
+		if (entity)
+			return entity.GetComponent<IDComponent>().ID;
+		
+		return 0;
+	}
+
+	void* Jasmine_MeshComponent_GetMesh(uint64_t entityID)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
 		auto& meshComponent = entity.GetComponent<MeshComponent>();
 		return new Ref<Mesh>(meshComponent.Mesh);
 	}
 
-	void Jasmine_MeshComponent_SetMesh(uint32_t sceneID, uint32_t entityID, Ref<Mesh>* inMesh)
+	void Jasmine_MeshComponent_SetMesh(uint64_t entityID, Ref<Mesh>* inMesh)
 	{
-		JM_CORE_ASSERT(s_ActiveScenes.find(sceneID) != s_ActiveScenes.end(), "Invalid Scene ID!");
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
 
-		Scene* scene = s_ActiveScenes[sceneID];
-		Entity entity((entt::entity)entityID, scene);
+		Entity entity = entityMap.at(entityID);
 		auto& meshComponent = entity.GetComponent<MeshComponent>();
 		meshComponent.Mesh = inMesh ? *inMesh : nullptr;
+	}
+
+	void Jasmine_RigidBody2DComponent_ApplyLinearImpulse(uint64_t entityID, glm::vec2* impulse, glm::vec2* offset, bool wake)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBody2DComponent>());
+		auto& component = entity.GetComponent<RigidBody2DComponent>();
+		b2Body* body = (b2Body*)component.RuntimeBody;
+		body->ApplyLinearImpulse(*(const b2Vec2*)impulse, body->GetWorldCenter() + *(const b2Vec2*)offset, wake);
+	}
+
+	void Jasmine_RigidBody2DComponent_GetLinearVelocity(uint64_t entityID, glm::vec2* outVelocity)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBody2DComponent>());
+		auto& component = entity.GetComponent<RigidBody2DComponent>();
+		b2Body* body = (b2Body*)component.RuntimeBody;
+		const auto& velocity = body->GetLinearVelocity();
+		JM_CORE_ASSERT(outVelocity);
+		*outVelocity = { velocity.x, velocity.y };
+	}
+
+	void Jasmine_RigidBody2DComponent_SetLinearVelocity(uint64_t entityID, glm::vec2* velocity)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBody2DComponent>());
+		auto& component = entity.GetComponent<RigidBody2DComponent>();
+		b2Body* body = (b2Body*)component.RuntimeBody;
+		JM_CORE_ASSERT(velocity);
+		body->SetLinearVelocity({velocity->x, velocity->y});
 	}
 
 	Ref<Mesh>* Jasmine_Mesh_Constructor(MonoString* filepath)
@@ -215,6 +285,12 @@ namespace Jasmine { namespace Script {
 	}
 
 	void Jasmine_MaterialInstance_SetVector3(Ref<MaterialInstance>* _this, MonoString* uniform, glm::vec3* value)
+	{
+		Ref<MaterialInstance>& instance = *(Ref<MaterialInstance>*)_this;
+		instance->Set(mono_string_to_utf8(uniform), *value);
+	}
+
+	void Jasmine_MaterialInstance_SetVector4(Ref<MaterialInstance>* _this, MonoString* uniform, glm::vec4* value)
 	{
 		Ref<MaterialInstance>& instance = *(Ref<MaterialInstance>*)_this;
 		instance->Set(mono_string_to_utf8(uniform), *value);

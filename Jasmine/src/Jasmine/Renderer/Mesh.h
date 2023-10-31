@@ -5,8 +5,9 @@
 
 #include "Jasmine/Core/Timestep.h"
 
-#include "Jasmine/Renderer/VertexArray.h"
-#include "Jasmine/Renderer/Buffer.h"
+#include "Jasmine/Renderer/Pipeline.h"
+#include "Jasmine/Renderer/IndexBuffer.h"
+#include "Jasmine/Renderer/VertexBuffer.h"
 #include "Jasmine/Renderer/Shader.h"
 #include "Jasmine/Renderer/Material.h"
 
@@ -120,12 +121,12 @@ namespace Jasmine {
 		uint32_t IndexCount;
 
 		glm::mat4 Transform;
-
 		AABB BoundingBox;
+
 		std::string NodeName, MeshName;
 	};
 
-	class Mesh :public RefCounted
+	class Mesh : public RefCounted
 	{
 	public:
 		Mesh(const std::string& filename);
@@ -166,7 +167,9 @@ namespace Jasmine {
 		uint32_t m_BoneCount = 0;
 		std::vector<BoneInfo> m_BoneInfo;
 
-		Ref<VertexArray> m_VertexArray;
+		Ref<Pipeline> m_Pipeline;
+		Ref<VertexBuffer> m_VertexBuffer;
+		Ref<IndexBuffer> m_IndexBuffer;
 
 		std::vector<Vertex> m_StaticVertices;
 		std::vector<AnimatedVertex> m_AnimatedVertices;
@@ -192,8 +195,8 @@ namespace Jasmine {
 		bool m_AnimationPlaying = true;
 
 		std::string m_FilePath;
+
 		friend class Renderer;
 		friend class SceneHierarchyPanel;
-
 	};
 }

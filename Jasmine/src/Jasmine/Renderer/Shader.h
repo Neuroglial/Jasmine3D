@@ -104,7 +104,7 @@ namespace Jasmine
 
 	};
 
-	class Shader: public RefCounted
+	class Shader : public RefCounted
 	{
 	public:
 		using ShaderReloadedCallback = std::function<void()>;
@@ -151,7 +151,7 @@ namespace Jasmine
 	};
 
 	// This should be eventually handled by the Asset Manager
-	class ShaderLibrary: public RefCounted
+	class ShaderLibrary : public RefCounted
 	{
 	public:
 		ShaderLibrary();
@@ -161,10 +161,9 @@ namespace Jasmine
 		void Load(const std::string& path);
 		void Load(const std::string& name, const std::string& path);
 
-		Ref<Shader> Get(const std::string& name) const;
+		const Ref<Shader>& Get(const std::string& name) const;
 	private:
 		std::unordered_map<std::string, Ref<Shader>> m_Shaders;
 	};
 
 }
-
