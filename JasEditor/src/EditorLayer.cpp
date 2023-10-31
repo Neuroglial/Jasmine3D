@@ -43,11 +43,12 @@ namespace Jasmine {
 
 			m_MeshEntity = m_Scene->CreateEntity("Test Entity");
 
-			auto mesh = Ref<Mesh>::Create("assets/meshes/monkey.fbx");
+			auto mesh = Ref<Mesh>::Create("assets/models/room 1.fbx");
 			m_MeshEntity.AddComponent<MeshComponent>(mesh);
 
-			//auto monkey = m_Scene->CreateEntity("monkey");
-			//monkey.AddComponent<MeshComponent>(mesh)
+			auto monkey = m_Scene->CreateEntity("monkey");
+			mesh = Ref<Mesh>::Create("assets/meshes/monkey.fbx");
+			monkey.AddComponent<MeshComponent>(mesh);
 
 			m_MeshMaterial = mesh->GetMaterial();
 
