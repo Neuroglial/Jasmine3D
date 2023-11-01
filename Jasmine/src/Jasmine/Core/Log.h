@@ -6,6 +6,8 @@
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#include <glm/glm.hpp>
+
 namespace Jasmine {
 
 	class Log
@@ -20,6 +22,18 @@ namespace Jasmine {
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
 	};
 
+}
+
+template<typename OStream>
+OStream& operator<<(OStream& os, const glm::vec3& vec)
+{
+	return os << '(' << vec.x << ", " << vec.y << ", " << vec.z << ')';
+}
+
+template<typename OStream>
+OStream& operator<<(OStream& os, const glm::vec4& vec)
+{
+	return os << '(' << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.w << ')';
 }
 
 // Core Logging Macros

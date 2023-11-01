@@ -65,7 +65,7 @@ namespace Jasmine {
 
 		virtual void write(const char* message) override
 		{
-			JM_CORE_ERROR("Assimp error: {0}", message);
+			JM_CORE_WARN("Assimp: {0}", message);
 		}
 	};
 

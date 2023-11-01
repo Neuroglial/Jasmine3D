@@ -18,7 +18,6 @@ workspace "Jasmine3D"
 	IncludeDir["Glad"] 		= "Jasmine/vendor/Glad/include"
 	IncludeDir["ImGui"] 		= "Jasmine/vendor/ImGui"
 	IncludeDir["glm"] 		= "Jasmine/vendor/glm"
-	IncludeDir["ImGuizmo"]	= "Jasmine/vendor/ImGuizmo"
 	IncludeDir["entt"] 		= "Jasmine/vendor/entt/include"
 	IncludeDir["FastNoise"]	= "Jasmine/vendor/FastNoise"
 	IncludeDir["mono"] 		= "Jasmine/vendor/mono/include"
@@ -62,8 +61,6 @@ workspace "Jasmine3D"
 			"%{prj.name}/src/**.hpp", 
 			"%{prj.name}/src/**.cpp" ,
 			
-			"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
-			"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp",
 			"%{prj.name}/vendor/FastNoise/**.cpp",
 			"%{prj.name}/vendor/yaml-cpp/src/**.cpp",
 			"%{prj.name}/vendor/yaml-cpp/src/**.h",
@@ -92,7 +89,6 @@ workspace "Jasmine3D"
         		"%{IncludeDir.Glad}",
         		"%{IncludeDir.glm}",
         		"%{IncludeDir.ImGui}",
-        		"%{IncludeDir.ImGuizmo}",
         		"%{IncludeDir.entt}",
         		"%{IncludeDir.FastNoise}",
         		"%{IncludeDir.mono}",
@@ -111,10 +107,6 @@ workspace "Jasmine3D"
     		
     		filter "files:Jasmine/vendor/yaml-cpp/src/**.cpp"
    		flags { "NoPCH" }
-	
-    
-    		filter "files:Jasmine/vendor/ImGuizmo/**.cpp"
-		flags { "NoPCH" }
 		
 		filter "files:Jasmine/vendor/FastNoise/**.cpp"
    		flags { "NoPCH" }
@@ -191,7 +183,6 @@ workspace "Jasmine3D"
         		"Jasmine/src",
         		"Jasmine/vendor",
         		"%{IncludeDir.glm}",
-        		"%{IncludeDir.ImGuizmo}",
         		"%{IncludeDir.entt}"
     		}
     		
