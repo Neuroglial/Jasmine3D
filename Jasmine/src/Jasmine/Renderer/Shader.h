@@ -3,7 +3,7 @@
 #include "Jasmine/Core/Base.h"
 #include "Jasmine/Core/Buffer.h"
 
-#include "Jasmine/Renderer/RendererAPI.h"
+#include "Jasmine/Renderer/RendererTypes.h"
 #include "Jasmine/Renderer/ShaderUniform.h"
 
 #include <string>
@@ -11,97 +11,45 @@
 
 namespace Jasmine
 {
-	struct ShaderUniform
+	enum class ShaderUniformType
 	{
-		
+		None = 0, Bool, Int, UInt, Float, Vec2, Vec3, Vec4, Mat3, Mat4
 	};
 
-	struct ShaderUniformCollection
+	class ShaderUniform
 	{
+	public:
+		ShaderUniform() = default;
+		ShaderUniform(const std::string& name, ShaderUniformType type, uint32_t size, uint32_t offset);
 
+		const std::string& GetName() const { return m_Name; }
+		ShaderUniformType GetType() const { return m_Type; }
+		uint32_t GetSize() const { return m_Size; }
+		uint32_t GetOffset() const { return m_Offset; }
+
+		static const std::string& UniformTypeToString(ShaderUniformType type);
+	private:
+		std::string m_Name;
+		ShaderUniformType m_Type = ShaderUniformType::None;
+		uint32_t m_Size = 0;
+		uint32_t m_Offset = 0;
 	};
 
-	enum class UniformType
+	struct ShaderUniformBuffer
 	{
-		None = 0,
-		Float, Float2, Float3, Float4,
-		Matrix3x3, Matrix4x4,
-		Int32, Uint32
-	};
-
-	struct UniformDecl
-	{
-		UniformType Type;
-		std::ptrdiff_t Offset;
 		std::string Name;
+		uint32_t Index;
+		uint32_t BindingPoint;
+		uint32_t Size;
+		uint32_t RendererID;
+		std::vector<ShaderUniform> Uniforms;
 	};
 
-	struct UniformBuffer
+	struct ShaderBuffer
 	{
-		// TODO: This currently represents a byte buffer that has been
-		// packed with uniforms. This was primarily created for OpenGL,
-		// and needs to be revisted for other rendering APIs. Furthermore,
-		// this currently does not assume any alignment. This also has
-		// nothing to do with GL uniform buffers, this is simply a CPU-side
-		// buffer abstraction.
-		byte* Buffer;
-		std::vector<UniformDecl> Uniforms;
-	};
-
-	struct UniformBufferBase
-	{
-		virtual const byte* GetBuffer() const = 0;
-		virtual const UniformDecl* GetUniforms() const = 0;
-		virtual unsigned int GetUniformCount() const = 0;
-	};
-
-	template<unsigned int N, unsigned int U>
-	struct UniformBufferDeclaration : public UniformBufferBase
-	{
-		byte Buffer[N];
-		UniformDecl Uniforms[U];
-		std::ptrdiff_t Cursor = 0;
-		int Index = 0;
-
-		virtual const byte* GetBuffer() const override { return Buffer; }
-		virtual const UniformDecl* GetUniforms() const override { return Uniforms; }
-		virtual unsigned int GetUniformCount() const { return U; }
-
-		template<typename T>
-		void Push(const std::string& name, const T& data) {}
-
-		template<>
-		void Push(const std::string& name, const float& data)
-		{
-			Uniforms[Index++] = { UniformType::Float, Cursor, name };
-			memcpy(Buffer + Cursor, &data, sizeof(float));
-			Cursor += sizeof(float);
-		}
-
-		template<>
-		void Push(const std::string& name, const glm::vec3& data)
-		{
-			Uniforms[Index++] = { UniformType::Float3, Cursor, name };
-			memcpy(Buffer + Cursor, glm::value_ptr(data), sizeof(glm::vec3));
-			Cursor += sizeof(glm::vec3);
-		}
-
-		template<>
-		void Push(const std::string& name, const glm::vec4& data)
-		{
-			Uniforms[Index++] = { UniformType::Float4, Cursor, name };
-			memcpy(Buffer + Cursor, glm::value_ptr(data), sizeof(glm::vec4));
-			Cursor += sizeof(glm::vec4);
-		}
-
-		template<>
-		void Push(const std::string& name, const glm::mat4& data)
-		{
-			Uniforms[Index++] = { UniformType::Matrix4x4, Cursor, name };
-			memcpy(Buffer + Cursor, glm::value_ptr(data), sizeof(glm::mat4));
-			Cursor += sizeof(glm::mat4);
-		}
-
+		std::string Name;
+		uint32_t Size = 0;
+		std::unordered_map<std::string, ShaderUniform> Uniforms;
 	};
 
 	class Shader : public RefCounted
@@ -109,42 +57,20 @@ namespace Jasmine
 	public:
 		using ShaderReloadedCallback = std::function<void()>;
 
-		virtual void Reload() = 0;
+		virtual void Reload(bool forceCompile = false) = 0;
 
-		virtual void Bind() = 0;
-		virtual RendererID GetRendererID() const = 0;
-		virtual void UploadUniformBuffer(const UniformBufferBase& uniformBuffer) = 0;
-
-		// Temporary while we don't have materials
-		virtual void SetFloat(const std::string& name, float value) = 0;
-		virtual void SetInt(const std::string& name, int value) = 0;
-		virtual void SetBool(const std::string& name, bool value) = 0;
-		virtual void SetFloat2(const std::string& name, const glm::vec2& value) = 0;
-		virtual void SetFloat3(const std::string& name, const glm::vec3& value) = 0;
-		virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
-		virtual void SetMat4FromRenderThread(const std::string& name, const glm::mat4& value, bool bind = true) = 0;
-
-		virtual void SetIntArray(const std::string& name, int* values, uint32_t size) = 0;
-
+		virtual size_t GetHash() const = 0;
+		
 		virtual const std::string& GetName() const = 0;
 
 		// Represents a complete shader program stored in a single file.
 		// Note: currently for simplicity this is simply a string filepath, however
 		//       in the future this will be an asset object + metadata
-		static Ref<Shader> Create(const std::string& filepath);
+		static Ref<Shader> Create(const std::string& filepath, bool forceCompile = false);
 		static Ref<Shader> CreateFromString(const std::string& source);
 
-		virtual void SetVSMaterialUniformBuffer(Buffer buffer) = 0;
-		virtual void SetPSMaterialUniformBuffer(Buffer buffer) = 0;
-
-		virtual const ShaderUniformBufferList& GetVSRendererUniforms() const = 0;
-		virtual const ShaderUniformBufferList& GetPSRendererUniforms() const = 0;
-		virtual bool HasVSMaterialUniformBuffer() const = 0;
-		virtual bool HasPSMaterialUniformBuffer() const = 0;
-		virtual const ShaderUniformBufferDeclaration& GetVSMaterialUniformBuffer() const = 0;
-		virtual const ShaderUniformBufferDeclaration& GetPSMaterialUniformBuffer() const = 0;
-
-		virtual const ShaderResourceList& GetResources() const = 0;
+		virtual const std::unordered_map<std::string, ShaderBuffer>& GetShaderBuffers() const = 0;
+		virtual const std::unordered_map<std::string, ShaderResourceDeclaration>& GetResources() const = 0;
 
 		virtual void AddShaderReloadedCallback(const ShaderReloadedCallback& callback) = 0;
 
@@ -160,7 +86,7 @@ namespace Jasmine
 		~ShaderLibrary();
 
 		void Add(const Ref<Shader>& shader);
-		void Load(const std::string& path);
+		void Load(const std::string& path, bool forceCompile = false);
 		void Load(const std::string& name, const std::string& path);
 
 		const Ref<Shader>& Get(const std::string& name) const;

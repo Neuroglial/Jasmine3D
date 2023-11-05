@@ -6,6 +6,10 @@
 #include "Jasmine/Core/Events/KeyEvent.h"
 #include "Jasmine/Core/Events/MouseEvent.h"
 
+#include "Jasmine/Renderer/RendererAPI.h"
+
+#include "stb_image.h"
+
 #include <imgui.h>
 
 namespace Jasmine {
@@ -29,6 +33,7 @@ namespace Jasmine {
 
 	WindowsWindow::~WindowsWindow()
 	{
+		Shutdown();
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)
@@ -49,10 +54,25 @@ namespace Jasmine {
 			s_GLFWInitialized = true;
 		}
 
+		if (RendererAPI::Current() == RendererAPIType::Vulkan)
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		JM_CORE_ASSERT(status, "Failed to initialize Glad!");
+
+		// Create Renderer Context
+		m_RendererContext = RendererContext::Create(m_Window);
+		m_RendererContext->Create();
+
+
+		GLFWimage icon[3];
+		icon[0].pixels = stbi_load("assets/editor/JM_logo_16.png", &icon[0].width, &icon[0].height, 0, 4);
+		icon[1].pixels = stbi_load("assets/editor/JM_logo_32.png", &icon[1].width, &icon[1].height, 0, 4);
+		icon[2].pixels = stbi_load("assets/editor/JM_logo_48.png", &icon[2].width, &icon[2].height, 0, 4);
+		glfwSetWindowIcon(m_Window, 3, icon);
+		stbi_image_free(icon[0].pixels);
+		stbi_image_free(icon[1].pixels);
+		stbi_image_free(icon[2].pixels);
+
+		//glfwMaximizeWindow(m_Window);
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 
 		// Set GLFW callbacks
@@ -141,7 +161,6 @@ namespace Jasmine {
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double x, double y)
 		{
 			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
-
 			MouseMovedEvent event((float)x, (float)y);
 			data.EventCallback(event);
 		});
@@ -166,7 +185,8 @@ namespace Jasmine {
 
 	void WindowsWindow::Shutdown()
 	{
-		
+		glfwTerminate();
+		s_GLFWInitialized = false;
 	}
 
 	inline std::pair<float, float> WindowsWindow::GetWindowPos() const
@@ -176,26 +196,29 @@ namespace Jasmine {
 		return { x, y };
 	}
 
-	void WindowsWindow::OnUpdate()
+	void WindowsWindow::ProcessEvents()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		
+		//ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
+		//glfwSetCursor(m_Window, m_ImGuiMouseCursors[imgui_cursor] ? m_ImGuiMouseCursors[imgui_cursor] : m_ImGuiMouseCursors[ImGuiMouseCursor_Arrow]);
+		//glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
 
-		ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
-		glfwSetCursor(m_Window, m_ImGuiMouseCursors[imgui_cursor] ? m_ImGuiMouseCursors[imgui_cursor] : m_ImGuiMouseCursors[ImGuiMouseCursor_Arrow]);
-		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-		float time = glfwGetTime();
-		float delta = time - m_LastFrameTime;
-		m_LastFrameTime = time;
+	void WindowsWindow::SwapBuffers()
+	{
+		m_RendererContext->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
-		if (enabled)
-			glfwSwapInterval(1);
-		else
-			glfwSwapInterval(0);
+		if (RendererAPI::Current() == RendererAPIType::OpenGL)
+		{
+			if (enabled)
+				glfwSwapInterval(1);
+			else
+				glfwSwapInterval(0);
+		}
 
 		m_Data.VSync = enabled;
 	}

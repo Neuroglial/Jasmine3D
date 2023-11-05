@@ -35,7 +35,7 @@ namespace Jasmine {
 		template<typename T>
 		bool HasComponent()
 		{
-			return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
+			return m_Scene->m_Registry.has<T>(m_EntityHandle);
 		}
 
 		template<typename T>
@@ -45,8 +45,8 @@ namespace Jasmine {
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}
 
-		glm::mat4& Transform() { return m_Scene->m_Registry.get<TransformComponent>(m_EntityHandle); }
-		const glm::mat4& Transform() const { return m_Scene->m_Registry.get<TransformComponent>(m_EntityHandle); }
+		TransformComponent& Transform() { return m_Scene->m_Registry.get<TransformComponent>(m_EntityHandle); }
+		const glm::mat4& Transform() const { return m_Scene->m_Registry.get<TransformComponent>(m_EntityHandle).GetTransform(); }
 
 		operator uint32_t () const { return (uint32_t)m_EntityHandle; }
 		operator entt::entity () const { return m_EntityHandle; }
@@ -60,6 +60,39 @@ namespace Jasmine {
 		bool operator!=(const Entity& other) const
 		{
 			return !(*this == other);
+		}
+
+		void SetParentUUID(UUID parent) { GetComponent<RelationshipComponent>().ParentHandle = parent; }
+		UUID GetParentUUID() { return GetComponent<RelationshipComponent>().ParentHandle; }
+		std::vector<UUID>& Children() { return GetComponent<RelationshipComponent>().Children; }
+
+		bool HasParent() { return m_Scene->FindEntityByUUID(GetParentUUID()); }
+
+		bool IsAncesterOf(Entity entity)
+		{
+			const auto& children = Children();
+
+			if (children.size() == 0)
+				return false;
+
+			for (UUID child : children)
+			{
+				if (child == entity.GetUUID())
+					return true;
+			}
+
+			for (UUID child : children)
+			{
+				if (m_Scene->FindEntityByUUID(child).IsAncesterOf(entity))
+					return true;
+			}
+
+			return false;
+		}
+
+		bool IsDescendantOf(Entity entity)
+		{
+			return entity.IsAncesterOf(*this);
 		}
 
 		UUID GetUUID() { return GetComponent<IDComponent>().ID; }

@@ -9,7 +9,7 @@ namespace Jasmine {
 
 	void InitializeCore()
 	{
-		Jasmine::Log::Init();
+		Log::Init();
 
 		JM_CORE_TRACE("Jasmine Engine {}", Jasmine_BUILD_ID);
 		JM_CORE_TRACE("Initializing...");
@@ -18,6 +18,8 @@ namespace Jasmine {
 	void ShutdownCore()
 	{
 		JM_CORE_TRACE("Shutting down...");
+		
+		Log::Shutdown();
 	}
 
 }

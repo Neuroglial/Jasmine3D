@@ -1,0 +1,361 @@
+Assets:
+  - Handle: 17333523921731796171
+    FilePath: assets
+    Type: 7
+  - Handle: 5341812492639879659
+    FilePath: assets/meshes/cerberus/CerberusMaterials.fbx
+    Type: 1
+  - Handle: 1219169571499395978
+    FilePath: assets/editor/folder.png
+    Type: 2
+  - Handle: 9807313588617446565
+    FilePath: assets/meshes
+    Type: 7
+  - Handle: 3163319217864166707
+    FilePath: assets/editor
+    Type: 7
+  - Handle: 16003154433113292521
+    FilePath: assets/textures
+    Type: 7
+  - Handle: 3937064135966073341
+    FilePath: assets/cache
+    Type: 7
+  - Handle: 14003310172833019747
+    FilePath: assets/cache/shader/vulkan
+    Type: 7
+  - Handle: 18376540698994108666
+    FilePath: assets/cache/shader
+    Type: 7
+  - Handle: 2870569771442488599
+    FilePath: assets/editor/btn_back.png
+    Type: 2
+  - Handle: 1308407305969138064
+    FilePath: assets/editor/close.png
+    Type: 2
+  - Handle: 11689542069576010878
+    FilePath: assets/editor/asset.png
+    Type: 2
+  - Handle: 11752114381869655001
+    FilePath: assets/editor/fbx.png
+    Type: 2
+  - Handle: 17520533498056549991
+    FilePath: assets/meshes/Capsule.fbx
+    Type: 1
+  - Handle: 17564561792510829075
+    FilePath: assets/editor/back.png
+    Type: 2
+  - Handle: 1319378911527235012
+    FilePath: assets/editor/btn_fwrd.png
+    Type: 2
+  - Handle: 15900400363376220319
+    FilePath: assets/meshes/stormtrooper/silly_dancing.fbx
+    Type: 1
+  - Handle: 13784851424894383469
+    FilePath: assets/editor/csc.png
+    Type: 2
+  - Handle: 16657264966577704676
+    FilePath: assets/meshes/pilot/Material.002_Mixed_AO.png
+    Type: 2
+  - Handle: 17823432664174653727
+    FilePath: assets/editor/resource.png
+    Type: 2
+  - Handle: 7647358641885877984
+    FilePath: assets/editor/favourites.png
+    Type: 2
+  - Handle: 12403491709967852080
+    FilePath: assets/meshes/Default/Capsule.fbx
+    Type: 1
+  - Handle: 15654827282046589454
+    FilePath: assets/editor/file.png
+    Type: 2
+  - Handle: 14465430327591252312
+    FilePath: assets/env
+    Type: 7
+  - Handle: 215529808622068252
+    FilePath: assets/editor/grid.png
+    Type: 2
+  - Handle: 6323043749067612265
+    FilePath: assets/env/birchwood_4k.hdr
+    Type: 3
+  - Handle: 2999168114520092135
+    FilePath: assets/editor/list.png
+    Type: 2
+  - Handle: 6139148084070546468
+    FilePath: assets/meshes/Default/Sphere.fbx
+    Type: 1
+  - Handle: 920796818376042399
+    FilePath: assets/editor/obj.png
+    Type: 2
+  - Handle: 16553973644736633774
+    FilePath: assets/meshes/Default/Cylinder.fbx
+    Type: 1
+  - Handle: 16650047114283971871
+    FilePath: assets/editor/PauseButton.png
+    Type: 2
+  - Handle: 14931070366014967560
+    FilePath: assets/editor/wav.png
+    Type: 2
+  - Handle: 2525417757760773713
+    FilePath: assets/env/venice_dawn_1_4k.hdr
+    Type: 3
+  - Handle: 4049807151935871939
+    FilePath: assets/editor/PlayButton.png
+    Type: 2
+  - Handle: 12051307881735992250
+    FilePath: assets/editor/JM_logo_16.png
+    Type: 2
+  - Handle: 3817668279072358129
+    FilePath: assets/editor/png.png
+    Type: 2
+  - Handle: 13125239889930433280
+    FilePath: assets/editor/scene.png
+    Type: 2
+  - Handle: 16798861205019725586
+    FilePath: assets/meshes/cerberus/Textures/Cerberus_M.png
+    Type: 2
+  - Handle: 9713363886349763447
+    FilePath: assets/physics
+    Type: 7
+  - Handle: 4114332668247425909
+    FilePath: assets/editor/script.png
+    Type: 2
+  - Handle: 6045631789154097628
+    FilePath: assets/editor/search.png
+    Type: 2
+  - Handle: 7251888957463590706
+    FilePath: assets/meshes/pilot/Material.002_Metallic.png
+    Type: 2
+  - Handle: 1509148459354287284
+    FilePath: assets/editor/StopButton.png
+    Type: 2
+  - Handle: 10851650079780049366
+    FilePath: assets/meshes/Cube1m.fbx
+    Type: 1
+  - Handle: 4074267028655875089
+    FilePath: assets/editor/tags.png
+    Type: 2
+  - Handle: 11552623420750866095
+    FilePath: assets/env/dikhololo_night_4k.hdr
+    Type: 3
+  - Handle: 15282432714159710996
+    FilePath: assets/env/pink_sunrise_4k.hdr
+    Type: 3
+  - Handle: 12325624637771532209
+    FilePath: assets/meshes/cerberus/Textures/Cerberus_R.png
+    Type: 2
+  - Handle: 548324007610918684
+    FilePath: assets/env/rooitou_park_4k.hdr
+    Type: 3
+  - Handle: 17706804995621454704
+    FilePath: assets/meshes/cerberus
+    Type: 7
+  - Handle: 228041072252438124
+    FilePath: assets/meshes/Default/Torus.fbx
+    Type: 1
+  - Handle: 14255962088675027506
+    FilePath: assets/meshes/cerberus/cerberus.fbx
+    Type: 1
+  - Handle: 14399703836338406563
+    FilePath: assets/meshes/cerberus/Textures
+    Type: 7
+  - Handle: 12643351457389915074
+    FilePath: assets/meshes/cerberus/Textures/Cerberus_A.png
+    Type: 2
+  - Handle: 8898579660307907100
+    FilePath: assets/meshes/Default
+    Type: 7
+  - Handle: 14346328252054466484
+    FilePath: assets/meshes/cerberus/Textures/Cerberus_N.png
+    Type: 2
+  - Handle: 12991368083022834631
+    FilePath: assets/meshes/cottage_fbx.fbx
+    Type: 1
+  - Handle: 10861642071247235850
+    FilePath: assets/meshes/CubeScene.fbx
+    Type: 1
+  - Handle: 7114221652798595417
+    FilePath: assets/meshes/pilot/Material.002_Normal_OpenGL.png
+    Type: 2
+  - Handle: 4212464863357912609
+    FilePath: assets/meshes/Default/Cone.fbx
+    Type: 1
+  - Handle: 8583176386886872577
+    FilePath: assets/scenes/PinkSunrise.hsc
+    Type: 0
+  - Handle: 10348482601740532764
+    FilePath: assets/meshes/pilot/Material.002_Base_Color.png
+    Type: 2
+  - Handle: 17934304447825450130
+    FilePath: assets/meshes/Default/Cube.fbx
+    Type: 1
+  - Handle: 500070358217522896
+    FilePath: assets/meshes/Default/Plane.fbx
+    Type: 1
+  - Handle: 12515086264680152668
+    FilePath: assets/fonts
+    Type: 7
+  - Handle: 5355835885604899974
+    FilePath: assets/meshes/pilot
+    Type: 7
+  - Handle: 468113472321872515
+    FilePath: assets/meshes/pilot/Material.002_Roughness.png
+    Type: 2
+  - Handle: 12574604586061297880
+    FilePath: assets/meshes/pilot/Pilot_LP_Animated.fbx
+    Type: 1
+  - Handle: 160767956712140160
+    FilePath: assets/editor/f.png
+    Type: 2
+  - Handle: 13651978406822771049
+    FilePath: assets/scenes/PhysicsTest2.hsc
+    Type: 0
+  - Handle: 4737272978591418174
+    FilePath: assets/meshes/Sphere1m.fbx
+    Type: 1
+  - Handle: 15733642758345440168
+    FilePath: assets/meshes/sponza
+    Type: 7
+  - Handle: 13423979752956760632
+    FilePath: assets/meshes/sponza/sponza.obj
+    Type: 1
+  - Handle: 11191173518772035453
+    FilePath: assets/meshes/sponza/textures
+    Type: 7
+  - Handle: 7893124087561671101
+    FilePath: assets/meshes/stormtrooper
+    Type: 7
+  - Handle: 8643607497211670830
+    FilePath: assets/scenes/TestingScene - Peter.hsc
+    Type: 0
+  - Handle: 14880998689604675571
+    FilePath: assets/meshes/stormtrooper/Stormtrooper_D.png
+    Type: 2
+  - Handle: 9136918582672771562
+    FilePath: assets/meshes/Tests
+    Type: 7
+  - Handle: 17998714153661241775
+    FilePath: assets/meshes/Tests/TransformTest.fbx
+    Type: 1
+  - Handle: 2936598336961807973
+    FilePath: assets/meshes/TestScene.fbx
+    Type: 1
+  - Handle: 10406295920434103206
+    FilePath: assets/models
+    Type: 7
+  - Handle: 12841326137038871764
+    FilePath: assets/models/m1911
+    Type: 7
+  - Handle: 12213841283095398292
+    FilePath: assets/models/m1911/m1911.fbx
+    Type: 1
+  - Handle: 3141270594139944840
+    FilePath: assets/models/m1911/M1911Materials.fbx
+    Type: 1
+  - Handle: 14461747317832575468
+    FilePath: assets/models/m1911/m1911_color.png
+    Type: 2
+  - Handle: 15054031156342335358
+    FilePath: assets/models/m1911/m1911_metalness.png
+    Type: 2
+  - Handle: 15157285712720704080
+    FilePath: assets/models/m1911/m1911_normal.png
+    Type: 2
+  - Handle: 7917901180227437062
+    FilePath: assets/models/m1911/m1911_roughness.png
+    Type: 2
+  - Handle: 8717931947393295442
+    FilePath: assets/models/Plane1m.fbx
+    Type: 1
+  - Handle: 2012345851848949123
+    FilePath: assets/models/Plane1m.obj
+    Type: 1
+  - Handle: 6624710974066574043
+    FilePath: assets/models/Sphere1m.fbx
+    Type: 1
+  - Handle: 9932684507387491166
+    FilePath: assets/physics/GroundMaterial.hpm
+    Type: 6
+  - Handle: 9066933947235352571
+    FilePath: assets/PM_Player.hpm
+    Type: 6
+  - Handle: 5095066133783918987
+    FilePath: assets/scenes
+    Type: 7
+  - Handle: 3409829286617571253
+    FilePath: assets/scenes/AnimationTest.hsc
+    Type: 0
+  - Handle: 17344387340501275954
+    FilePath: assets/scenes/GeometryTest.hsc
+    Type: 0
+  - Handle: 13200317128778418484
+    FilePath: assets/scenes/levels
+    Type: 7
+  - Handle: 4579692615372473750
+    FilePath: assets/scenes/levels/Physics2D-Game.hsc
+    Type: 0
+  - Handle: 11025917342785787943
+    FilePath: assets/scenes/levels/Platformer.hsc
+    Type: 0
+  - Handle: 299211323636962814
+    FilePath: assets/scenes/LightingTest.hsc
+    Type: 0
+  - Handle: 8340766938040436715
+    FilePath: assets/scenes/Physics2DTest.hsc
+    Type: 0
+  - Handle: 16162733178582093080
+    FilePath: assets/scenes/Physics2DTest2.hsc
+    Type: 0
+  - Handle: 1851565096877777914
+    FilePath: assets/scenes/Physics3DTest.hsc
+    Type: 0
+  - Handle: 18308635352672135540
+    FilePath: assets/scenes/PhysicsTest3.hsc
+    Type: 0
+  - Handle: 6262074260482960626
+    FilePath: assets/scenes/ShadowTest.hsc
+    Type: 0
+  - Handle: 1378078857760785025
+    FilePath: assets/scenes/Sponza.hsc
+    Type: 0
+  - Handle: 15128722141392922669
+    FilePath: assets/scenes/SponzaDemo.hsc
+    Type: 0
+  - Handle: 9487113772641112333
+    FilePath: assets/editor/Jasmine_errr.png
+    Type: 2
+  - Handle: 18416250897928447979
+    FilePath: assets/scenes/StreamTestScene.hsc
+    Type: 0
+  - Handle: 15559599816728411726
+    FilePath: assets/scripts
+    Type: 7
+  - Handle: 17945922043464576122
+    FilePath: assets/shaders
+    Type: 7
+  - Handle: 7304179589499756908
+    FilePath: assets/editor/ (2).png
+    Type: 2
+  - Handle: 6967713002619301809
+    FilePath: assets/textures/debug
+    Type: 7
+  - Handle: 1730074503381941737
+    FilePath: assets/fonts/opensans
+    Type: 7
+  - Handle: 17948099639775978540
+    FilePath: assets/scenes/NewSponza.hsc
+    Type: 0
+  - Handle: 9789528520912170805
+    FilePath: assets/cache/shader/opengl
+    Type: 7
+  - Handle: 2964599988951992318
+    FilePath: assets/editor/Jasmine.png
+    Type: 2
+  - Handle: 16595664759892721984
+    FilePath: assets/editor/Jasmine_warn.png
+    Type: 2
+  - Handle: 13715892897532071776
+    FilePath: assets/editor/JM_logo_32.png
+    Type: 2
+  - Handle: 10670553647609577178
+    FilePath: assets/editor/JM_logo_48.png
+    Type: 2

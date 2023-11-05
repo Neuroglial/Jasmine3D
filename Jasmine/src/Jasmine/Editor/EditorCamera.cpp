@@ -19,7 +19,7 @@ namespace Jasmine {
 		m_Rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 		m_FocalPoint = glm::vec3(0.0f);
 
-		glm::vec3 position = { -5, 5, 5};
+		glm::vec3 position = { -5, 5, 5 };
 		m_Distance = glm::distance(position, m_FocalPoint);
 
 		m_Yaw = 3.0f * (float)M_PI / 4.0f;
@@ -38,8 +38,15 @@ namespace Jasmine {
 		m_ViewMatrix = glm::inverse(m_ViewMatrix);
 	}
 
-	void EditorCamera::Focus()
+	void EditorCamera::Focus(const glm::vec3& focusPoint)
 	{
+		m_FocalPoint = focusPoint;
+		if (m_Distance > m_MinFocusDistance)
+		{
+			float distance = m_Distance - m_MinFocusDistance;
+			MouseZoom(distance / ZoomSpeed());
+			UpdateCameraView();
+		}
 	}
 
 	std::pair<float, float> EditorCamera::PanSpeed() const
@@ -75,11 +82,11 @@ namespace Jasmine {
 			glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
 			m_InitialMousePosition = mouse;
 
-			if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE))
+			if (Input::IsMouseButtonPressed(MouseButton::Middle))
 				MousePan(delta);
-			else if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+			else if (Input::IsMouseButtonPressed(MouseButton::Left))
 				MouseRotate(delta);
-			else if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
+			else if (Input::IsMouseButtonPressed(MouseButton::Right))
 				MouseZoom(delta.y);
 		}
 

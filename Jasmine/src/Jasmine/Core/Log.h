@@ -4,7 +4,6 @@
 
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 
 #include <glm/glm.hpp>
 
@@ -14,6 +13,7 @@ namespace Jasmine {
 	{
 	public:
 		static void Init();
+		static void Shutdown();
 
 		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
 		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }

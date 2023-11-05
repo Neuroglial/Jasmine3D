@@ -4,6 +4,9 @@
 #include "Renderer.h"
 
 #include "Jasmine/Platform/OpenGL/OpenGLRenderPass.h"
+#include "Jasmine/Platform/Vulkan/VulkanRenderPass.h"
+
+#include "Jasmine/Renderer/RendererAPI.h"
 
 namespace Jasmine {
 
@@ -12,6 +15,7 @@ namespace Jasmine {
 		switch (RendererAPI::Current())
 		{
 			case RendererAPIType::None:    JM_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+			case RendererAPIType::Vulkan:  return Ref<VulkanRenderPass>::Create(spec);
 			case RendererAPIType::OpenGL:  return Ref<OpenGLRenderPass>::Create(spec);
 		}
 

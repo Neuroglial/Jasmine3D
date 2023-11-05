@@ -4,6 +4,7 @@
 
 #include "Jasmine/Core/Base.h"
 #include "Jasmine/Core/Events/Event.h"
+#include "Jasmine/Renderer/RendererContext.h"
 
 namespace Jasmine {
 
@@ -29,7 +30,8 @@ namespace Jasmine {
 
 		virtual ~Window() {}
 
-		virtual void OnUpdate() = 0;
+		virtual void ProcessEvents() = 0;
+		virtual void SwapBuffers() = 0;
 
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
@@ -47,6 +49,8 @@ namespace Jasmine {
 		virtual void SetTitle(const std::string& title) = 0;
 
 		virtual void* GetNativeWindow() const = 0;
+
+		virtual Ref<RendererContext> GetRenderContext() = 0;
 
 		static Window* Create(const WindowProps& props = WindowProps());
 	};

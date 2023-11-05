@@ -1,273 +1,285 @@
 workspace "Jasmine3D"
 	architecture "x64"
 	targetdir "build"
-	startproject "JasEditor"
 	
 	configurations 
 	{ 
 		"Debug", 
-        	"Release",
-        	"Dist"
-    	}
-    
-	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+		"Release",
+		"Dist"
+	}
 
-	-- Include directories relative to root folder (solution directory)
-	IncludeDir = {}
-	IncludeDir["GLFW"] 		= "Jasmine/vendor/GLFW/include"
-	IncludeDir["Glad"] 		= "Jasmine/vendor/Glad/include"
-	IncludeDir["ImGui"] 		= "Jasmine/vendor/ImGui"
-	IncludeDir["glm"] 		= "Jasmine/vendor/glm"
-	IncludeDir["entt"] 		= "Jasmine/vendor/entt/include"
-	IncludeDir["FastNoise"]	= "Jasmine/vendor/FastNoise"
-	IncludeDir["mono"] 		= "Jasmine/vendor/mono/include"
-	IncludeDir["Box2D"] 		= "Jasmine/vendor/Box2D/include"
-	
-	LibraryDir = {}
-	LibraryDir["mono"] = "vendor/mono/lib/mono-2.0-sgen.lib"
-	
-	
-	------Dependencies--------------------------------------------------
-	
-	group "Dependencies"
-	include "Jasmine/vendor/GLFW"
-	include "Jasmine/vendor/Glad"
-	include "Jasmine/vendor/ImGui"
-	include "Jasmine/vendor/Box2D"
-	group ""
-	
-	
-	------Group-Core----------------------------------------------------------
-	group "Core"
-	
-	------Project---------------
-	project "Jasmine"
-    		location "Jasmine"
-    		kind "StaticLib"
-    		language "C++"
-    		cppdialect "C++17"
-    		staticruntime "on"
+	flags
+	{
+		"MultiProcessorCompile"
+	}
 
-		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	startproject "JasEditor"
+	
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-    		pchheader "JMpch.h"
-    		pchsource "Jasmine/src/JMpch.cpp"
+include "Dependencies.lua"
 
-		files 
-		{ 
-			"%{prj.name}/src/**.h", 
-			"%{prj.name}/src/**.c", 
-			"%{prj.name}/src/**.hpp", 
-			"%{prj.name}/src/**.cpp" ,
-			
-			"%{prj.name}/vendor/FastNoise/**.cpp",
-			"%{prj.name}/vendor/yaml-cpp/src/**.cpp",
-			"%{prj.name}/vendor/yaml-cpp/src/**.h",
-			"%{prj.name}/vendor/yaml-cpp/include/**.h"
+group "Dependencies"
+include "Jasmine/vendor/GLFW"
+include "Jasmine/vendor/Glad"
+include "Jasmine/vendor/ImGui"
+include "Jasmine/vendor/Box2D"
+group ""
 
-    		}
-    		
-    		defines
-		{
-			"_CRT_SECURE_NO_WARNINGS",
-			"IMGUI_DEFINE_MATH_OPERATORS",
-			"NOMINMAX"
-		}
+group "Core"
+project "Jasmine"
+	location "Jasmine"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
 
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-    		includedirs
-		{
-			"%{prj.name}/src",
-        		"%{prj.name}/vendor",
-          		"%{prj.name}/vendor/assimp/include",
-        		"%{prj.name}/vendor/spdlog/include",
-        		"%{prj.name}/vendor/stb/include",
-        		"%{prj.name}/vendor/yaml-cpp/include",
-        		
-        		"%{IncludeDir.GLFW}",
-        		"%{IncludeDir.Glad}",
-        		"%{IncludeDir.glm}",
-        		"%{IncludeDir.ImGui}",
-        		"%{IncludeDir.entt}",
-        		"%{IncludeDir.FastNoise}",
-        		"%{IncludeDir.mono}",
-        		"%{IncludeDir.Box2D}"
-     		}
-    
-    		links 
-		{ 
-        		"GLFW",
-        		"Glad",
-        		"ImGui",
-        		"Box2D",
-			"opengl32.lib",
-			"%{LibraryDir.mono}"
-    		}
-    		
-    		filter "files:Jasmine/vendor/yaml-cpp/src/**.cpp"
-   		flags { "NoPCH" }
+	pchheader "JMpch.h"
+	pchsource "Jasmine/src/JMpch.cpp"
+
+	files 
+	{ 
+		"%{prj.name}/src/**.h", 
+		"%{prj.name}/src/**.c", 
+		"%{prj.name}/src/**.hpp", 
+		"%{prj.name}/src/**.cpp",
+
+		"%{prj.name}/vendor/FastNoise/**.cpp",
+
+		"%{prj.name}/vendor/yaml-cpp/src/**.cpp",
+		"%{prj.name}/vendor/yaml-cpp/src/**.h",
+		"%{prj.name}/vendor/yaml-cpp/include/**.h",
+		"%{prj.name}/vendor/VulkanMemoryAllocator/**.h",
+		"%{prj.name}/vendor/VulkanMemoryAllocator/**.cpp"
+	}
+
+	includedirs
+	{
+		"%{prj.name}/src",
+		"%{prj.name}/vendor",
+
+		"%{IncludeDir.Assimp}",
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.Vulkan}",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.mono}",
+		"%{IncludeDir.FastNoise}",
+		"%{IncludeDir.PhysX}",
+		"%{IncludeDir.VulkanSDK}",
 		
-		filter "files:Jasmine/vendor/FastNoise/**.cpp"
-   		flags { "NoPCH" }
-    		
-		filter "system:windows"
-     		systemversion "latest"
-        
+		"%{IncludeDir.NvidiaAftermath}",
+	}
+	
+	links
+	{ 
+		"GLFW",
+		"Glad",
+		"ImGui",
+		"Box2D",
+		"opengl32.lib",
+
+		"%{Library.Vulkan}",
+		"%{Library.VulkanUtils}",
+
+		"%{Library.mono}",
+
+		"%{Library.PhysX}",
+		"%{Library.PhysXCharacterKinematic}",
+		"%{Library.PhysXCommon}",
+		"%{Library.PhysXCooking}",
+		"%{Library.PhysXExtensions}",
+		"%{Library.PhysXFoundation}",
+		"%{Library.PhysXPvd}",
+		
+		"%{Library.NvidiaAftermath}",
+	}
+
+	defines
+	{
+		"PX_PHYSX_STATIC_LIB"
+	}
+	
+	filter "files:Jasmine/vendor/FastNoise/**.cpp or files:Jasmine/vendor/yaml-cpp/src/**.cpp"
+   	flags { "NoPCH" }
+
+	filter "system:windows"
+		systemversion "latest"
+		
 		defines 
 		{ 
-           	"JM_PLATFORM_WINDOWS",
-           	"JM_BUILD_DLL"
+			"JM_PLATFORM_WINDOWS",
+			"JM_BUILD_DLL"
 		}
 
-    		filter "configurations:Debug"
-        		defines "JM_DEBUG"
-        		symbols "On"
-                
-    		filter "configurations:Release"
-        		defines "JM_RELEASE"
-        		optimize "On"
-
-    		filter "configurations:Dist"
-        		defines "JM_DIST"
-        		optimize "On"
-      
-      ------Project--------------- 		
-      project "Jasmine-ScriptCore"
-		location "Jasmine-ScriptCore"
-		kind "SharedLib"
-		language "C#"
-
-		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-		files 
+	filter "configurations:Debug"
+		defines "JM_DEBUG"
+		symbols "On"
+				
+		links
 		{
-			"%{prj.name}/src/**.cs", 
+			"%{Library.ShaderC_Debug}",
+			"%{Library.SPIRV_Cross_Debug}",
+			"%{Library.SPIRV_Cross_GLSL_Debug}",
+			"%{Library.SPIRV_Tools_Debug}",
 		}
-		
-	group ""
-		
-	
-  	------Group-Tool-----------------------------------------------------------
-  	group "Tool"
-  	
-  	------Project---------------
-	project "JasEditor"
-    		location "JasEditor"
-    		kind "ConsoleApp"
-    		language "C++"
-    		cppdialect "C++17"
-    		staticruntime "on"
-    
-		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-		links 
-		{ 
-			"Jasmine"
-    		}
-    
-		files 
-		{ 
-			"%{prj.name}/src/**.h", 
-			"%{prj.name}/src/**.c", 
-			"%{prj.name}/src/**.hpp", 
-			"%{prj.name}/src/**.cpp" 
-		}
-    
-		includedirs 
+	filter "configurations:Release"
+		defines
 		{
-        		"%{prj.name}/src",
-        		"Jasmine/vendor/spdlog/include",
-        		"Jasmine/src",
-        		"Jasmine/vendor",
-        		"%{IncludeDir.glm}",
-        		"%{IncludeDir.entt}"
-    		}
-    		
-    		postbuildcommands 
-		{
-			'{COPY} "../JasEditor/assets" "%{cfg.targetdir}/assets"'
-		}
-
-	
-		filter "system:windows"
-        		systemversion "latest"
-                
-		defines 
-		{ 
-			"NOMINMAX",
-            	"JM_PLATFORM_WINDOWS"
-		}
-    
-    		filter "configurations:Debug"
-        		defines "JM_DEBUG"
-        		symbols "on"
-        		links
-			{
-				"Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.lib"
-			}
-			
-			postbuildcommands 
-			{
-				'{COPY} "../Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"',
-				'{COPY} "../Jasmine/vendor/mono/bin/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
-			}
-
-                
-    		filter "configurations:Release"
-        		defines "JM_RELEASE"
-        		optimize "on"
-        		links
-			{
-				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
-			}
-			
-			postbuildcommands 
-			{
-				'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"',
-				'{COPY} "../Jasmine/vendor/mono/bin/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
-			}
-
-
-    		filter "configurations:Dist"
-        		defines "JM_DIST"
-        		optimize "on"
-        		links
-			{
-				"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
-			}
-			
-			postbuildcommands 
-			{
-				'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"',
-				'{COPY} "../Jasmine/vendor/mono/bin/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
-			}
-			
-	group ""
-	
-	
-	------Group-Examples------------------------------------------------------
-	group "Examples"
-	
-	------Project--------------
-	project "ExampleApp"
-		location "ExampleApp"
-		kind "SharedLib"
-		language "C#"
-
-		targetdir ("JasEditor/assets/scripts")
-		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-		files 
-		{
-			"%{prj.name}/src/**.cs", 
+			"JM_RELEASE",
+			"NDEBUG" -- PhysX Requires This
 		}
 
 		links
 		{
-			"Jasmine-ScriptCore"
+			"%{Library.ShaderC_Release}",
+			"%{Library.SPIRV_Cross_Release}",
+			"%{Library.SPIRV_Cross_GLSL_Release}",
 		}
 
-	group ""
+		optimize "On"
+
+	filter "configurations:Dist"
+		defines "JM_DIST"
+		optimize "On"
+
+project "Jasmine-ScriptCore"
+	location "Jasmine-ScriptCore"
+	kind "SharedLib"
+	language "C#"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files 
+	{
+		"%{prj.name}/src/**.cs", 
+	}
+group ""
+
+group "Tools"
+project "JasEditor"
+	location "JasEditor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
+	
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	links 
+	{ 
+		"Jasmine"
+	}
+	
+	files 
+	{ 
+		"%{prj.name}/src/**.h", 
+		"%{prj.name}/src/**.c", 
+		"%{prj.name}/src/**.hpp", 
+		"%{prj.name}/src/**.cpp" 
+	}
+	
+	includedirs 
+	{
+		"%{prj.name}/src",
+		"Jasmine/src",
+		"Jasmine/vendor",
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.Vulkan}",
+		"%{IncludeDir.Glad}"
+	}
+
+	postbuildcommands 
+	{
+		'{COPY} "../Jasmine/vendor/NvidiaAftermath/lib/x64/GFSDK_Aftermath_Lib.x64.dll" "%{cfg.targetdir}"'
+	}
+	
+	filter "system:windows"
+		systemversion "latest"
+				
+		defines 
+		{ 
+			"JM_PLATFORM_WINDOWS"
+		}
+	
+	filter "configurations:Debug"
+		defines "JM_DEBUG"
+		symbols "on"
+
+		links
+		{
+			"Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.lib"
+		}
+
+		postbuildcommands 
+		{
+			'{COPY} "../Jasmine/vendor/assimp/bin/Debug/assimp-vc141-mtd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Jasmine/vendor/mono/bin/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Jasmine/vendor/VulkanSDK/Bin/shaderc_sharedd.dll" "%{cfg.targetdir}"'
+		}
+				
+	filter "configurations:Release"
+		defines "JM_RELEASE"
+		optimize "on"
+
+		links
+		{
+			"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+		}
+
+		postbuildcommands 
+		{
+			'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Jasmine/vendor/mono/bin/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
+
+		}
+
+	filter "configurations:Dist"
+		defines "JM_DIST"
+		optimize "on"
+
+		links
+		{
+			"Jasmine/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+		}
+
+		postbuildcommands 
+		{
+			'{COPY} "../Jasmine/vendor/assimp/bin/Release/assimp-vc141-mtd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Jasmine/vendor/mono/bin/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
+		}
+group ""
+
+group "Example"
+project "ExampleApp"
+	location "ExampleApp"
+	kind "SharedLib"
+	language "C#"
+
+	targetdir ("JasEditor/assets/scripts")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files 
+	{
+		"%{prj.name}/src/**.cs", 
+	}
+
+	links
+	{
+		"Jasmine-ScriptCore"
+	}
+group ""

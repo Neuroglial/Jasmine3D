@@ -8,11 +8,21 @@
 #include <imgui/imgui.h>
 
 #include "Jasmine/Script/ScriptEngine.h"
+#include "Jasmine/Physics/Physics.h"
+#include "Jasmine/Asset/AssetManager.h"
+
+#include "Input.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 #include <Windows.h>
 
+#include "Jasmine/Platform/Vulkan/VulkanRenderer.h"
+#include "Jasmine/Platform/Vulkan/VulkanAllocator.h"
+#include "imgui/imgui_internal.h"
+
+extern bool g_ApplicationRunning;
+extern ImGuiContext* GImGui;
 namespace Jasmine {
 
 #define BIND_EVENT_FN(fn) std::bind(&Application::##fn, this, std::placeholders::_1)
@@ -23,23 +33,45 @@ namespace Jasmine {
 	{
 		s_Instance = this;
 
+		m_Profiler = new PerformanceProfiler();
+
 		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(props.Name, props.WindowWidth, props.WindowHeight)));
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		m_Window->Maximize();
-		m_Window->SetVSync(true);
+		m_Window->SetVSync(false);
 
-		m_ImGuiLayer = new ImGuiLayer("ImGui");
+		// Init renderer and execute command queue to compile all shaders
+		Renderer::Init();
+		Renderer::WaitAndRender();
+		
+		m_ImGuiLayer = ImGuiLayer::Create();
 		PushOverlay(m_ImGuiLayer);
 
 		ScriptEngine::Init("assets/scripts/ExampleApp.dll");
+		Physics::Init();
 
-		Renderer::Init();
-		Renderer::WaitAndRender();
+		AssetManager::Init();
 	}
 
 	Application::~Application()
 	{
+		for (Layer* layer : m_LayerStack)
+		{
+			layer->OnDetach();
+			delete layer;
+		}
+
+		FramebufferPool::GetGlobal()->GetAll().clear();
+		
+		Physics::Shutdown();
 		ScriptEngine::Shutdown();
+		AssetManager::Shutdown();
+
+		Renderer::WaitAndRender();
+		Renderer::Shutdown();
+
+		delete m_Profiler;
+		m_Profiler = nullptr;
 	}
 
 	void Application::PushLayer(Layer* layer)
@@ -62,14 +94,34 @@ namespace Jasmine {
 			layer->OnImGuiRender();
 
 		ImGui::Begin("Renderer");
-		auto& caps = RendererAPI::GetCapabilities();
+		auto& caps = Renderer::GetCapabilities();
 		ImGui::Text("Vendor: %s", caps.Vendor.c_str());
-		ImGui::Text("Renderer: %s", caps.Renderer.c_str());
+		ImGui::Text("Renderer: %s", caps.Device.c_str());
 		ImGui::Text("Version: %s", caps.Version.c_str());
+		ImGui::Separator();
 		ImGui::Text("Frame Time: %.2fms\n", m_TimeStep.GetMilliseconds());
+
+		if (RendererAPI::Current() == RendererAPIType::Vulkan)
+		{
+			GPUMemoryStats memoryStats = VulkanAllocator::GetStats();
+			std::string used = Utils::BytesToString(memoryStats.Used);
+			std::string free = Utils::BytesToString(memoryStats.Free);
+			ImGui::Text("Used VRAM: %s", used.c_str());
+			ImGui::Text("Free VRAM: %s", free.c_str());
+		}
+
 		ImGui::End();
 
-		m_ImGuiLayer->End();
+		ImGui::Begin("Performance");
+		ImGui::Text("Frame Time: %.2fms\n", m_TimeStep.GetMilliseconds());
+		const auto& perFrameData = m_Profiler->GetPerFrameData();
+		for (auto&& [name, time] : perFrameData)
+		{
+			ImGui::Text("%s: %.3fms\n", name, time);
+		}
+
+		ImGui::End();
+		m_Profiler->Clear();
 	}
 
 	void Application::Run()
@@ -77,24 +129,42 @@ namespace Jasmine {
 		OnInit();
 		while (m_Running)
 		{
+			static uint64_t frameCounter = 0;
+			//JM_CORE_INFO("-- BEGIN FRAME {0}", frameCounter);
+			m_Window->ProcessEvents();
+
 			if (!m_Minimized)
 			{
+				Renderer::BeginFrame();
+				//VulkanRenderer::BeginFrame();
 				for (Layer* layer : m_LayerStack)
 					layer->OnUpdate(m_TimeStep);
-
+			
 				// Render ImGui on render thread
 				Application* app = this;
 				Renderer::Submit([app]() { app->RenderImGui(); });
+				Renderer::Submit([=]() {m_ImGuiLayer->End(); });
+				Renderer::EndFrame();
 
+				// On Render thread
+				m_Window->GetRenderContext()->BeginFrame();
 				Renderer::WaitAndRender();
+				m_Window->SwapBuffers();
 			}
-			m_Window->OnUpdate();
 
 			float time = GetTime();
 			m_TimeStep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
+
+			//JM_CORE_INFO("-- END FRAME {0}", frameCounter);
+			frameCounter++;
 		}
 		OnShutdown();
+	}
+
+	void Application::Close()
+	{
+		m_Running = false;
 	}
 
 	void Application::OnEvent(Event& event)
@@ -120,7 +190,9 @@ namespace Jasmine {
 			return false;
 		}
 		m_Minimized = false;
-		Renderer::Submit([=]() { glViewport(0, 0, width, height); });
+		
+		m_Window->GetRenderContext()->OnResize(width, height);
+
 		auto& fbs = FramebufferPool::GetGlobal()->GetAll();
 		for (auto& fb : fbs)
 		{
@@ -134,6 +206,7 @@ namespace Jasmine {
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;
+		g_ApplicationRunning = false; // Request close
 		return true;
 	}
 

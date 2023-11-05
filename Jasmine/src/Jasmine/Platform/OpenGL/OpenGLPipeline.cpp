@@ -31,6 +31,8 @@ namespace Jasmine {
 	OpenGLPipeline::OpenGLPipeline(const PipelineSpecification& spec)
 		: m_Specification(spec)
 	{
+		JM_CORE_ASSERT(spec.Shader);
+		JM_CORE_ASSERT(spec.RenderPass);
 		Invalidate();
 	}
 

@@ -14,6 +14,8 @@
 
 #include <fstream>
 
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+
 #include <Jasmine/Core/Base.h>
 #include <Jasmine/Core/Log.h>
 #include <Jasmine/Core/Events/Event.h>

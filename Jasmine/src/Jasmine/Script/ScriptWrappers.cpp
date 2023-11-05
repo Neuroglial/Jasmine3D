@@ -5,14 +5,21 @@
 
 #include "Jasmine/Scene/Scene.h"
 #include "Jasmine/Scene/Entity.h"
-#include "Jasmine/Scene/Components.h"
+#include "Jasmine/Physics/PhysicsUtil.h"
+#include "Jasmine/Physics/PXPhysicsWrappers.h"
+#include "Jasmine/Physics/PhysicsActor.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/common.hpp>
 
-#include "Jasmine/Core/Input.h"
 #include <mono/jit/jit.h>
 
 #include <box2d/box2d.h>
+
+#include <PhysX/PxPhysicsAPI.h>
 
 namespace Jasmine {
 	extern std::unordered_map<MonoType*, std::function<bool(Entity&)>> s_HasComponentFuncs;
@@ -20,17 +27,6 @@ namespace Jasmine {
 }
 
 namespace Jasmine { namespace Script {
-
-	enum class ComponentID
-	{
-		None = 0,
-		Transform = 1,
-		Mesh = 2,
-		Script = 3,
-		SpriteRenderer = 4
-	};
-
-
 
 	////////////////////////////////////////////////////////////////
 	// Math ////////////////////////////////////////////////////////
@@ -52,35 +48,206 @@ namespace Jasmine { namespace Script {
 		return Input::IsKeyPressed(key);
 	}
 
+	bool Jasmine_Input_IsMouseButtonPressed(MouseButton button)
+	{
+		return Input::IsMouseButtonPressed(button);
+	}
+
+	void Jasmine_Input_GetMousePosition(glm::vec2* outPosition)
+	{
+		auto [x, y] = Input::GetMousePosition();
+		*outPosition = { x, y };
+	}
+
+	void Jasmine_Input_SetCursorMode(CursorMode mode)
+	{
+		Input::SetCursorMode(mode);
+	}
+
+	CursorMode Jasmine_Input_GetCursorMode()
+	{
+		return Input::GetCursorMode();
+	}
+
+	bool Jasmine_Physics_Raycast(glm::vec3* origin, glm::vec3* direction, float maxDistance, RaycastHit* hit)
+	{
+		return PXPhysicsWrappers::Raycast(*origin, *direction, maxDistance, hit);
+	}
+
+	// Helper function for the Overlap functions below
+	static void AddCollidersToArray(MonoArray* array, const std::array<physx::PxOverlapHit, OVERLAP_MAX_COLLIDERS>& hits, uint32_t count, uint32_t arrayLength)
+	{
+		uint32_t arrayIndex = 0;
+		for (uint32_t i = 0; i < count; i++)
+		{
+			Entity& entity = *(Entity*)hits[i].actor->userData;
+
+			if (entity.HasComponent<BoxColliderComponent>() && arrayIndex < arrayLength)
+			{
+				auto& boxCollider = entity.GetComponent<BoxColliderComponent>();
+
+				void* data[] = {
+					&entity.GetUUID(),
+					&boxCollider.IsTrigger,
+					&boxCollider.Size,
+					&boxCollider.Offset
+				};
+
+				MonoObject* obj = ScriptEngine::Construct("Jasmine.BoxCollider:.ctor(ulong,bool,Vector3,Vector3)", true, data);
+				mono_array_set(array, MonoObject*, arrayIndex++, obj);
+			}
+
+			if (entity.HasComponent<SphereColliderComponent>() && arrayIndex < arrayLength)
+			{
+				auto& sphereCollider = entity.GetComponent<SphereColliderComponent>();
+
+				void* data[] = {
+					&entity.GetUUID(),
+					&sphereCollider.IsTrigger,
+					&sphereCollider.Radius
+				};
+
+				MonoObject* obj = ScriptEngine::Construct("Jasmine.SphereCollider:.ctor(ulong,bool,single)", true, data);
+				mono_array_set(array, MonoObject*, arrayIndex++, obj);
+			}
+
+			if (entity.HasComponent<CapsuleColliderComponent>() && arrayIndex < arrayLength)
+			{
+				auto& capsuleCollider = entity.GetComponent<CapsuleColliderComponent>();
+
+				void* data[] = {
+					&entity.GetUUID(),
+					&capsuleCollider.IsTrigger,
+					&capsuleCollider.Radius,
+					&capsuleCollider.Height
+				};
+
+				MonoObject* obj = ScriptEngine::Construct("Jasmine.CapsuleCollider:.ctor(ulong,bool,single,single)", true, data);
+				mono_array_set(array, MonoObject*, arrayIndex++, obj);
+			}
+
+			if (entity.HasComponent<MeshColliderComponent>() && arrayIndex < arrayLength)
+			{
+				auto& meshCollider = entity.GetComponent<MeshColliderComponent>();
+
+				Ref<Mesh>* mesh = new Ref<Mesh>(meshCollider.CollisionMesh);
+				void* data[] = {
+					&entity.GetUUID(),
+					&meshCollider.IsTrigger,
+					&mesh
+				};
+
+				MonoObject* obj = ScriptEngine::Construct("Jasmine.MeshCollider:.ctor(ulong,bool,intptr)", true, data);
+				mono_array_set(array, MonoObject*, arrayIndex++, obj);
+			}
+		}
+	}
+
+	static std::array<physx::PxOverlapHit, OVERLAP_MAX_COLLIDERS> s_OverlapBuffer;
+
+	MonoArray* Jasmine_Physics_OverlapBox(glm::vec3* origin, glm::vec3* halfSize)
+	{
+		MonoArray* outColliders = nullptr;
+		memset(s_OverlapBuffer.data(), 0, OVERLAP_MAX_COLLIDERS * sizeof(physx::PxOverlapHit));
+
+		uint32_t count;
+		if (PXPhysicsWrappers::OverlapBox(*origin, *halfSize, s_OverlapBuffer, &count))
+		{
+			outColliders = mono_array_new(mono_domain_get(), ScriptEngine::GetCoreClass("Jasmine.Collider"), count);
+			AddCollidersToArray(outColliders, s_OverlapBuffer, count, count);
+		}
+
+		return outColliders;
+	}
+
+	MonoArray* Jasmine_Physics_OverlapCapsule(glm::vec3* origin, float radius, float halfHeight)
+	{
+		MonoArray* outColliders = nullptr;
+		memset(s_OverlapBuffer.data(), 0, OVERLAP_MAX_COLLIDERS * sizeof(physx::PxOverlapHit));
+
+		uint32_t count;
+		if (PXPhysicsWrappers::OverlapCapsule(*origin, radius, halfHeight, s_OverlapBuffer, &count))
+		{
+			outColliders = mono_array_new(mono_domain_get(), ScriptEngine::GetCoreClass("Jasmine.Collider"), count);
+			AddCollidersToArray(outColliders, s_OverlapBuffer, count, count);
+		}
+
+		return outColliders;
+	}
+
+	MonoArray* Jasmine_Physics_OverlapSphere(glm::vec3* origin, float radius)
+	{
+		MonoArray* outColliders = nullptr;
+		memset(s_OverlapBuffer.data(), 0, OVERLAP_MAX_COLLIDERS * sizeof(physx::PxOverlapHit));
+
+		uint32_t count;
+		if (PXPhysicsWrappers::OverlapSphere(*origin, radius, s_OverlapBuffer, &count))
+		{
+			outColliders = mono_array_new(mono_domain_get(), ScriptEngine::GetCoreClass("Jasmine.Collider"), count);
+			AddCollidersToArray(outColliders, s_OverlapBuffer, count, count);
+		}
+
+		return outColliders;
+	}
+
+	int32_t Jasmine_Physics_OverlapBoxNonAlloc(glm::vec3* origin, glm::vec3* halfSize, MonoArray* outColliders)
+	{
+		memset(s_OverlapBuffer.data(), 0, OVERLAP_MAX_COLLIDERS * sizeof(physx::PxOverlapHit));
+
+		uint64_t arrayLength = mono_array_length(outColliders);
+
+		uint32_t count;
+		if (PXPhysicsWrappers::OverlapBox(*origin, *halfSize, s_OverlapBuffer, &count))
+		{
+			if (count > arrayLength)
+				count = arrayLength;
+
+			AddCollidersToArray(outColliders, s_OverlapBuffer, count, arrayLength);
+		}
+
+		return count;
+	}
+
+	int32_t Jasmine_Physics_OverlapCapsuleNonAlloc(glm::vec3* origin, float radius, float halfHeight, MonoArray* outColliders)
+	{
+		memset(s_OverlapBuffer.data(), 0, OVERLAP_MAX_COLLIDERS * sizeof(physx::PxOverlapHit));
+
+		uint64_t arrayLength = mono_array_length(outColliders);
+		uint32_t count;
+		if (PXPhysicsWrappers::OverlapCapsule(*origin, radius, halfHeight, s_OverlapBuffer, &count))
+		{
+			if (count > arrayLength)
+				count = arrayLength;
+
+			AddCollidersToArray(outColliders, s_OverlapBuffer, count, arrayLength);
+		}
+
+		return count;
+	}
+
+	int32_t Jasmine_Physics_OverlapSphereNonAlloc(glm::vec3* origin, float radius, MonoArray* outColliders)
+	{
+		memset(s_OverlapBuffer.data(), 0, OVERLAP_MAX_COLLIDERS * sizeof(physx::PxOverlapHit));
+
+		uint64_t arrayLength = mono_array_length(outColliders);
+
+		uint32_t count;
+		if (PXPhysicsWrappers::OverlapSphere(*origin, radius, s_OverlapBuffer, &count))
+		{
+			if (count > arrayLength)
+				count = arrayLength;
+
+			AddCollidersToArray(outColliders, s_OverlapBuffer, count, arrayLength);
+		}
+
+		return count;
+	}
+
 	////////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////////////////////////////
 	// Entity //////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
-
-	void Jasmine_Entity_GetTransform(uint64_t entityID, glm::mat4* outTransform)
-	{
-		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
-		JM_CORE_ASSERT(scene, "No active scene!");
-		const auto& entityMap = scene->GetEntityMap();
-		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
-
-		Entity entity = entityMap.at(entityID);
-		auto& transformComponent = entity.GetComponent<TransformComponent>();
-		memcpy(outTransform, glm::value_ptr(transformComponent.Transform), sizeof(glm::mat4));
-	}
-
-	void Jasmine_Entity_SetTransform(uint64_t entityID, glm::mat4* inTransform)
-	{
-		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
-		JM_CORE_ASSERT(scene, "No active scene!");
-		const auto& entityMap = scene->GetEntityMap();
-		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
-
-		Entity entity = entityMap.at(entityID);
-		auto& transformComponent = entity.GetComponent<TransformComponent>();
-		memcpy(glm::value_ptr(transformComponent.Transform), inTransform, sizeof(glm::mat4));
-	}
 
 	void Jasmine_Entity_CreateComponent(uint64_t entityID, void* type)
 	{
@@ -117,6 +284,94 @@ namespace Jasmine { namespace Script {
 			return entity.GetComponent<IDComponent>().ID;
 		
 		return 0;
+	}
+
+	void Jasmine_TransformComponent_GetTransform(uint64_t entityID, TransformComponent* outTransform)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		*outTransform = entity.GetComponent<TransformComponent>();
+	}
+
+	void Jasmine_TransformComponent_SetTransform(uint64_t entityID, TransformComponent* inTransform)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		entity.GetComponent<TransformComponent>() = *inTransform;
+	}
+
+	void Jasmine_TransformComponent_GetTranslation(uint64_t entityID, glm::vec3* outTranslation)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		*outTranslation = entity.GetComponent<TransformComponent>().Translation;
+	}
+
+	void Jasmine_TransformComponent_SetTranslation(uint64_t entityID, glm::vec3* inTranslation)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		entity.GetComponent<TransformComponent>().Translation = *inTranslation;
+	}
+
+	void Jasmine_TransformComponent_GetRotation(uint64_t entityID, glm::vec3* outRotation)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		*outRotation = entity.GetComponent<TransformComponent>().Rotation;
+	}
+
+	void Jasmine_TransformComponent_SetRotation(uint64_t entityID, glm::vec3* inRotation)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		entity.GetComponent<TransformComponent>().Rotation = *inRotation;
+	}
+
+	void Jasmine_TransformComponent_GetScale(uint64_t entityID, glm::vec3* outScale)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		*outScale = entity.GetComponent<TransformComponent>().Scale;
+	}
+
+	void Jasmine_TransformComponent_SetScale(uint64_t entityID, glm::vec3* inScale)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		entity.GetComponent<TransformComponent>().Scale = *inScale;
 	}
 
 	void* Jasmine_MeshComponent_GetMesh(uint64_t entityID)
@@ -188,6 +443,177 @@ namespace Jasmine { namespace Script {
 		body->SetLinearVelocity({velocity->x, velocity->y});
 	}
 
+	RigidBodyComponent::Type Jasmine_RigidBodyComponent_GetBodyType(uint64_t entityID)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		return component.BodyType;
+	}
+
+	void Jasmine_RigidBodyComponent_AddForce(uint64_t entityID, glm::vec3* force, ForceMode forceMode)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+
+		if (component.IsKinematic)
+		{
+			JM_CORE_WARN("Cannot add a force to a kinematic actor! EntityID({0})", entityID);
+			return;
+		}
+		
+		Ref<PhysicsActor> actor = Physics::GetActorForEntity(entity);
+		actor->AddForce(*force, forceMode);
+	}
+
+	void Jasmine_RigidBodyComponent_AddTorque(uint64_t entityID, glm::vec3* torque, ForceMode forceMode)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		
+		if (component.IsKinematic)
+		{
+			JM_CORE_WARN("Cannot add torque to a kinematic actor! EntityID({0})", entityID);
+			return;
+		}
+
+		Ref<PhysicsActor> actor = Physics::GetActorForEntity(entity);
+		actor->AddTorque(*torque, forceMode);
+	}
+
+	void Jasmine_RigidBodyComponent_GetLinearVelocity(uint64_t entityID, glm::vec3* outVelocity)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		JM_CORE_ASSERT(outVelocity);
+		Ref<PhysicsActor> actor = Physics::GetActorForEntity(entity);
+		*outVelocity = actor->GetLinearVelocity();
+	}
+
+	void Jasmine_RigidBodyComponent_SetLinearVelocity(uint64_t entityID, glm::vec3* velocity)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		JM_CORE_ASSERT(velocity);
+		Ref<PhysicsActor> actor = Physics::GetActorForEntity(entity);
+		actor->SetLinearVelocity(*velocity);
+	}
+
+	void Jasmine_RigidBodyComponent_GetAngularVelocity(uint64_t entityID, glm::vec3* outVelocity)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		JM_CORE_ASSERT(outVelocity);
+		Ref<PhysicsActor> actor = Physics::GetActorForEntity(entity);
+		*outVelocity = actor->GetAngularVelocity();
+	}
+
+	void Jasmine_RigidBodyComponent_SetAngularVelocity(uint64_t entityID, glm::vec3* velocity)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		JM_CORE_ASSERT(velocity);
+		Ref<PhysicsActor> actor = Physics::GetActorForEntity(entity);
+		actor->SetAngularVelocity(*velocity);
+	}
+
+	void Jasmine_RigidBodyComponent_Rotate(uint64_t entityID, glm::vec3* rotation)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		JM_CORE_ASSERT(rotation);
+		Ref<PhysicsActor> actor = Physics::GetActorForEntity(entity);
+		actor->Rotate(*rotation);
+	}
+
+	uint32_t Jasmine_RigidBodyComponent_GetLayer(uint64_t entityID)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		return component.Layer;
+	}
+
+	float Jasmine_RigidBodyComponent_GetMass(uint64_t entityID)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		Ref<PhysicsActor>& actor = Physics::GetActorForEntity(entity);
+		return actor->GetMass();
+	}
+
+	void Jasmine_RigidBodyComponent_SetMass(uint64_t entityID, float mass)
+	{
+		Ref<Scene> scene = ScriptEngine::GetCurrentSceneContext();
+		JM_CORE_ASSERT(scene, "No active scene!");
+		const auto& entityMap = scene->GetEntityMap();
+		JM_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Invalid entity ID or entity doesn't exist in scene!");
+
+		Entity entity = entityMap.at(entityID);
+		JM_CORE_ASSERT(entity.HasComponent<RigidBodyComponent>());
+		auto& component = entity.GetComponent<RigidBodyComponent>();
+		Ref<PhysicsActor>& actor = Physics::GetActorForEntity(entity);
+		actor->SetMass(mass);
+	}
+
 	Ref<Mesh>* Jasmine_Mesh_Constructor(MonoString* filepath)
 	{
 		return new Ref<Mesh>(new Mesh(mono_string_to_utf8(filepath)));
@@ -202,16 +628,17 @@ namespace Jasmine { namespace Script {
 	Ref<Material>* Jasmine_Mesh_GetMaterial(Ref<Mesh>* inMesh)
 	{
 		Ref<Mesh>& mesh = *(Ref<Mesh>*)inMesh;
-		return new Ref<Material>(mesh->GetMaterial());
+		const auto& materials = mesh->GetMaterials();
+		return new Ref<Material>(materials[0]);
 	}
 
-	Ref<MaterialInstance>* Jasmine_Mesh_GetMaterialByIndex(Ref<Mesh>* inMesh, int index)
+	Ref<Material>* Jasmine_Mesh_GetMaterialByIndex(Ref<Mesh>* inMesh, int index)
 	{
 		Ref<Mesh>& mesh = *(Ref<Mesh>*)inMesh;
 		const auto& materials = mesh->GetMaterials();
 		
 		JM_CORE_ASSERT(index < materials.size());
-		return new Ref<MaterialInstance>(materials[index]);
+		return new Ref<Material>(materials[index]);
 	}
 
 	int Jasmine_Mesh_GetMaterialCount(Ref<Mesh>* inMesh)
@@ -223,7 +650,7 @@ namespace Jasmine { namespace Script {
 
 	void* Jasmine_Texture2D_Constructor(uint32_t width, uint32_t height)
 	{
-		auto result = Texture2D::Create(TextureFormat::RGBA, width, height);
+		auto result = Texture2D::Create(ImageFormat::RGBA, width, height);
 		return new Ref<Texture2D>(result);
 	}
 
@@ -273,32 +700,32 @@ namespace Jasmine { namespace Script {
 		instance->Set(mono_string_to_utf8(uniform), *texture);
 	}
 
-	void Jasmine_MaterialInstance_Destructor(Ref<MaterialInstance>* _this)
+	void Jasmine_MaterialInstance_Destructor(Ref<Material>* _this)
 	{
 		delete _this;
 	}
 
-	void Jasmine_MaterialInstance_SetFloat(Ref<MaterialInstance>* _this, MonoString* uniform, float value)
+	void Jasmine_MaterialInstance_SetFloat(Ref<Material>* _this, MonoString* uniform, float value)
 	{
-		Ref<MaterialInstance>& instance = *(Ref<MaterialInstance>*)_this;
+		Ref<Material>& instance = *(Ref<Material>*)_this;
 		instance->Set(mono_string_to_utf8(uniform), value);
 	}
 
-	void Jasmine_MaterialInstance_SetVector3(Ref<MaterialInstance>* _this, MonoString* uniform, glm::vec3* value)
+	void Jasmine_MaterialInstance_SetVector3(Ref<Material>* _this, MonoString* uniform, glm::vec3* value)
 	{
-		Ref<MaterialInstance>& instance = *(Ref<MaterialInstance>*)_this;
+		Ref<Material>& instance = *(Ref<Material>*)_this;
 		instance->Set(mono_string_to_utf8(uniform), *value);
 	}
 
-	void Jasmine_MaterialInstance_SetVector4(Ref<MaterialInstance>* _this, MonoString* uniform, glm::vec4* value)
+	void Jasmine_MaterialInstance_SetVector4(Ref<Material>* _this, MonoString* uniform, glm::vec4* value)
 	{
-		Ref<MaterialInstance>& instance = *(Ref<MaterialInstance>*)_this;
+		Ref<Material>& instance = *(Ref<Material>*)_this;
 		instance->Set(mono_string_to_utf8(uniform), *value);
 	}
 
-	void Jasmine_MaterialInstance_SetTexture(Ref<MaterialInstance>* _this, MonoString* uniform, Ref<Texture2D>* texture)
+	void Jasmine_MaterialInstance_SetTexture(Ref<Material>* _this, MonoString* uniform, Ref<Texture2D>* texture)
 	{
-		Ref<MaterialInstance>& instance = *(Ref<MaterialInstance>*)_this;
+		Ref<Material>& instance = *(Ref<Material>*)_this;
 		instance->Set(mono_string_to_utf8(uniform), *texture);
 	}
 

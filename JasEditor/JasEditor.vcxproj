@@ -78,11 +78,13 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>NOMINMAX;JM_PLATFORM_WINDOWS;JM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\Jasmine\vendor\spdlog\include;..\Jasmine\src;..\Jasmine\vendor;..\Jasmine\vendor\glm;..\Jasmine\vendor\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>JM_PLATFORM_WINDOWS;JM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;..\Jasmine\src;..\Jasmine\vendor;..\Jasmine\vendor\entt\include;..\Jasmine\vendor\glm;..\Jasmine\vendor\ImGui;..;..\Jasmine\vendor\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -92,23 +94,25 @@
       <AdditionalDependencies>..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST "..\JasEditor\assets"\ (xcopy /Q /E /Y /I "..\JasEditor\assets" "..\bin\Debug-windows-x86_64\JasEditor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "..\JasEditor\assets" "..\bin\Debug-windows-x86_64\JasEditor\assets" &gt; nul)
+      <Command>IF EXIST "..\Jasmine\vendor\NvidiaAftermath\lib\x64\GFSDK_Aftermath_Lib.x64.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\NvidiaAftermath\lib\x64\GFSDK_Aftermath_Lib.x64.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\NvidiaAftermath\lib\x64\GFSDK_Aftermath_Lib.x64.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)
 IF EXIST "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Debug\assimp-vc141-mtd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)
-IF EXIST "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)</Command>
+IF EXIST "..\Jasmine\vendor\mono\bin\Debug\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\Debug\mono-2.0-sgen.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\Debug\mono-2.0-sgen.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)
+IF EXIST "..\Jasmine\vendor\VulkanSDK\Bin\shaderc_sharedd.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\VulkanSDK\Bin\shaderc_sharedd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\VulkanSDK\Bin\shaderc_sharedd.dll" "..\bin\Debug-windows-x86_64\JasEditor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>NOMINMAX;JM_PLATFORM_WINDOWS;JM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\Jasmine\vendor\spdlog\include;..\Jasmine\src;..\Jasmine\vendor;..\Jasmine\vendor\glm;..\Jasmine\vendor\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>JM_PLATFORM_WINDOWS;JM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;..\Jasmine\src;..\Jasmine\vendor;..\Jasmine\vendor\entt\include;..\Jasmine\vendor\glm;..\Jasmine\vendor\ImGui;..;..\Jasmine\vendor\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -119,23 +123,24 @@ IF EXIST "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\
       <AdditionalDependencies>..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST "..\JasEditor\assets"\ (xcopy /Q /E /Y /I "..\JasEditor\assets" "..\bin\Release-windows-x86_64\JasEditor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "..\JasEditor\assets" "..\bin\Release-windows-x86_64\JasEditor\assets" &gt; nul)
+      <Command>IF EXIST "..\Jasmine\vendor\NvidiaAftermath\lib\x64\GFSDK_Aftermath_Lib.x64.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\NvidiaAftermath\lib\x64\GFSDK_Aftermath_Lib.x64.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\NvidiaAftermath\lib\x64\GFSDK_Aftermath_Lib.x64.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul)
 IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul)
-IF EXIST "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul)</Command>
+IF EXIST "..\Jasmine\vendor\mono\bin\Debug\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\Debug\mono-2.0-sgen.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\Debug\mono-2.0-sgen.dll" "..\bin\Release-windows-x86_64\JasEditor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>NOMINMAX;JM_PLATFORM_WINDOWS;JM_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\Jasmine\vendor\spdlog\include;..\Jasmine\src;..\Jasmine\vendor;..\Jasmine\vendor\glm;..\Jasmine\vendor\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>JM_PLATFORM_WINDOWS;JM_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;..\Jasmine\src;..\Jasmine\vendor;..\Jasmine\vendor\entt\include;..\Jasmine\vendor\glm;..\Jasmine\vendor\ImGui;..;..\Jasmine\vendor\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -146,9 +151,9 @@ IF EXIST "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\
       <AdditionalDependencies>..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST "..\JasEditor\assets"\ (xcopy /Q /E /Y /I "..\JasEditor\assets" "..\bin\Dist-windows-x86_64\JasEditor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "..\JasEditor\assets" "..\bin\Dist-windows-x86_64\JasEditor\assets" &gt; nul)
-IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mt.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)
-IF EXIST "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\mono-2.0-sgen.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)</Command>
+      <Command>IF EXIST "..\Jasmine\vendor\NvidiaAftermath\lib\x64\GFSDK_Aftermath_Lib.x64.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\NvidiaAftermath\lib\x64\GFSDK_Aftermath_Lib.x64.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\NvidiaAftermath\lib\x64\GFSDK_Aftermath_Lib.x64.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)
+IF EXIST "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mtd.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mtd.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\assimp\bin\Release\assimp-vc141-mtd.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)
+IF EXIST "..\Jasmine\vendor\mono\bin\Debug\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "..\Jasmine\vendor\mono\bin\Debug\mono-2.0-sgen.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul) ELSE (xcopy /Q /Y /I "..\Jasmine\vendor\mono\bin\Debug\mono-2.0-sgen.dll" "..\bin\Dist-windows-x86_64\JasEditor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

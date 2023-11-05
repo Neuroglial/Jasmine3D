@@ -3,6 +3,8 @@
 #include "Jasmine/ImGui/ImGuizmo.h"
 #include "Jasmine/Renderer/Renderer2D.h"
 #include "Jasmine/Script/ScriptEngine.h"
+#include "Jasmine/Editor/PhysicsSettingsWindow.h"
+#include "Jasmine/Editor/AssetEditorPanel.h"
 
 #include <filesystem>
 
@@ -11,11 +13,19 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <imgui/imgui_internal.h>
+#include "Jasmine/Physics/Physics.h"
+#include "Jasmine/Math/Math.h"
+#include "Jasmine/Utilities/FileSystem.h"
+
+#include "Jasmine/Renderer/RendererAPI.h"
+#include "Jasmine/Platform/OpenGL/OpenGLFramebuffer.h"
+
+#include "imgui_internal.h"
+#include "Jasmine/ImGui/ImGui.h"
 
 namespace Jasmine {
 
-	static void ImGuiShowHelpMarker(const char* desc)
+	/*static void ImGuiShowHelpMarker(const char* desc)
 	{
 		ImGui::TextDisabled("(?)");
 		if (ImGui::IsItemHovered())
@@ -26,17 +36,7 @@ namespace Jasmine {
 			ImGui::PopTextWrapPos();
 			ImGui::EndTooltip();
 		}
-	}
-
-	static std::tuple<glm::vec3, glm::quat, glm::vec3> GetTransformDecomposition(const glm::mat4& transform)
-	{
-		glm::vec3 scale, translation, skew;
-		glm::vec4 perspective;
-		glm::quat orientation;
-		glm::decompose(transform, scale, orientation, translation, skew, perspective);
-
-		return { translation, orientation, scale };
-	}
+	}*/
 
 	EditorLayer::EditorLayer()
 		: m_SceneType(SceneType::Model), m_EditorCamera(glm::perspectiveFov(glm::radians(45.0f), 1280.0f, 720.0f, 0.1f, 1000.0f))
@@ -54,16 +54,26 @@ namespace Jasmine {
 		// Editor
 		m_CheckerboardTex = Texture2D::Create("assets/editor/Checkerboard.tga");
 		m_PlayButtonTex = Texture2D::Create("assets/editor/PlayButton.png");
+		m_PauseButtonTex = Texture2D::Create("assets/editor/PauseButton.png");
+		m_StopButtonTex = Texture2D::Create("assets/editor/StopButton.png");
 
 		m_SceneHierarchyPanel = CreateScope<SceneHierarchyPanel>(m_EditorScene);
 		m_SceneHierarchyPanel->SetSelectionChangedCallback(std::bind(&EditorLayer::SelectEntity, this, std::placeholders::_1));
 		m_SceneHierarchyPanel->SetEntityDeletedCallback(std::bind(&EditorLayer::OnEntityDeleted, this, std::placeholders::_1));
-		
-		OpenScene("assets/scenes/LightingTest.hsc");
+
+		m_ContentBrowserPanel = CreateScope<ContentBrowserPanel>();
+		m_ObjectsPanel = CreateScope<ObjectsPanel>();
+
+		NewScene();
+
+		AssetEditorPanel::RegisterDefaultEditors();
+		FileSystem::StartWatching();
 	}
 
 	void EditorLayer::OnDetach()
 	{
+		FileSystem::StopWatching();
+		AssetEditorPanel::UnregisterAllEditors();
 	}
 
 	void EditorLayer::OnScenePlay()
@@ -80,6 +90,7 @@ namespace Jasmine {
 
 		m_RuntimeScene->OnRuntimeStart();
 		m_SceneHierarchyPanel->SetContext(m_RuntimeScene);
+		m_CurrentScene = m_RuntimeScene;
 	}
 
 	void EditorLayer::OnSceneStop()
@@ -93,11 +104,13 @@ namespace Jasmine {
 		m_SelectionContext.clear();
 		ScriptEngine::SetSceneContext(m_EditorScene);
 		m_SceneHierarchyPanel->SetContext(m_EditorScene);
+		m_CurrentScene = m_EditorScene;
 	}
 
 	void EditorLayer::UpdateWindowTitle(const std::string& sceneName)
 	{
-		std::string title = sceneName + " - Jasminenut - " + Application::GetPlatformName() + " (" + Application::GetConfigurationName() + ")";
+		std::string rendererAPI = RendererAPI::Current() == RendererAPIType::Vulkan ? "Vulkan" : "OpenGL";
+		std::string title = sceneName + " - JasEditor - " + Application::GetPlatformName() + " (" + Application::GetConfigurationName() + ") Renderer: " + rendererAPI;
 		Application::Get().GetWindow().SetTitle(title);
 	}
 
@@ -116,7 +129,7 @@ namespace Jasmine {
 	{
 		auto [x, y] = GetMouseViewportSpace();
 
-		SceneRenderer::SetFocusPoint({ x * 0.5f + 0.5f, y * 0.5f + 0.5f });
+		//SceneRenderer::SetFocusPoint({ x * 0.5f + 0.5f, y * 0.5f + 0.5f });
 
 		switch (m_SceneState)
 		{
@@ -147,7 +160,7 @@ namespace Jasmine {
 						auto viewProj = m_EditorCamera.GetViewProjection();
 						Renderer2D::BeginScene(viewProj, false);
 						glm::vec4 color = (m_SelectionMode == SelectionMode::Entity) ? glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f } : glm::vec4{ 0.2f, 0.9f, 0.2f, 1.0f };
-						Renderer::DrawAABB(selection.Mesh->BoundingBox, selection.Entity.GetComponent<TransformComponent>().Transform * selection.Mesh->Transform, color);
+						Renderer::DrawAABB(selection.Mesh->BoundingBox, selection.Entity.Transform().GetTransform() * selection.Mesh->Transform, color);
 						Renderer2D::EndScene();
 						Renderer::EndRenderPass();
 					}
@@ -157,19 +170,32 @@ namespace Jasmine {
 				{
 					auto& selection = m_SelectionContext[0];
 
-					if (selection.Entity.HasComponent<BoxCollider2DComponent>())
+					if (selection.Entity.HasComponent<BoxCollider2DComponent>() && false)
 					{
 						const auto& size = selection.Entity.GetComponent<BoxCollider2DComponent>().Size;
-						auto [translation, rotationQuat, scale] = GetTransformDecomposition(selection.Entity.GetComponent<TransformComponent>().Transform);
-						glm::vec3 rotation = glm::eulerAngles(rotationQuat);
+						const TransformComponent& transform = selection.Entity.GetComponent<TransformComponent>();
 
 						Renderer::BeginRenderPass(SceneRenderer::GetFinalRenderPass(), false);
 						auto viewProj = m_EditorCamera.GetViewProjection();
 						Renderer2D::BeginScene(viewProj, false);
-						Renderer2D::DrawRotatedQuad({ translation.x, translation.y }, size * 2.0f, glm::degrees(rotation.z), { 1.0f, 0.0f, 1.0f, 1.0f });
+						Renderer2D::DrawRotatedRect({ transform.Translation.x, transform.Translation.y }, size * 2.0f, transform.Rotation.z, { 0.0f, 1.0f, 1.0f, 1.0f });
 						Renderer2D::EndScene();
 						Renderer::EndRenderPass();
 					}
+
+					if (selection.Entity.HasComponent<CircleCollider2DComponent>() && false)
+					{
+						const auto& size = selection.Entity.GetComponent<CircleCollider2DComponent>().Radius;
+						const TransformComponent& transform = selection.Entity.GetComponent<TransformComponent>();
+
+						Renderer::BeginRenderPass(SceneRenderer::GetFinalRenderPass(), false);
+						auto viewProj = m_EditorCamera.GetViewProjection();
+						Renderer2D::BeginScene(viewProj, false);
+						Renderer2D::DrawCircle({ transform.Translation.x, transform.Translation.y }, size, { 0.0f, 1.0f, 1.0f, 1.0f });
+						Renderer2D::EndScene();
+						Renderer::EndRenderPass();
+					}
+
 				}
 
 				break;
@@ -194,116 +220,6 @@ namespace Jasmine {
 		}
 	}
 
-	bool EditorLayer::Property(const std::string& name, bool& value)
-	{
-		ImGui::Text(name.c_str());
-		ImGui::NextColumn();
-		ImGui::PushItemWidth(-1);
-
-		std::string id = "##" + name;
-		bool result = ImGui::Checkbox(id.c_str(), &value);
-
-		ImGui::PopItemWidth();
-		ImGui::NextColumn();
-		
-		return result;
-	}
-
-	bool EditorLayer::Property(const std::string& name, float& value, float min, float max, PropertyFlag flags)
-	{
-		ImGui::Text(name.c_str());
-		ImGui::NextColumn();
-		ImGui::PushItemWidth(-1);
-
-		std::string id = "##" + name;
-		bool changed = false;
-		if (flags == PropertyFlag::SliderProperty)
-			changed = ImGui::SliderFloat(id.c_str(), &value, min, max);
-		else
-			changed = ImGui::DragFloat(id.c_str(), &value, 1.0f, min, max);
-
-		ImGui::PopItemWidth();
-		ImGui::NextColumn();
-		
-		return changed;
-	}
-
-	bool EditorLayer::Property(const std::string& name, glm::vec2& value, EditorLayer::PropertyFlag flags)
-	{
-		return Property(name, value, -1.0f, 1.0f, flags);
-	}
-
-	bool EditorLayer::Property(const std::string& name, glm::vec2& value, float min, float max, PropertyFlag flags)
-	{
-		ImGui::Text(name.c_str());
-		ImGui::NextColumn();
-		ImGui::PushItemWidth(-1);
-
-		std::string id = "##" + name;
-		bool changed = false;
-		if (flags == PropertyFlag::SliderProperty)
-			changed = ImGui::SliderFloat2(id.c_str(), glm::value_ptr(value), min, max);
-		else
-			changed = ImGui::DragFloat2(id.c_str(), glm::value_ptr(value), 1.0f, min, max);
-
-		ImGui::PopItemWidth();
-		ImGui::NextColumn();
-
-		return changed;
-	}
-
-	bool EditorLayer::Property(const std::string& name, glm::vec3& value, EditorLayer::PropertyFlag flags)
-	{
-		return Property(name, value, -1.0f, 1.0f, flags);
-	}
-
-	bool EditorLayer::Property(const std::string& name, glm::vec3& value, float min, float max, EditorLayer::PropertyFlag flags)
-	{
-		ImGui::Text(name.c_str());
-		ImGui::NextColumn();
-		ImGui::PushItemWidth(-1);
-
-		std::string id = "##" + name;
-		bool changed = false;
-		if ((int)flags & (int)PropertyFlag::ColorProperty)
-			changed = ImGui::ColorEdit3(id.c_str(), glm::value_ptr(value), ImGuiColorEditFlags_NoInputs);
-		else if (flags == PropertyFlag::SliderProperty)
-			changed = ImGui::SliderFloat3(id.c_str(), glm::value_ptr(value), min, max);
-		else
-			changed = ImGui::DragFloat3(id.c_str(), glm::value_ptr(value), 1.0f, min, max);
-
-		ImGui::PopItemWidth();
-		ImGui::NextColumn();
-
-		return changed;
-	}
-
-	bool EditorLayer::Property(const std::string& name, glm::vec4& value, EditorLayer::PropertyFlag flags)
-	{
-		return Property(name, value, -1.0f, 1.0f, flags);
-	}
-
-	bool EditorLayer::Property(const std::string& name, glm::vec4& value, float min, float max, EditorLayer::PropertyFlag flags)
-	{
-		ImGui::Text(name.c_str());
-		ImGui::NextColumn();
-		ImGui::PushItemWidth(-1);
-
-		std::string id = "##" + name;
-		bool changed = false;
-		if ((int)flags & (int)PropertyFlag::ColorProperty)
-			changed = ImGui::ColorEdit4(id.c_str(), glm::value_ptr(value), ImGuiColorEditFlags_NoInputs);
-		else if (flags == PropertyFlag::SliderProperty)
-			changed = ImGui::SliderFloat4(id.c_str(), glm::value_ptr(value), min, max);
-		else
-			changed = ImGui::DragFloat4(id.c_str(), glm::value_ptr(value), 1.0f, min, max);
-
-		ImGui::PopItemWidth();
-		ImGui::NextColumn();
-
-		return changed;
-	}
-
 	void EditorLayer::ShowBoundingBoxes(bool show, bool onTop)
 	{
 		SceneRenderer::GetOptions().ShowBoundingBoxes = show && !onTop;
@@ -312,29 +228,43 @@ namespace Jasmine {
 
 	void EditorLayer::SelectEntity(Entity entity)
 	{
+		if (!entity)
+		{
+			return;
+		}
+
 		SelectedSubmesh selection;
 		if (entity.HasComponent<MeshComponent>())
 		{
-			auto mesh = entity.GetComponent<MeshComponent>().Mesh;
-			if (mesh)
-				selection.Mesh = &mesh->GetSubmeshes()[0];
+			auto& meshComp = entity.GetComponent<MeshComponent>();
+
+			if (meshComp.Mesh && meshComp.Mesh->Type == AssetType::Mesh)
+			{
+				selection.Mesh = &meshComp.Mesh->GetSubmeshes()[0];
+			}
 		}
 		selection.Entity = entity;
 		m_SelectionContext.clear();
 		m_SelectionContext.push_back(selection);
 
 		m_EditorScene->SetSelectedEntity(entity);
+
+		m_CurrentScene = m_EditorScene;
 	}
 
 	void EditorLayer::NewScene()
 	{
-		m_EditorScene = Ref<Scene>::Create();
+		// Clear
+		m_SelectionContext = {};
+
+		m_EditorScene = Ref<Scene>::Create("Empty Scene", true);
 		m_SceneHierarchyPanel->SetContext(m_EditorScene);
 		ScriptEngine::SetSceneContext(m_EditorScene);
 		UpdateWindowTitle("Untitled Scene");
 		m_SceneFilePath = std::string();
 
 		m_EditorCamera = EditorCamera(glm::perspectiveFov(glm::radians(45.0f), 1280.0f, 720.0f, 0.1f, 1000.0f));
+		m_CurrentScene = m_EditorScene;
 	}
 
 	void EditorLayer::OpenScene()
@@ -347,10 +277,11 @@ namespace Jasmine {
 
 	void EditorLayer::OpenScene(const std::string& filepath)
 	{
-		Ref<Scene> newScene = Ref<Scene>::Create();
+		Ref<Scene> newScene = Ref<Scene>::Create("New Scene", true);
 		SceneSerializer serializer(newScene);
 		serializer.Deserialize(filepath);
 		m_EditorScene = newScene;
+		m_SceneFilePath = filepath;
 
 		std::filesystem::path path = filepath;
 		UpdateWindowTitle(path.filename().string());
@@ -359,6 +290,8 @@ namespace Jasmine {
 
 		m_EditorScene->SetSelectedEntity({});
 		m_SelectionContext.clear();
+
+		m_CurrentScene = m_EditorScene;
 	}
 
 	void EditorLayer::SaveScene()
@@ -397,6 +330,11 @@ namespace Jasmine {
 		static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
 		bool opt_fullscreen = opt_fullscreen_persistant;
 
+		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+		auto boldFont = io.Fonts->Fonts[0];
+		auto largeFont = io.Fonts->Fonts[1];
+
 		// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
 		// because it would be confusing to have two docking targets within each others.
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
@@ -424,8 +362,6 @@ namespace Jasmine {
 			ImGui::PopStyleVar(2);
 
 		// Dockspace
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuiStyle& style = ImGui::GetStyle();
 		float minWinSizeX = style.WindowMinSize.x;
 		style.WindowMinSize.x = 370.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
@@ -437,131 +373,119 @@ namespace Jasmine {
 		style.WindowMinSize.x = minWinSizeX;
 
 		// Editor Panel ------------------------------------------------------------------------------
-		ImGui::Begin("Model");
-		ImGui::Begin("Environment");
-
-		ImGui::SliderFloat("Skybox LOD", &m_EditorScene->GetSkyboxLod(), 0.0f, 11.0f);
-
-		ImGui::Columns(2);
-		ImGui::AlignTextToFramePadding();
-
-		auto& light = m_EditorScene->GetLight();
-		Property("Light Direction", light.Direction, PropertyFlag::SliderProperty);
-		Property("Light Radiance", light.Radiance, PropertyFlag::ColorProperty);
-		Property("Light Multiplier", light.Multiplier, 0.0f, 5.0f, PropertyFlag::SliderProperty);
-
-		Property("Exposure", m_EditorCamera.GetExposure(), 0.0f, 5.0f, PropertyFlag::SliderProperty);
-
-		Property("Radiance Prefiltering", m_RadiancePrefilter);
-		Property("Env Map Rotation", m_EnvMapRotation, -360.0f, 360.0f, PropertyFlag::SliderProperty);
-
-		if (m_SceneState == SceneState::Edit)
+		ImGui::Begin("Settings");
 		{
-			float physics2DGravity = m_EditorScene->GetPhysics2DGravity();
-			if (Property("Gravity", physics2DGravity, -10000.0f, 10000.0f, PropertyFlag::DragProperty))
+			auto& rendererConfig = Renderer::GetConfig();
+
+			UI::BeginPropertyGrid();
+			ImGui::AlignTextToFramePadding();
+
+			UI::PropertySlider("Skybox LOD", m_EditorScene->GetSkyboxLod(), 0.0f, Utils::CalculateMipCount(rendererConfig.EnvironmentMapResolution, rendererConfig.EnvironmentMapResolution));
+			UI::PropertySlider("Exposure", m_EditorCamera.GetExposure(), 0.0f, 5.0f);
+			UI::PropertySlider("Env Map Rotation", m_EnvMapRotation, -360.0f, 360.0f);
+
+			if (m_SceneState == SceneState::Edit)
 			{
-				m_EditorScene->SetPhysics2DGravity(physics2DGravity);
-			}
-		}
-		else if (m_SceneState == SceneState::Play)
-		{
-			float physics2DGravity = m_RuntimeScene->GetPhysics2DGravity();
-			if (Property("Gravity", physics2DGravity, -10000.0f, 10000.0f, PropertyFlag::DragProperty))
-			{
-				m_RuntimeScene->SetPhysics2DGravity(physics2DGravity);
-			}
-		}
-
-		if (Property("Show Bounding Boxes", m_UIShowBoundingBoxes))
-			ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
-		if (m_UIShowBoundingBoxes && Property("On Top", m_UIShowBoundingBoxesOnTop))
-			ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
-
-		char* label = m_SelectionMode == SelectionMode::Entity ? "Entity" : "Mesh";
-		if (ImGui::Button(label))
-		{
-			m_SelectionMode = m_SelectionMode == SelectionMode::Entity ? SelectionMode::SubMesh : SelectionMode::Entity;
-		}
-
-		ImGui::Columns(1);
-
-		ImGui::End();
-
-		ImGui::Separator();
-		{
-			ImGui::Text("Mesh");
-			/*auto meshComponent = m_MeshEntity.GetComponent<MeshComponent>();
-			std::string fullpath = meshComponent.Mesh ? meshComponent.Mesh->GetFilePath() : "None";
-			size_t found = fullpath.find_last_of("/\\");
-			std::string path = found != std::string::npos ? fullpath.substr(found + 1) : fullpath;
-			ImGui::Text(path.c_str()); ImGui::SameLine();
-			if (ImGui::Button("...##Mesh"))
-			{
-				std::string filename = Application::Get().OpenFile("");
-				if (filename != "")
+				float physics2DGravity = m_EditorScene->GetPhysics2DGravity();
+				if (UI::Property("Gravity", physics2DGravity, -10000.0f, 10000.0f))
 				{
-					auto newMesh = Ref<Mesh>::Create(filename);
-					// m_MeshMaterial.reset(new MaterialInstance(newMesh->GetMaterial()));
-					// m_MeshEntity->SetMaterial(m_MeshMaterial);
-					meshComponent.Mesh = newMesh;
-				}
-			}*/
-		}
-		ImGui::Separator();
-
-		if (ImGui::TreeNode("Shaders"))
-		{
-			auto& shaders = Shader::s_AllShaders;
-			for (auto& shader : shaders)
-			{
-				if (ImGui::TreeNode(shader->GetName().c_str()))
-				{
-					std::string buttonName = "Reload##" + shader->GetName();
-					if (ImGui::Button(buttonName.c_str()))
-						shader->Reload();
-					ImGui::TreePop();
+					m_EditorScene->SetPhysics2DGravity(physics2DGravity);
 				}
 			}
-			ImGui::TreePop();
-		}
+			else if (m_SceneState == SceneState::Play)
+			{
+				float physics2DGravity = m_RuntimeScene->GetPhysics2DGravity();
+				if (UI::Property("Gravity", physics2DGravity, -10000.0f, 10000.0f))
+				{
+					m_RuntimeScene->SetPhysics2DGravity(physics2DGravity);
+				}
+			}
 
+			if (UI::Property("Show Bounding Boxes", m_UIShowBoundingBoxes))
+				ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
+			if (m_UIShowBoundingBoxes && UI::Property("On Top", m_UIShowBoundingBoxesOnTop))
+				ShowBoundingBoxes(m_UIShowBoundingBoxes, m_UIShowBoundingBoxesOnTop);
+
+			char* label = m_SelectionMode == SelectionMode::Entity ? "Entity" : "Mesh";
+			if (ImGui::Button(label))
+			{
+				m_SelectionMode = m_SelectionMode == SelectionMode::Entity ? SelectionMode::SubMesh : SelectionMode::Entity;
+			}
+
+			UI::EndPropertyGrid();
+
+			ImGui::Separator();
+			ImGui::PushFont(boldFont);
+			ImGui::Text("Renderer Settings");
+			ImGui::PopFont();
+			UI::BeginPropertyGrid();
+			UI::Property("Enable HDR environment maps", rendererConfig.ComputeEnvironmentMaps);
+
+			{
+				const char* environmentMapSizes[] = { "128", "256", "512", "1024", "2048", "4096" };
+				int currentSize = (int)glm::log2((float)rendererConfig.EnvironmentMapResolution) - 7;
+				if (UI::PropertyDropdown("Environment Map Size", environmentMapSizes, 6, &currentSize))
+				{
+					rendererConfig.EnvironmentMapResolution = glm::pow(2, currentSize + 7);
+				}
+			}
+
+			{
+				const char* irradianceComputeSamples[] = { "128", "256", "512", "1024", "2048", "4096" };
+				int currentSamples = (int)glm::log2((float)rendererConfig.IrradianceMapComputeSamples) - 7;
+				if (UI::PropertyDropdown("Irradiance Map Compute Samples", irradianceComputeSamples, 6, &currentSamples))
+				{
+					rendererConfig.IrradianceMapComputeSamples = glm::pow(2, currentSamples + 7);
+				}
+			}
+			UI::EndPropertyGrid();
+		}
 		ImGui::End();
+		
+		m_ContentBrowserPanel->OnImGuiRender();
+		m_ObjectsPanel->OnImGuiRender();
+		AssetEditorPanel::OnImGuiRender();
 
 		// ImGui::ShowDemoWindow();
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12, 0));
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12, 4));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.8f, 0.8f, 0.8f, 0.0f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
-		ImGui::Begin("Toolbar");
-		if (m_SceneState == SceneState::Edit)
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.305f, 0.31f, 0.5f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.15f, 0.1505f, 0.151f, 0.5f));
+
+		ImGui::Begin("##tool_bar", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		{
-			if (ImGui::ImageButton((ImTextureID)(m_PlayButtonTex->GetRendererID()), ImVec2(32, 32), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0,0,0,0), ImVec4(0.9f, 0.9f, 0.9f, 1.0f)))
+			float size = ImGui::GetWindowHeight() - 4.0F;
+			ImGui::SameLine((ImGui::GetWindowContentRegionMax().x / 2.0f) - (1.5f * (ImGui::GetFontSize() + ImGui::GetStyle().ItemSpacing.x)) - (size / 2.0f));
+			Ref<Texture2D> buttonTex = m_SceneState == SceneState::Play ? m_StopButtonTex : m_PlayButtonTex;
+			if (UI::ImageButton(buttonTex, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
 			{
-				OnScenePlay();
+				if (m_SceneState == SceneState::Edit)
+					OnScenePlay();
+				else
+					OnSceneStop();
+			}
+
+			ImGui::SameLine();
+
+			if (UI::ImageButton(m_PauseButtonTex, ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+			{
+				if (m_SceneState == SceneState::Play)
+				{
+					//OnScenePause();
+					m_SceneState = SceneState::Pause;
+				}
+				else if (m_SceneState == SceneState::Pause)
+				{
+					//OnSceneResume();
+					m_SceneState = SceneState::Play;
+				}
 			}
 		}
-		else if (m_SceneState == SceneState::Play)
-		{
-			if (ImGui::ImageButton((ImTextureID)(m_PlayButtonTex->GetRendererID()), ImVec2(32, 32), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(1.0f, 1.0f, 1.0f, 0.2f)))
-			{
-				OnSceneStop();
-			}
-		}
-		ImGui::SameLine();
-		if (ImGui::ImageButton((ImTextureID)(m_PlayButtonTex->GetRendererID()), ImVec2(32, 32), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(1.0f, 1.0f, 1.0f, 0.6f)))
-		{
-			JM_CORE_INFO("PLAY!");
-		}
+		ImGui::PopStyleColor(3);
+		ImGui::PopStyleVar(2);
 		ImGui::End();
-		ImGui::PopStyleColor();
-		ImGui::PopStyleColor();
-		ImGui::PopStyleColor();
-		ImGui::PopStyleVar();
-		ImGui::PopStyleVar();
-		ImGui::PopStyleVar();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::Begin("Viewport");
@@ -577,7 +501,9 @@ namespace Jasmine {
 			m_RuntimeScene->SetViewportSize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
 		m_EditorCamera.SetProjectionMatrix(glm::perspectiveFov(glm::radians(45.0f), viewportSize.x, viewportSize.y, 0.1f, 1000.0f));
 		m_EditorCamera.SetViewportSize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
-		ImGui::Image((void*)SceneRenderer::GetFinalColorBufferRendererID(), viewportSize, { 0, 1 }, { 1, 0 });
+
+		// Render viewport image
+		UI::Image(SceneRenderer::GetFinalPassImage(), viewportSize, { 0, 1 }, { 1, 0 });
 
 		static int counter = 0;
 		auto windowSize = ImGui::GetWindowSize();
@@ -603,22 +529,49 @@ namespace Jasmine {
 
 			bool snap = Input::IsKeyPressed(JM_KEY_LEFT_CONTROL);
 
-			auto& entityTransform = selection.Entity.Transform();
+			TransformComponent& entityTransform = selection.Entity.Transform();
+			glm::mat4 transform = m_CurrentScene->GetTransformRelativeToParent(selection.Entity);
 			float snapValue = GetSnapValue();
 			float snapValues[3] = { snapValue, snapValue, snapValue };
+
 			if (m_SelectionMode == SelectionMode::Entity)
 			{
 				ImGuizmo::Manipulate(glm::value_ptr(m_EditorCamera.GetViewMatrix()),
 					glm::value_ptr(m_EditorCamera.GetProjectionMatrix()),
 					(ImGuizmo::OPERATION)m_GizmoType,
 					ImGuizmo::LOCAL,
-					glm::value_ptr(entityTransform),
+					glm::value_ptr(transform),
 					nullptr,
 					snap ? snapValues : nullptr);
+
+				if (ImGuizmo::IsUsing())
+				{
+					glm::vec3 translation, rotation, scale;
+					Math::DecomposeTransform(transform, translation, rotation, scale);
+
+					Entity parent = m_CurrentScene->FindEntityByUUID(selection.Entity.GetParentUUID());
+					if (parent)
+					{
+						glm::vec3 parentTranslation, parentRotation, parentScale;
+						Math::DecomposeTransform(m_CurrentScene->GetTransformRelativeToParent(parent), parentTranslation, parentRotation, parentScale);
+
+						glm::vec3 deltaRotation = (rotation - parentRotation) - entityTransform.Rotation;
+						entityTransform.Translation = translation - parentTranslation;
+						entityTransform.Rotation += deltaRotation;
+						entityTransform.Scale = scale;
+					}
+					else
+					{
+						glm::vec3 deltaRotation = rotation - entityTransform.Rotation;
+						entityTransform.Translation = translation;
+						entityTransform.Rotation += deltaRotation;
+						entityTransform.Scale = scale;
+					}
+				}
 			}
 			else
 			{
-				glm::mat4 transformBase = entityTransform * selection.Mesh->Transform;
+				glm::mat4 transformBase = transform * selection.Mesh->Transform;
 				ImGuizmo::Manipulate(glm::value_ptr(m_EditorCamera.GetViewMatrix()),
 					glm::value_ptr(m_EditorCamera.GetProjectionMatrix()),
 					(ImGuizmo::OPERATION)m_GizmoType,
@@ -627,8 +580,37 @@ namespace Jasmine {
 					nullptr,
 					snap ? snapValues : nullptr);
 
-				selection.Mesh->Transform = glm::inverse(entityTransform) * transformBase;
+				selection.Mesh->Transform = glm::inverse(transform) * transformBase;
 			}
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			auto data = ImGui::AcceptDragDropPayload("asset_payload");
+			if (data)
+			{
+				int count = data->DataSize / sizeof(AssetHandle);
+
+				for (int i = 0; i < count; i++)
+				{
+					AssetHandle assetHandle = *(((AssetHandle*)data->Data) + i);
+					Ref<Asset> asset = AssetManager::GetAsset<Asset>(assetHandle);
+
+					// We can't really support dragging and dropping scenes when we're dropping multiple assets
+					if (count == 1 && asset->Type == AssetType::Scene)
+					{
+						OpenScene(asset->FilePath);
+					}
+
+					if (asset->Type == AssetType::Mesh)
+					{
+						Entity entity = m_EditorScene->CreateEntity(asset->FileName);
+						entity.AddComponent<MeshComponent>(Ref<Mesh>(asset));
+						SelectEntity(entity);
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
 		}
 
 		ImGui::End();
@@ -647,13 +629,21 @@ namespace Jasmine {
 					SaveScene();
 				if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
 					SaveSceneAs();
-			
+
+				ImGui::Separator();
+				std::string otherRenderer = RendererAPI::Current() == RendererAPIType::Vulkan ? "OpenGL" : "Vulkan";
+				std::string label = std::string("Restart with ") + otherRenderer;
+				if (ImGui::MenuItem(label.c_str()))
+				{
+					RendererAPI::SetAPI(RendererAPI::Current() == RendererAPIType::Vulkan ? RendererAPIType::OpenGL : RendererAPIType::Vulkan);
+					Application::Get().Close();
+				}
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit"))
 					p_open = false;
 				ImGui::EndMenu();
 			}
-			
+
 			if (ImGui::BeginMenu("Script"))
 			{
 				if (ImGui::MenuItem("Reload C# Assembly"))
@@ -663,20 +653,35 @@ namespace Jasmine {
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Edit"))
+			{
+				ImGui::MenuItem("Physics Settings", nullptr, &m_ShowPhysicsSettings);
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Help"))
+			{
+				if (ImGui::MenuItem("About"))
+					m_ShowAboutPopup = true;
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
 
 		m_SceneHierarchyPanel->OnImGuiRender();
 		
-		ImGui::Begin("Materials");
 
+		ImGui::Begin("Materials");
+		float widnowWidth = (ImGui::GetWindowWidth() - 64.0f - 5.5f * ImGui::GetFontSize())*0.9f;
 		if (m_SelectionContext.size())
 		{
 			Entity selectedEntity = m_SelectionContext.front().Entity;
 			if (selectedEntity.HasComponent<MeshComponent>())
 			{
 				Ref<Mesh> mesh = selectedEntity.GetComponent<MeshComponent>().Mesh;
-				if (mesh)
+				if (mesh && mesh->Type == AssetType::Mesh)
 				{
 					auto& materials = mesh->GetMaterials();
 					static uint32_t selectedMaterialIndex = 0;
@@ -692,7 +697,6 @@ namespace Jasmine {
 						}
 						if (opened)
 							ImGui::TreePop();
-
 					}
 
 					ImGui::Separator();
@@ -709,36 +713,67 @@ namespace Jasmine {
 							{
 								ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 10));
 
-								auto& albedoColor = materialInstance->Get<glm::vec3>("u_AlbedoColor");
-								bool useAlbedoMap = materialInstance->Get<float>("u_AlbedoTexToggle");
-								Ref<Texture2D> albedoMap = materialInstance->TryGetResource<Texture2D>("u_AlbedoTexture");
-								ImGui::Image(albedoMap ? (void*)albedoMap->GetRendererID() : (void*)m_CheckerboardTex->GetRendererID(), ImVec2(64, 64));
+								auto& albedoColor = materialInstance->GetVector3("u_MaterialUniforms.AlbedoColor");
+								bool useAlbedoMap = true;// materialInstance->GetFloat("u_MaterialUniforms.AlbedoTexToggle");
+								Ref<Texture2D> albedoMap = materialInstance->TryGetTexture2D("u_AlbedoTexture");
+								bool hasAlbedoMap = !albedoMap.EqualsObject(Renderer::GetWhiteTexture()) && albedoMap->GetImage();
+								Ref<Texture2D> albedoUITexture = hasAlbedoMap ? albedoMap : m_CheckerboardTex;
+								UI::Image(albedoUITexture, ImVec2(64, 64));
+
+								if (ImGui::BeginDragDropTarget())
+								{
+									auto data = ImGui::AcceptDragDropPayload("asset_payload");
+									if (data)
+									{
+										int count = data->DataSize / sizeof(AssetHandle);
+
+										for (int i = 0; i < count; i++)
+										{
+											if (count > 1)
+												break;
+
+											AssetHandle assetHandle = *(((AssetHandle*)data->Data) + i);
+											Ref<Asset> asset = AssetManager::GetAsset<Asset>(assetHandle);
+											if (asset->Type != AssetType::Texture)
+												break;
+
+											albedoMap = asset.As<Texture2D>();
+											materialInstance->Set("u_AlbedoTexture", albedoMap);
+											// NOTE: Uncomment when u_MaterialUniforms.AlbedoTexToggle is a thing
+											//materialInstance->Set("u_MaterialUniforms.AlbedoTexToggle", true);
+										}
+									}
+
+									ImGui::EndDragDropTarget();
+								}
+
 								ImGui::PopStyleVar();
 								if (ImGui::IsItemHovered())
 								{
-									if (albedoMap)
+									if (hasAlbedoMap)
 									{
 										ImGui::BeginTooltip();
 										ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
 										ImGui::TextUnformatted(albedoMap->GetPath().c_str());
 										ImGui::PopTextWrapPos();
-										ImGui::Image((void*)albedoMap->GetRendererID(), ImVec2(384, 384));
+										UI::Image(albedoUITexture, ImVec2(384, 384));
 										ImGui::EndTooltip();
 									}
 									if (ImGui::IsItemClicked())
 									{
 										std::string filename = Application::Get().OpenFile("");
-										if (filename != "")
+										if (!filename.empty())
 										{
-											albedoMap = Texture2D::Create(filename, true/*m_AlbedoInput.SRGB*/);
+											TextureProperties props;
+											props.SRGB = true;
+											albedoMap = Texture2D::Create(filename, props);
 											materialInstance->Set("u_AlbedoTexture", albedoMap);
 										}
 									}
 								}
 								ImGui::SameLine();
 								ImGui::BeginGroup();
-								if (ImGui::Checkbox("Use##AlbedoMap", &useAlbedoMap))
-									materialInstance->Set<float>("u_AlbedoTexToggle", useAlbedoMap ? 1.0f : 0.0f);
+								ImGui::Checkbox("Use##AlbedoMap", &useAlbedoMap);
 
 								/*if (ImGui::Checkbox("sRGB##AlbedoMap", &m_AlbedoInput.SRGB))
 								{
@@ -755,9 +790,36 @@ namespace Jasmine {
 							if (ImGui::CollapsingHeader("Normals", nullptr, ImGuiTreeNodeFlags_DefaultOpen))
 							{
 								ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 10));
-								bool useNormalMap = materialInstance->Get<float>("u_NormalTexToggle");
-								Ref<Texture2D> normalMap = materialInstance->TryGetResource<Texture2D>("u_NormalTexture");
-								ImGui::Image(normalMap ? (void*)normalMap->GetRendererID() : (void*)m_CheckerboardTex->GetRendererID(), ImVec2(64, 64));
+								bool useNormalMap = materialInstance->GetFloat("u_MaterialUniforms.UseNormalMap");
+								Ref<Texture2D> normalMap = materialInstance->TryGetTexture2D("u_NormalTexture");
+								UI::Image((normalMap && normalMap->GetImage()) ? normalMap : m_CheckerboardTex, ImVec2(64, 64));
+
+								if (ImGui::BeginDragDropTarget())
+								{
+									auto data = ImGui::AcceptDragDropPayload("asset_payload");
+									if (data)
+									{
+										int count = data->DataSize / sizeof(AssetHandle);
+
+										for (int i = 0; i < count; i++)
+										{
+											if (count > 1)
+												break;
+
+											AssetHandle assetHandle = *(((AssetHandle*)data->Data) + i);
+											Ref<Asset> asset = AssetManager::GetAsset<Asset>(assetHandle);
+											if (asset->Type != AssetType::Texture)
+												break;
+
+											normalMap = asset.As<Texture2D>();
+											materialInstance->Set("u_NormalTexture", normalMap);
+											materialInstance->Set("u_MaterialUniforms.UseNormalMap", true);
+										}
+									}
+
+									ImGui::EndDragDropTarget();
+								}
+
 								ImGui::PopStyleVar();
 								if (ImGui::IsItemHovered())
 								{
@@ -767,7 +829,7 @@ namespace Jasmine {
 										ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
 										ImGui::TextUnformatted(normalMap->GetPath().c_str());
 										ImGui::PopTextWrapPos();
-										ImGui::Image((void*)normalMap->GetRendererID(), ImVec2(384, 384));
+										UI::Image(normalMap, ImVec2(384, 384));
 										ImGui::EndTooltip();
 									}
 									if (ImGui::IsItemClicked())
@@ -782,7 +844,7 @@ namespace Jasmine {
 								}
 								ImGui::SameLine();
 								if (ImGui::Checkbox("Use##NormalMap", &useNormalMap))
-									materialInstance->Set<float>("u_NormalTexToggle", useNormalMap ? 1.0f : 0.0f);
+									materialInstance->Set("u_MaterialUniforms.UseNormalMap", useNormalMap);
 							}
 						}
 						{
@@ -790,10 +852,38 @@ namespace Jasmine {
 							if (ImGui::CollapsingHeader("Metalness", nullptr, ImGuiTreeNodeFlags_DefaultOpen))
 							{
 								ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 10));
-								float& metalnessValue = materialInstance->Get<float>("u_Metalness");
-								bool useMetalnessMap = materialInstance->Get<float>("u_MetalnessTexToggle");
-								Ref<Texture2D> metalnessMap = materialInstance->TryGetResource<Texture2D>("u_MetalnessTexture");
-								ImGui::Image(metalnessMap ? (void*)metalnessMap->GetRendererID() : (void*)m_CheckerboardTex->GetRendererID(), ImVec2(64, 64));
+								float& metalnessValue = materialInstance->GetFloat("u_MaterialUniforms.Metalness");
+								bool useMetalnessMap = true;// materialInstance->GetFloat("u_MaterialUniforms.MetalnessTexToggle");
+								Ref<Texture2D> metalnessMap = materialInstance->TryGetTexture2D("u_MetalnessTexture");
+								UI::Image((metalnessMap && metalnessMap->GetImage()) ? metalnessMap : m_CheckerboardTex, ImVec2(64, 64));
+
+								if (ImGui::BeginDragDropTarget())
+								{
+									auto data = ImGui::AcceptDragDropPayload("asset_payload");
+									if (data)
+									{
+										int count = data->DataSize / sizeof(AssetHandle);
+
+										for (int i = 0; i < count; i++)
+										{
+											if (count > 1)
+												break;
+
+											AssetHandle assetHandle = *(((AssetHandle*)data->Data) + i);
+											Ref<Asset> asset = AssetManager::GetAsset<Asset>(assetHandle);
+											if (asset->Type != AssetType::Texture)
+												break;
+
+											metalnessMap = asset.As<Texture2D>();
+											materialInstance->Set("u_MetalnessTexture", metalnessMap);
+											// NOTE: Uncomment when u_MaterialUniforms.MetalnessTexToggle is a thing
+											//materialInstance->Set("u_MaterialUniforms.MetalnessTexToggle", true);
+										}
+									}
+
+									ImGui::EndDragDropTarget();
+								}
+
 								ImGui::PopStyleVar();
 								if (ImGui::IsItemHovered())
 								{
@@ -803,7 +893,7 @@ namespace Jasmine {
 										ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
 										ImGui::TextUnformatted(metalnessMap->GetPath().c_str());
 										ImGui::PopTextWrapPos();
-										ImGui::Image((void*)metalnessMap->GetRendererID(), ImVec2(384, 384));
+										UI::Image(metalnessMap, ImVec2(384, 384));
 										ImGui::EndTooltip();
 									}
 									if (ImGui::IsItemClicked())
@@ -817,9 +907,9 @@ namespace Jasmine {
 									}
 								}
 								ImGui::SameLine();
-								if (ImGui::Checkbox("Use##MetalnessMap", &useMetalnessMap))
-									materialInstance->Set<float>("u_MetalnessTexToggle", useMetalnessMap ? 1.0f : 0.0f);
+								ImGui::Checkbox("Use##MetalnessMap", &useMetalnessMap);
 								ImGui::SameLine();
+								ImGui::SetNextItemWidth(widnowWidth);
 								ImGui::SliderFloat("Value##MetalnessInput", &metalnessValue, 0.0f, 1.0f);
 							}
 						}
@@ -828,10 +918,38 @@ namespace Jasmine {
 							if (ImGui::CollapsingHeader("Roughness", nullptr, ImGuiTreeNodeFlags_DefaultOpen))
 							{
 								ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 10));
-								float& roughnessValue = materialInstance->Get<float>("u_Roughness");
-								bool useRoughnessMap = materialInstance->Get<float>("u_RoughnessTexToggle");
-								Ref<Texture2D> roughnessMap = materialInstance->TryGetResource<Texture2D>("u_RoughnessTexture");
-								ImGui::Image(roughnessMap ? (void*)roughnessMap->GetRendererID() : (void*)m_CheckerboardTex->GetRendererID(), ImVec2(64, 64));
+								float& roughnessValue = materialInstance->GetFloat("u_MaterialUniforms.Roughness");
+								bool useRoughnessMap = true;// materialInstance->GetFloat("u_MaterialUniforms.RoughnessTexToggle");
+								Ref<Texture2D> roughnessMap = materialInstance->TryGetTexture2D("u_RoughnessTexture");
+								UI::Image((roughnessMap && roughnessMap->GetImage()) ? roughnessMap : m_CheckerboardTex, ImVec2(64, 64));
+
+								if (ImGui::BeginDragDropTarget())
+								{
+									auto data = ImGui::AcceptDragDropPayload("asset_payload");
+									if (data)
+									{
+										int count = data->DataSize / sizeof(AssetHandle);
+
+										for (int i = 0; i < count; i++)
+										{
+											if (count > 1)
+												break;
+
+											AssetHandle assetHandle = *(((AssetHandle*)data->Data) + i);
+											Ref<Asset> asset = AssetManager::GetAsset<Asset>(assetHandle);
+											if (asset->Type != AssetType::Texture)
+												break;
+
+											roughnessMap = asset.As<Texture2D>();
+											materialInstance->Set("u_RoughnessTexture", roughnessMap);
+											// NOTE: Uncomment when u_MaterialUniforms.RoughnessTexToggle is a thing
+											//materialInstance->Set("u_MaterialUniforms.RoughnessTexToggle", true);
+										}
+									}
+
+									ImGui::EndDragDropTarget();
+								}
+
 								ImGui::PopStyleVar();
 								if (ImGui::IsItemHovered())
 								{
@@ -841,7 +959,7 @@ namespace Jasmine {
 										ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
 										ImGui::TextUnformatted(roughnessMap->GetPath().c_str());
 										ImGui::PopTextWrapPos();
-										ImGui::Image((void*)roughnessMap->GetRendererID(), ImVec2(384, 384));
+										UI::Image(roughnessMap, ImVec2(384, 384));
 										ImGui::EndTooltip();
 									}
 									if (ImGui::IsItemClicked())
@@ -855,9 +973,9 @@ namespace Jasmine {
 									}
 								}
 								ImGui::SameLine();
-								if (ImGui::Checkbox("Use##RoughnessMap", &useRoughnessMap))
-									materialInstance->Set<float>("u_RoughnessTexToggle", useRoughnessMap ? 1.0f : 0.0f);
+								ImGui::Checkbox("Use##RoughnessMap", &useRoughnessMap);
 								ImGui::SameLine();
+								ImGui::SetNextItemWidth(widnowWidth);
 								ImGui::SliderFloat("Value##RoughnessInput", &roughnessValue, 0.0f, 1.0f);
 							}
 						}
@@ -865,13 +983,70 @@ namespace Jasmine {
 				}
 			}
 		}
-
 		ImGui::End();
 
 		ScriptEngine::OnImGuiRender();
 		SceneRenderer::OnImGuiRender();
+		PhysicsSettingsWindow::OnImGuiRender(m_ShowPhysicsSettings);
 
 		ImGui::End();
+
+		if (m_ShowWelcomePopup)
+		{
+			ImGui::OpenPopup("Welcome");
+			m_ShowWelcomePopup = false;
+		}
+
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowSize(ImVec2{ 400,0 });
+		if (ImGui::BeginPopupModal("Welcome", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("Welcome to Jasmine!");
+			ImGui::Separator();
+			ImGui::TextWrapped("Environment maps are currently disabled because they're a little unstable on certain GPU drivers.");
+
+			UI::BeginPropertyGrid();
+			UI::Property("Enable environment maps?", Renderer::GetConfig().ComputeEnvironmentMaps);
+			UI::EndPropertyGrid();
+
+			if (ImGui::Button("OK"))
+				ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+
+		if (m_ShowAboutPopup)
+		{
+			ImGui::OpenPopup("About##AboutPopup");
+			m_ShowAboutPopup = false;
+		}
+
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowSize(ImVec2{ 600,0 });
+		if (ImGui::BeginPopupModal("About##AboutPopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::PushFont(largeFont);
+			ImGui::Text("Jasmine Engine");
+			ImGui::PopFont();
+
+			ImGui::Separator();
+			ImGui::TextWrapped("Jasmine is an early-stage interactive application and rendering engine for Windows.");
+			ImGui::Separator();
+			ImGui::PushFont(boldFont);
+			ImGui::Text("Jasmine Core Team");
+			ImGui::PopFont();
+			ImGui::Text("Yan Chernikov");
+			ImGui::Text("Peter Nilsson");
+			ImGui::Text("Karim Sayed");
+			ImGui::Text("Vineet Nair");
+			ImGui::Separator();
+			ImGui::TextColored(ImVec4{ 0.7f, 0.7f, 0.7f, 1.0f }, "This software contains source code provided by NVIDIA Corporation.");
+
+			if (ImGui::Button("OK"))
+				ImGui::CloseCurrentPopup();
+
+			ImGui::EndPopup();
+		}
 	}
 
 	void EditorLayer::OnEvent(Event& e)
@@ -913,11 +1088,28 @@ namespace Jasmine {
 				case KeyCode::R:
 					m_GizmoType = ImGuizmo::OPERATION::SCALE;
 					break;
+				case KeyCode::F:
+				{
+					if (m_SelectionContext.size() == 0)
+						break;
+
+					Entity selectedEntity = m_SelectionContext[0].Entity;
+					m_EditorCamera.Focus(selectedEntity.Transform().Translation);
+					break;
+				}
 				}
 
 			}
 			switch (e.GetKeyCode())
 			{
+			case KeyCode::Escape:
+				if (m_SelectionContext.size())
+				{
+					m_SelectionContext.clear();
+					m_EditorScene->SetSelectedEntity({});
+					m_SceneHierarchyPanel->SetSelected({});
+				}
+				break;
 			case KeyCode::Delete: // TODO: this should be in the scene hierarchy panel
 				if (m_SelectionContext.size())
 				{
@@ -993,7 +1185,7 @@ namespace Jasmine {
 				{
 					Entity entity = { e, m_EditorScene.Raw() };
 					auto mesh = entity.GetComponent<MeshComponent>().Mesh;
-					if (!mesh)
+					if (!mesh || mesh->Type == AssetType::Missing)
 						continue;
 
 					auto& submeshes = mesh->GetSubmeshes();
@@ -1001,9 +1193,10 @@ namespace Jasmine {
 					for (uint32_t i = 0; i < submeshes.size(); i++)
 					{
 						auto& submesh = submeshes[i];
+						glm::mat4 transform = m_CurrentScene->GetTransformRelativeToParent(entity);
 						Ray ray = {
-							glm::inverse(entity.Transform() * submesh.Transform) * glm::vec4(origin, 1.0f),
-							glm::inverse(glm::mat3(entity.Transform()) * glm::mat3(submesh.Transform)) * direction
+							glm::inverse(transform * submesh.Transform) * glm::vec4(origin, 1.0f),
+							glm::inverse(glm::mat3(transform) * glm::mat3(submesh.Transform)) * direction
 						};
 
 						float t;
@@ -1065,7 +1258,7 @@ namespace Jasmine {
 
 	void EditorLayer::OnEntityDeleted(Entity e)
 	{
-		if (m_SelectionContext[0].Entity == e)
+		if (m_SelectionContext.size() > 0 && m_SelectionContext[0].Entity == e)
 		{
 			m_SelectionContext.clear();
 			m_EditorScene->SetSelectedEntity({});

@@ -3,10 +3,12 @@
 
 #include "EditorLayer.h"
 
-class JasminenutApplication : public Jasmine::Application
+#include "Jasmine/Renderer/RendererAPI.h"
+
+class JasEditorApplication : public Jasmine::Application
 {
 public:
-	JasminenutApplication(const Jasmine::ApplicationProps& props)
+	JasEditorApplication(const Jasmine::ApplicationProps& props)
 		: Application(props)
 	{
 	}
@@ -17,7 +19,8 @@ public:
 	}
 };
 
-Jasmine::Application* Jasmine::CreateApplication()
+Jasmine::Application* Jasmine::CreateApplication(int argc, char** argv)
 {
-	return new JasminenutApplication({"Jasminenut", 1600, 900});
+	//RendererAPI::SetAPI(RendererAPIType::OpenGL);
+	return new JasEditorApplication({"JasEditor", 1600, 900});
 }

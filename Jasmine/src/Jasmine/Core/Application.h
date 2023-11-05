@@ -2,6 +2,7 @@
 
 #include "Jasmine/Core/Base.h"
 #include "Jasmine/Core/Timestep.h"
+#include "Jasmine/Core/Timer.h"
 #include "Jasmine/Core/Window.h"
 #include "Jasmine/Core/LayerStack.h"
 
@@ -24,6 +25,7 @@ namespace Jasmine {
 		virtual ~Application();
 
 		void Run();
+		void Close();
 
 		virtual void OnInit() {}
 		virtual void OnShutdown() {}
@@ -46,6 +48,8 @@ namespace Jasmine {
 
 		static const char* GetConfigurationName();
 		static const char* GetPlatformName();
+
+		PerformanceProfiler* GetPerformanceProfiler() { return m_Profiler; }
 	private:
 		bool OnWindowResize(WindowResizeEvent& e);
 		bool OnWindowClose(WindowCloseEvent& e);
@@ -55,6 +59,7 @@ namespace Jasmine {
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
 		Timestep m_TimeStep;
+		PerformanceProfiler* m_Profiler = nullptr; // TODO: Should be null in Dist
 
 		float m_LastFrameTime = 0.0f;
 
@@ -62,5 +67,5 @@ namespace Jasmine {
 	};
 
 	// Implemented by CLIENT
-	Application* CreateApplication();
+	Application* CreateApplication(int argc, char** argv);
 }

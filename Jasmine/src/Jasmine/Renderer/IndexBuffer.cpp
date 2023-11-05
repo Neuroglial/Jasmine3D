@@ -4,6 +4,9 @@
 #include "Renderer.h"
 
 #include "Jasmine/Platform/OpenGL/OpenGLIndexBuffer.h"
+#include "Jasmine/Platform/Vulkan/VulkanIndexBuffer.h"
+
+#include "Jasmine/Renderer/RendererAPI.h"
 
 namespace Jasmine {
 
@@ -13,6 +16,7 @@ namespace Jasmine {
 		{
 			case RendererAPIType::None:    return nullptr;
 			case RendererAPIType::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(size);
+			case RendererAPIType::Vulkan:  return Ref<VulkanIndexBuffer>::Create(size);
 		}
 		JM_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
@@ -24,6 +28,7 @@ namespace Jasmine {
 		{
 			case RendererAPIType::None:    return nullptr;
 			case RendererAPIType::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(data, size);
+			case RendererAPIType::Vulkan:  return Ref<VulkanIndexBuffer>::Create(data, size);
 		}
 		JM_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
