@@ -157,7 +157,7 @@ project "Jasmine-ScriptCore"
 	location "Jasmine-ScriptCore"
 	kind "SharedLib"
 	language "C#"
-
+	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 

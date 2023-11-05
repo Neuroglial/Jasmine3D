@@ -5,7 +5,8 @@
 !Jasmine/vendor/assimp/bin
 bin-int/
 obj/
-Jasmine/vendor/VulkanSDK
+Jasmine/vendor/
+JasEditor/logs/
 
 # Visual Studio files and folder
 .vs/
