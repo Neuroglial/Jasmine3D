@@ -671,6 +671,7 @@ namespace Jasmine {
 	void ScriptEngine::OnImGuiRender()
 	{
 		ImGui::Begin("Script Engine Debug");
+
 		for (auto& [sceneID, entityMap] : s_EntityInstanceMap)
 		{
 			bool opened = ImGui::TreeNode((void*)(uint64_t)sceneID, "Scene (%llx)", sceneID);

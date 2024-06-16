@@ -3,15 +3,16 @@
 #include "Jasmine/Scene/Scene.h"
 #include "Jasmine/Scene/Entity.h"
 #include "Jasmine/Renderer/Mesh.h"
+#include "Jasmine/Editor/EditorCamera.h"
 
 namespace Jasmine {
 
 	class SceneHierarchyPanel
 	{
 	public:
-		SceneHierarchyPanel(const Ref<Scene>& scene);
+		SceneHierarchyPanel(const Ref<Scene>& scene, EditorCamera* editorCamera = nullptr);
 
-		void SetContext(const Ref<Scene>& scene);
+		void SetContext(const Ref<Scene>& scene, EditorCamera* editorCamera = nullptr);
 		void SetSelected(Entity entity);
 		void SetSelectionChangedCallback(const std::function<void(Entity)>& func) { m_SelectionChangedCallback = func; }
 		void SetEntityDeletedCallback(const std::function<void(Entity)>& func) { m_EntityDeletedCallback = func; }
@@ -24,6 +25,7 @@ namespace Jasmine {
 		void DrawComponents(Entity entity);
 	private:
 		Ref<Scene> m_Context;
+		EditorCamera* m_EditorCamera;
 		Entity m_SelectionContext;
 
 		std::function<void(Entity)> m_SelectionChangedCallback, m_EntityDeletedCallback;

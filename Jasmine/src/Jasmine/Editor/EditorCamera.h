@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Jasmine/Renderer/Camera.h"
+#include "Jasmine/Scene/SceneCamera.h"
 #include "Jasmine/Core/Timestep.h"
 #include "Jasmine/Core/Events/MouseEvent.h"
 
 namespace Jasmine {
 
-	class EditorCamera : public Camera
+	class EditorCamera : public SceneCamera
 	{
 	public:
 		EditorCamera() = default;
 		EditorCamera(const glm::mat4& projectionMatrix);
 
-		void Focus();
+		
 		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
@@ -32,6 +32,12 @@ namespace Jasmine {
 
 		float GetPitch() const { return m_Pitch; }
 		float GetYaw() const { return m_Yaw; }
+
+		void SetPosition(const glm::vec3& position);
+		void SetRotation(const glm::vec3& rotation);
+		void Focus(const glm::vec3& position);
+		void SetTransform(const glm::mat4& trans);
+
 	private:
 		void UpdateCameraView();
 

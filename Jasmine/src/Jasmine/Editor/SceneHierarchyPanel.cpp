@@ -25,14 +25,15 @@ namespace Jasmine {
 
 	glm::mat4 Mat4FromAssimpMat4(const aiMatrix4x4& matrix);
 
-	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
-		: m_Context(context)
+	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context,EditorCamera* editorCamera)
+		: m_Context(context),m_EditorCamera(editorCamera)
 	{
 	}
 
-	void SceneHierarchyPanel::SetContext(const Ref<Scene>& scene)
+	void SceneHierarchyPanel::SetContext(const Ref<Scene>& scene,EditorCamera* editorCamera)
 	{
 		m_Context = scene;
+		m_EditorCamera = editorCamera;
 		m_SelectionContext = {};
 		if (m_SelectionContext && false)
 		{
@@ -259,88 +260,6 @@ namespace Jasmine {
 		}
 	}
 
-	static bool DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
-	{
-		bool modified = false;
-
-		ImGuiIO& io = ImGui::GetIO();
-		auto boldFont = io.Fonts->Fonts[0];
-
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-
-		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-		ImGui::PushFont(boldFont);
-		if (ImGui::Button("X", buttonSize))
-		{
-			values.x = resetValue;
-			modified = true;
-		}
-
-		ImGui::PopFont();
-		ImGui::PopStyleColor(3);
-
-		ImGui::SameLine();
-		modified |= ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
-		ImGui::SameLine();
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-		ImGui::PushFont(boldFont);
-		if (ImGui::Button("Y", buttonSize))
-		{
-			values.y = resetValue;
-			modified = true;
-		}
-
-		ImGui::PopFont();
-		ImGui::PopStyleColor(3);
-
-		ImGui::SameLine();
-		modified |= ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
-		ImGui::SameLine();
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-		ImGui::PushFont(boldFont);
-		if (ImGui::Button("Z", buttonSize))
-		{
-			values.z = resetValue;
-			modified = true;
-		}
-
-		ImGui::PopFont();
-		ImGui::PopStyleColor(3);
-
-		ImGui::SameLine();
-		modified |= ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
-
-		ImGui::PopStyleVar();
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-
-		return modified;
-	}
-
 	void SceneHierarchyPanel::DrawComponents(Entity entity)
 	{
 		ImGui::AlignTextToFramePadding();
@@ -449,15 +368,18 @@ namespace Jasmine {
 			ImGui::EndPopup();
 		}
 
-		DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
+		DrawComponent<TransformComponent>("Transform", entity, [&entity,this](auto& component)
 		{
 			auto [translation, rotationQuat, scale] = GetTransformDecomposition(component);
 
+			if (ImGui::Button("Focus to", ImVec2(200, 0)))
+				m_EditorCamera->Focus(translation);
+
 			bool updateTransform = false;
-			updateTransform |= DrawVec3Control("Translation", translation);
+			updateTransform |= UI::DrawVec3Control("Translation", translation);
 			glm::vec3 rotation = glm::degrees(glm::eulerAngles(rotationQuat));
-			updateTransform |= DrawVec3Control("Rotation", rotation);
-			updateTransform |= DrawVec3Control("Scale", scale, 1.0f);
+			updateTransform |= UI::DrawVec3Control("Rotation", rotation);
+			updateTransform |= UI::DrawVec3Control("Scale", scale, 1.0f,0.0001f,std::numeric_limits<float>::max());
 
 			if (updateTransform)
 			{
@@ -465,6 +387,8 @@ namespace Jasmine {
 					glm::toMat4(glm::quat(glm::radians(rotation))) *
 					glm::scale(glm::mat4(1.0f), scale);
 			}
+
+			
 		});
 
 		DrawComponent<MeshComponent>("Mesh", entity, [](MeshComponent& mc)
@@ -476,10 +400,24 @@ namespace Jasmine {
 			ImGui::Text("File Path");
 			ImGui::NextColumn();
 			ImGui::PushItemWidth(-1);
-			if (mc.Mesh)
-				ImGui::InputText("##meshfilepath", (char*)mc.Mesh->GetFilePath().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
-			else
-				ImGui::InputText("##meshfilepath", (char*)"Null", 256, ImGuiInputTextFlags_ReadOnly);
+
+			if (mc.Mesh) {
+				std::string file = mc.Mesh->GetFilePath();
+				file.resize(256);
+				if (ImGui::InputText("##meshfilepath", (char*)file.c_str(), 256)) {
+					mc.Mesh = Ref<Mesh>::Create(file);
+				}
+			}
+			else {
+
+				std::string file="Null";
+				file.resize(256);
+				if (ImGui::InputText("##meshfilepath", (char*)file.c_str(), 256)) {
+					mc.Mesh = Ref<Mesh>::Create(file);
+				}
+			}
+
+				
 			ImGui::PopItemWidth();
 			ImGui::NextColumn();
 			if (ImGui::Button("...##openmesh"))
@@ -491,7 +429,7 @@ namespace Jasmine {
 			ImGui::Columns(1);
 		});
 
-		DrawComponent<CameraComponent>("Camera", entity, [](CameraComponent& cc)
+		DrawComponent<CameraComponent>("Camera", entity, [&entity, this](CameraComponent& cc)
 		{
 			// Projection Type
 			const char* projTypeStrings[] = { "Perspective", "Orthographic" };
@@ -513,7 +451,15 @@ namespace Jasmine {
 			}
 
 			UI::BeginPropertyGrid();
-			// Perspective parameters
+			if (UI::Button("To this place"))
+			{
+				if (entity.HasComponent<TransformComponent>()&&m_EditorCamera)
+				{
+					auto trans = entity.GetComponent<TransformComponent>().Transform;
+					m_EditorCamera->SetTransform(trans);
+				}
+			}
+
 			if (cc.Camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 			{
 				float verticalFOV = cc.Camera.GetPerspectiveVerticalFOV();
@@ -523,7 +469,7 @@ namespace Jasmine {
 				float nearClip = cc.Camera.GetPerspectiveNearClip();
 				if (UI::Property("Near Clip", nearClip))
 					cc.Camera.SetPerspectiveNearClip(nearClip);
-				ImGui::SameLine();
+				
 				float farClip = cc.Camera.GetPerspectiveFarClip();
 				if (UI::Property("Far Clip", farClip))
 					cc.Camera.SetPerspectiveFarClip(farClip);
@@ -539,11 +485,13 @@ namespace Jasmine {
 				float nearClip = cc.Camera.GetOrthographicNearClip();
 				if (UI::Property("Near Clip", nearClip))
 					cc.Camera.SetOrthographicNearClip(nearClip);
-				ImGui::SameLine();
+				
 				float farClip = cc.Camera.GetOrthographicFarClip();
 				if (UI::Property("Far Clip", farClip))
 					cc.Camera.SetOrthographicFarClip(farClip);
 			}
+
+			
 
 			UI::EndPropertyGrid();
 		});

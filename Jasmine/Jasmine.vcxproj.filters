@@ -4,44 +4,44 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel">
-      <UniqueIdentifier>{F0370AB3-5CA2-BE29-A5E0-6FCF118A9C7E}</UniqueIdentifier>
+    <Filter Include="src\Jasmine">
+      <UniqueIdentifier>{C326F237-2FDC-6A2D-B8D0-640424856131}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Core">
-      <UniqueIdentifier>{48D253A8-34A0-47AE-1D34-B8D409A12313}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Core">
+      <UniqueIdentifier>{FBFC906D-E7F5-AFBF-1028-9544FC7F8FCB}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Core\Events">
-      <UniqueIdentifier>{2C1D8DEB-9889-48E6-617D-E043CDA86A4E}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Core\Events">
+      <UniqueIdentifier>{7FE01EC9-EB17-6760-F421-CB8360D88D59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Core\Math">
-      <UniqueIdentifier>{21E4F85A-8D45-D668-16B3-1C1B82130D28}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Core\Math">
+      <UniqueIdentifier>{B4B68B88-2023-4783-E916-DFE0554269EB}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Editor">
-      <UniqueIdentifier>{26277010-1220-8F62-3B52-74E727AA6E6E}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Editor">
+      <UniqueIdentifier>{99CAA219-85AE-636F-EE0E-5EC2DA114EF1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\ImGui">
-      <UniqueIdentifier>{1AE138B3-866C-A677-8F7D-296CFB870278}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\ImGui">
+      <UniqueIdentifier>{2D621B20-9978-19B6-E2EF-A4D74E45EA3D}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Platform">
-      <UniqueIdentifier>{44620E69-3046-CFBE-99A6-C91185A9B940}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Platform">
+      <UniqueIdentifier>{77AE7789-633D-0153-0C5C-154EF8C911F9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Platform\OpenGL">
-      <UniqueIdentifier>{F856A5C4-6419-D94E-ADC9-67DB19CBB12C}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Platform\OpenGL">
+      <UniqueIdentifier>{CB8B3ED1-3799-6CB7-C07F-68A22C8C386E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Platform\Windows">
-      <UniqueIdentifier>{7E106CB1-6A20-1882-D3D9-7CA0BF08071B}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Platform\Windows">
+      <UniqueIdentifier>{B1DF2B51-9D9A-1BFD-4652-944732EC658D}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Renderer">
-      <UniqueIdentifier>{9669EB43-824D-AC99-EBAD-A6ECD7B0961B}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Renderer">
+      <UniqueIdentifier>{C9B55464-B544-DE2D-5E63-F2284AD1EED3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Scene">
-      <UniqueIdentifier>{0DD9E8B3-7964-5678-8275-D96CEE7FB278}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Scene">
+      <UniqueIdentifier>{205ACB20-8C70-C9B6-D5E7-54D8413D9A3E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Script">
-      <UniqueIdentifier>{34080B31-2001-2A83-4933-0F08358B098F}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\Script">
+      <UniqueIdentifier>{A7AB3D3A-938F-FE8F-FCEF-F8E2E8F2E811}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Hazel\Vendor">
-      <UniqueIdentifier>{2D6C2C38-1965-4B8A-4297-300F2EEF2A96}</UniqueIdentifier>
+    <Filter Include="src\Jasmine\vendor">
+      <UniqueIdentifier>{C023048C-AC07-C5E1-1568-BF34016BAF63}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
@@ -75,200 +75,200 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\JMpch.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="src\Jasmine.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Application.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Assert.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Base.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Buffer.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Events\ApplicationEvent.h">
-      <Filter>src\Hazel\Core\Events</Filter>
+      <Filter>src\Jasmine\Core\Events</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Events\Event.h">
-      <Filter>src\Hazel\Core\Events</Filter>
+      <Filter>src\Jasmine\Core\Events</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Events\KeyEvent.h">
-      <Filter>src\Hazel\Core\Events</Filter>
+      <Filter>src\Jasmine\Core\Events</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Events\MouseEvent.h">
-      <Filter>src\Hazel\Core\Events</Filter>
+      <Filter>src\Jasmine\Core\Events</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Input.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\KeyCodes.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Layer.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\LayerStack.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Log.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Math\AABB.h">
-      <Filter>src\Hazel\Core\Math</Filter>
+      <Filter>src\Jasmine\Core\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Math\Mat4.h">
-      <Filter>src\Hazel\Core\Math</Filter>
+      <Filter>src\Jasmine\Core\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Math\Noise.h">
-      <Filter>src\Hazel\Core\Math</Filter>
+      <Filter>src\Jasmine\Core\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Math\Ray.h">
-      <Filter>src\Hazel\Core\Math</Filter>
+      <Filter>src\Jasmine\Core\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Platform.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Ref.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\TimeStep.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Timer.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\UUID.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Core\Window.h">
-      <Filter>src\Hazel\Core</Filter>
+      <Filter>src\Jasmine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Editor\EditorCamera.h">
-      <Filter>src\Hazel\Editor</Filter>
+      <Filter>src\Jasmine\Editor</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Editor\SceneHierarchyPanel.h">
-      <Filter>src\Hazel\Editor</Filter>
+      <Filter>src\Jasmine\Editor</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\EntryPoint.h">
-      <Filter>src\Hazel</Filter>
+      <Filter>src\Jasmine</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\ImGui\ImGui.h">
-      <Filter>src\Hazel\ImGui</Filter>
+      <Filter>src\Jasmine\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\ImGui\ImGuiLayer.h">
-      <Filter>src\Hazel\ImGui</Filter>
+      <Filter>src\Jasmine\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\ImGui\ImGuizmo.h">
-      <Filter>src\Hazel\ImGui</Filter>
+      <Filter>src\Jasmine\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.h">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLIndexBuffer.h">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLPipeline.h">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.h">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShader.h">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.h">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.h">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\OpenGL\OpenGLVertexBuffer.h">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Platform\Windows\WindowsWindow.h">
-      <Filter>src\Hazel\Platform\Windows</Filter>
+      <Filter>src\Jasmine\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Camera.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Framebuffer.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\IndexBuffer.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Material.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Mesh.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Pipeline.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\RenderCommandQueue.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\RenderPass.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Renderer.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Renderer2D.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\RendererAPI.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\SceneEnvironment.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\SceneRenderer.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Shader.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\ShaderUniform.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\Texture.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Renderer\VertexBuffer.h">
-      <Filter>src\Hazel\Renderer</Filter>
+      <Filter>src\Jasmine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Scene\Components.h">
-      <Filter>src\Hazel\Scene</Filter>
+      <Filter>src\Jasmine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Scene\Entity.h">
-      <Filter>src\Hazel\Scene</Filter>
+      <Filter>src\Jasmine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Scene\Scene.h">
-      <Filter>src\Hazel\Scene</Filter>
+      <Filter>src\Jasmine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Scene\SceneCamera.h">
-      <Filter>src\Hazel\Scene</Filter>
+      <Filter>src\Jasmine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Scene\SceneSerializer.h">
-      <Filter>src\Hazel\Scene</Filter>
+      <Filter>src\Jasmine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Script\ScriptEngine.h">
-      <Filter>src\Hazel\Script</Filter>
+      <Filter>src\Jasmine\Script</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Script\ScriptEngineRegistry.h">
-      <Filter>src\Hazel\Script</Filter>
+      <Filter>src\Jasmine\Script</Filter>
     </ClInclude>
     <ClInclude Include="src\Jasmine\Script\ScriptWrappers.h">
-      <Filter>src\Hazel\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="src\JMpch.h">
-      <Filter>src</Filter>
+      <Filter>src\Jasmine\Script</Filter>
     </ClInclude>
     <ClInclude Include="vendor\yaml-cpp\include\yaml-cpp\anchor.h">
       <Filter>vendor\yaml-cpp\include\yaml-cpp</Filter>
@@ -449,155 +449,155 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Jasmine\Core\Application.cpp">
-      <Filter>src\Hazel\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\Base.cpp">
-      <Filter>src\Hazel\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\Layer.cpp">
-      <Filter>src\Hazel\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\LayerStack.cpp">
-      <Filter>src\Hazel\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\Log.cpp">
-      <Filter>src\Hazel\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\Math\Mat4.cpp">
-      <Filter>src\Hazel\Core\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\Math\Noise.cpp">
-      <Filter>src\Hazel\Core\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\TimeStep.cpp">
-      <Filter>src\Hazel\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\UUID.cpp">
-      <Filter>src\Hazel\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Core\Window.cpp">
-      <Filter>src\Hazel\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Editor\EditorCamera.cpp">
-      <Filter>src\Hazel\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp">
-      <Filter>src\Hazel\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\ImGui\ImGuiBuild.cpp">
-      <Filter>src\Hazel\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\ImGui\ImGuiLayer.cpp">
-      <Filter>src\Hazel\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\ImGui\ImGuizmo.cpp">
-      <Filter>src\Hazel\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.cpp">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLIndexBuffer.cpp">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLPipeline.cpp">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.cpp">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRendererAPI.cpp">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShader.cpp">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.cpp">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.cpp">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexBuffer.cpp">
-      <Filter>src\Hazel\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\Windows\WindowsInput.cpp">
-      <Filter>src\Hazel\Platform\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Platform\Windows\WindowsWindow.cpp">
-      <Filter>src\Hazel\Platform\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Camera.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Framebuffer.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\IndexBuffer.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Material.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Mesh.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Pipeline.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\RenderCommandQueue.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\RenderPass.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Renderer.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Renderer2D.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\SceneEnvironment.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\SceneRenderer.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Shader.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\Texture.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Renderer\VertexBuffer.cpp">
-      <Filter>src\Hazel\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Scene\Entity.cpp">
-      <Filter>src\Hazel\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Scene\Scene.cpp">
-      <Filter>src\Hazel\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Scene\SceneCamera.cpp">
-      <Filter>src\Hazel\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Scene\SceneSerializer.cpp">
-      <Filter>src\Hazel\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Script\ScriptEngine.cpp">
-      <Filter>src\Hazel\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Script\ScriptEngineRegistry.cpp">
-      <Filter>src\Hazel\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Script\ScriptWrappers.cpp">
-      <Filter>src\Hazel\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp">
-      <Filter>src\Hazel\Vendor</Filter>
-    </ClCompile>
     <ClCompile Include="src\JMpch.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Application.cpp">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Base.cpp">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Layer.cpp">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\LayerStack.cpp">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Log.cpp">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Math\Mat4.cpp">
+      <Filter>src\Jasmine\Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Math\Noise.cpp">
+      <Filter>src\Jasmine\Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\TimeStep.cpp">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\UUID.cpp">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Core\Window.cpp">
+      <Filter>src\Jasmine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Editor\EditorCamera.cpp">
+      <Filter>src\Jasmine\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Editor\SceneHierarchyPanel.cpp">
+      <Filter>src\Jasmine\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\ImGui\ImGuiBuild.cpp">
+      <Filter>src\Jasmine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\ImGui\ImGuiLayer.cpp">
+      <Filter>src\Jasmine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\ImGui\ImGuizmo.cpp">
+      <Filter>src\Jasmine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLFramebuffer.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLIndexBuffer.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLPipeline.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRenderPass.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShader.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLShaderUniform.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\OpenGL\OpenGLVertexBuffer.cpp">
+      <Filter>src\Jasmine\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\Windows\WindowsInput.cpp">
+      <Filter>src\Jasmine\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Platform\Windows\WindowsWindow.cpp">
+      <Filter>src\Jasmine\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Camera.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Framebuffer.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\IndexBuffer.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Material.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Mesh.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Pipeline.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\RenderCommandQueue.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\RenderPass.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Renderer.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Renderer2D.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\SceneEnvironment.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\SceneRenderer.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Shader.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\Texture.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Renderer\VertexBuffer.cpp">
+      <Filter>src\Jasmine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Scene\Entity.cpp">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Scene\Scene.cpp">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Scene\SceneCamera.cpp">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Scene\SceneSerializer.cpp">
+      <Filter>src\Jasmine\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Script\ScriptEngine.cpp">
+      <Filter>src\Jasmine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Script\ScriptEngineRegistry.cpp">
+      <Filter>src\Jasmine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\Script\ScriptWrappers.cpp">
+      <Filter>src\Jasmine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Jasmine\vendor\stb_image.cpp">
+      <Filter>src\Jasmine\vendor</Filter>
     </ClCompile>
     <ClCompile Include="vendor\FastNoise\FastNoise.cpp">
       <Filter>vendor\FastNoise</Filter>

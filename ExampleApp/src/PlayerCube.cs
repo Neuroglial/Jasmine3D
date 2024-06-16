@@ -19,6 +19,7 @@ namespace Example
         int m_CollisionCounter = 0;
 
         public Vector2 MaxSpeed = new Vector2();
+        public Vector3 CollisionColor = new Vector3();
 
         private bool Colliding => m_CollisionCounter > 0;
 
@@ -60,9 +61,9 @@ namespace Example
                 m_PhysicsBody.ApplyLinearImpulse(new Vector2(0, JumpForce), new Vector2(0, 0), true);
 
             if (m_CollisionCounter > 0)
-                m_MeshMaterial.Set("u_AlbedoColor", new Vector3(1.0f, 0.0f, 0.0f));
+                m_MeshMaterial.Set("u_AlbedoColor", CollisionColor);
             else
-                m_MeshMaterial.Set("u_AlbedoColor", new Vector3(0.8f, 0.8f, 0.8f));
+                m_MeshMaterial.Set("u_AlbedoColor", new Vector3(0.2f, 0.8f, 0.8f));
 
             Vector2 linearVelocity = m_PhysicsBody.GetLinearVelocity();
             linearVelocity.Clamp(new Vector2(-MaxSpeed.X, -1000), MaxSpeed);

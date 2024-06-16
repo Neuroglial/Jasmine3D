@@ -193,6 +193,7 @@ namespace Jasmine {
 			s_Data.LineShader->Bind();
 			s_Data.LineShader->SetMat4("u_ViewProjection", s_Data.CameraViewProj);
 
+			s_Data.LineVertexBuffer->Bind();
 			s_Data.LinePipeline->Bind();
 			s_Data.LineIndexBuffer->Bind();
 			Renderer::SetLineThickness(2.0f);

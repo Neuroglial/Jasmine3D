@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\JMpch.h" />
     <ClInclude Include="src\Jasmine.h" />
     <ClInclude Include="src\Jasmine\Core\Application.h" />
     <ClInclude Include="src\Jasmine\Core\Assert.h" />
@@ -207,7 +208,6 @@
     <ClInclude Include="src\Jasmine\Script\ScriptEngine.h" />
     <ClInclude Include="src\Jasmine\Script\ScriptEngineRegistry.h" />
     <ClInclude Include="src\Jasmine\Script\ScriptWrappers.h" />
-    <ClInclude Include="src\JMpch.h" />
     <ClInclude Include="vendor\yaml-cpp\include\yaml-cpp\anchor.h" />
     <ClInclude Include="vendor\yaml-cpp\include\yaml-cpp\binary.h" />
     <ClInclude Include="vendor\yaml-cpp\include\yaml-cpp\contrib\anchordict.h" />
@@ -269,6 +269,9 @@
     <ClInclude Include="vendor\yaml-cpp\src\token.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\JMpch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Jasmine\Core\Application.cpp" />
     <ClCompile Include="src\Jasmine\Core\Base.cpp" />
     <ClCompile Include="src\Jasmine\Core\Layer.cpp" />
@@ -317,10 +320,7 @@
     <ClCompile Include="src\Jasmine\Script\ScriptEngine.cpp" />
     <ClCompile Include="src\Jasmine\Script\ScriptEngineRegistry.cpp" />
     <ClCompile Include="src\Jasmine\Script\ScriptWrappers.cpp" />
-    <ClCompile Include="src\Jasmine\Vendor\stb_image.cpp" />
-    <ClCompile Include="src\JMpch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="src\Jasmine\vendor\stb_image.cpp" />
     <ClCompile Include="vendor\FastNoise\FastNoise.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>

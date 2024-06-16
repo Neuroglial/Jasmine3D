@@ -8,14 +8,16 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #define M_PI 3.14159f
 
 namespace Jasmine {
 
 	EditorCamera::EditorCamera(const glm::mat4& projectionMatrix)
-		: Camera(projectionMatrix)
 	{
+		m_ProjectionMatrix = projectionMatrix;
+
 		m_Rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 		m_FocalPoint = glm::vec3(0.0f);
 
@@ -38,8 +40,39 @@ namespace Jasmine {
 		m_ViewMatrix = glm::inverse(m_ViewMatrix);
 	}
 
-	void EditorCamera::Focus()
+	void EditorCamera::SetPosition(const glm::vec3& position)
 	{
+		m_Position = CalculatePosition();
+		m_FocalPoint = m_FocalPoint + position - m_Position;
+		m_Position = position;
+
+	}
+
+	//rotation in radius
+	void EditorCamera::SetRotation(const glm::vec3& rotation)
+	{
+		m_Rotation = rotation * (180.0f / (float)M_PI);
+		m_Pitch = -rotation.x;
+		m_Yaw = -rotation.y;
+	}
+
+	void EditorCamera::Focus(const glm::vec3& position)
+	{
+		m_FocalPoint = position;
+	}
+
+	void EditorCamera::SetTransform(const glm::mat4& trans)
+	{
+		glm::vec3 scale;
+		glm::quat rotation;
+		glm::vec3 translation;
+		glm::vec3 skew;
+		glm::vec4 perspective;
+
+		glm::decompose(trans, scale, rotation, translation, skew, perspective);
+
+		SetRotation(glm::eulerAngles(rotation));
+		SetPosition(translation);
 	}
 
 	std::pair<float, float> EditorCamera::PanSpeed() const
@@ -69,6 +102,7 @@ namespace Jasmine {
 
 	void EditorCamera::OnUpdate(Timestep ts)
 	{
+		/*
 		if (Input::IsKeyPressed(KeyCode::LeftAlt))
 		{
 			const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
@@ -81,6 +115,24 @@ namespace Jasmine {
 				MouseRotate(delta);
 			else if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
 				MouseZoom(delta.y);
+		}
+		*/
+
+		const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
+		glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
+		m_InitialMousePosition = mouse;
+
+		
+
+		if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE))
+		{
+			if (Input::IsKeyPressed(KeyCode::LeftShift))
+			{
+				MousePan(delta);
+			}
+			else {
+				MouseRotate(delta);
+			}
 		}
 
 		UpdateCameraView();

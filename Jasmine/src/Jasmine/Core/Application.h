@@ -32,7 +32,6 @@ namespace Jasmine {
 		virtual void OnEvent(Event& event);
 
 		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* layer);
 		void RenderImGui();
 
 		std::string OpenFile(const char* filter = "All\0*.*\0") const;

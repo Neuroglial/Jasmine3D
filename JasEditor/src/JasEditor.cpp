@@ -3,10 +3,10 @@
 
 #include "EditorLayer.h"
 
-class JasminenutApplication : public Jasmine::Application
+class JasmineApplication : public Jasmine::Application
 {
 public:
-	JasminenutApplication(const Jasmine::ApplicationProps& props)
+	JasmineApplication(const Jasmine::ApplicationProps& props)
 		: Application(props)
 	{
 	}
@@ -19,5 +19,5 @@ public:
 
 Jasmine::Application* Jasmine::CreateApplication()
 {
-	return new JasminenutApplication({"Jasminenut", 1600, 900});
+	return new JasmineApplication({"Jasmine", 1600, 900});
 }

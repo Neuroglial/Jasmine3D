@@ -29,7 +29,7 @@ namespace Jasmine {
 		m_Window->SetVSync(true);
 
 		m_ImGuiLayer = new ImGuiLayer("ImGui");
-		PushOverlay(m_ImGuiLayer);
+		PushLayer(m_ImGuiLayer);
 
 		ScriptEngine::Init("assets/scripts/ExampleApp.dll");
 
@@ -45,12 +45,6 @@ namespace Jasmine {
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
-	}
-
-	void Application::PushOverlay(Layer* layer)
-	{
-		m_LayerStack.PushOverlay(layer);
 		layer->OnAttach();
 	}
 
@@ -105,9 +99,10 @@ namespace Jasmine {
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
-			(*--it)->OnEvent(event);
 			if (event.Handled)
 				break;
+
+			(*--it)->OnEvent(event);
 		}
 	}
 

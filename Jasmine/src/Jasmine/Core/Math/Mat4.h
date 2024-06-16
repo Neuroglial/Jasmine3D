@@ -4,10 +4,7 @@
 
 namespace Jasmine {
 
-	class Mat4
+	namespace Jmath
 	{
-	public:
-		// static glm::mat4 FromAssimpMat4(const aiMatrix4x4& matrix);
-	};
-
+	}
 }

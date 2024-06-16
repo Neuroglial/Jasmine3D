@@ -79,4 +79,3 @@ namespace Jasmine {
 		return os << e.ToString();
 	}
 }
-

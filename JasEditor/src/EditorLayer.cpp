@@ -55,7 +55,7 @@ namespace Jasmine {
 		m_CheckerboardTex = Texture2D::Create("assets/editor/Checkerboard.tga");
 		m_PlayButtonTex = Texture2D::Create("assets/editor/PlayButton.png");
 
-		m_SceneHierarchyPanel = CreateScope<SceneHierarchyPanel>(m_EditorScene);
+		m_SceneHierarchyPanel = CreateScope<SceneHierarchyPanel>(m_EditorScene,&m_EditorCamera);
 		m_SceneHierarchyPanel->SetSelectionChangedCallback(std::bind(&EditorLayer::SelectEntity, this, std::placeholders::_1));
 		m_SceneHierarchyPanel->SetEntityDeletedCallback(std::bind(&EditorLayer::OnEntityDeleted, this, std::placeholders::_1));
 		
@@ -79,7 +79,7 @@ namespace Jasmine {
 		m_EditorScene->CopyTo(m_RuntimeScene);
 
 		m_RuntimeScene->OnRuntimeStart();
-		m_SceneHierarchyPanel->SetContext(m_RuntimeScene);
+		m_SceneHierarchyPanel->SetContext(m_RuntimeScene, &m_EditorCamera);
 	}
 
 	void EditorLayer::OnSceneStop()
@@ -92,12 +92,12 @@ namespace Jasmine {
 
 		m_SelectionContext.clear();
 		ScriptEngine::SetSceneContext(m_EditorScene);
-		m_SceneHierarchyPanel->SetContext(m_EditorScene);
+		m_SceneHierarchyPanel->SetContext(m_EditorScene,&m_EditorCamera);
 	}
 
 	void EditorLayer::UpdateWindowTitle(const std::string& sceneName)
 	{
-		std::string title = sceneName + " - Jasminenut - " + Application::GetPlatformName() + " (" + Application::GetConfigurationName() + ")";
+		std::string title = sceneName + " - Jasmine Engine - " + Application::GetPlatformName() + " (" + Application::GetConfigurationName() + ")";
 		Application::Get().GetWindow().SetTitle(title);
 	}
 
@@ -127,12 +127,20 @@ namespace Jasmine {
 
 				m_EditorScene->OnRenderEditor(ts, m_EditorCamera);
 
-				if (m_DrawOnTopBoundingBoxes)
+				if (m_DrawOnTopBoundingBoxes&&m_SelectionContext.size()&&m_SelectionContext[0].Mesh)
 				{
 					Renderer::BeginRenderPass(SceneRenderer::GetFinalRenderPass(), false);
 					auto viewProj = m_EditorCamera.GetViewProjection();
 					Renderer2D::BeginScene(viewProj, false);
-					// TODO: Renderer::DrawAABB(m_MeshEntity.GetComponent<MeshComponent>(), m_MeshEntity.GetComponent<TransformComponent>());
+					
+					//TODO DrawAABB on top
+
+					glm::mat4 trans = 
+						m_SelectionContext[0].Entity.GetComponent<TransformComponent>().Transform
+						*m_SelectionContext[0].Mesh->Transform;
+
+					Renderer::DrawAABB(m_SelectionContext[0].Mesh->BoundingBox, trans);
+
 					Renderer2D::EndScene();
 					Renderer::EndRenderPass();
 				}
@@ -329,7 +337,7 @@ namespace Jasmine {
 	void EditorLayer::NewScene()
 	{
 		m_EditorScene = Ref<Scene>::Create();
-		m_SceneHierarchyPanel->SetContext(m_EditorScene);
+		m_SceneHierarchyPanel->SetContext(m_EditorScene, &m_EditorCamera);
 		ScriptEngine::SetSceneContext(m_EditorScene);
 		UpdateWindowTitle("Untitled Scene");
 		m_SceneFilePath = std::string();
@@ -354,7 +362,7 @@ namespace Jasmine {
 
 		std::filesystem::path path = filepath;
 		UpdateWindowTitle(path.filename().string());
-		m_SceneHierarchyPanel->SetContext(m_EditorScene);
+		m_SceneHierarchyPanel->SetContext(m_EditorScene, &m_EditorCamera);
 		ScriptEngine::SetSceneContext(m_EditorScene);
 
 		m_EditorScene->SetSelectedEntity({});
@@ -989,6 +997,7 @@ namespace Jasmine {
 				m_SelectionContext.clear();
 				m_EditorScene->SetSelectedEntity({});
 				auto meshEntities = m_EditorScene->GetAllEntitiesWith<MeshComponent>();
+				float lastT = std::numeric_limits<float>::max();
 				for (auto e : meshEntities)
 				{
 					Entity entity = { e, m_EditorScene.Raw() };
@@ -997,24 +1006,27 @@ namespace Jasmine {
 						continue;
 
 					auto& submeshes = mesh->GetSubmeshes();
-					float lastT = std::numeric_limits<float>::max();
 					for (uint32_t i = 0; i < submeshes.size(); i++)
 					{
 						auto& submesh = submeshes[i];
+
+						auto inverseMat = glm::inverse(entity.Transform() * submesh.Transform);
+
 						Ray ray = {
-							glm::inverse(entity.Transform() * submesh.Transform) * glm::vec4(origin, 1.0f),
-							glm::inverse(glm::mat3(entity.Transform()) * glm::mat3(submesh.Transform)) * direction
+							inverseMat*glm::vec4(origin,1.0f),
+							inverseMat*glm::vec4(direction,0.0f)
 						};
 
 						float t;
 						bool intersects = ray.IntersectsAABB(submesh.BoundingBox, t);
-						if (intersects)
+						if (intersects&&t<lastT)
 						{
 							const auto& triangleCache = mesh->GetTriangleCache(i);
 							for (const auto& triangle : triangleCache)
 							{
-								if (ray.IntersectsTriangle(triangle.V0.Position, triangle.V1.Position, triangle.V2.Position, t))
+								if (ray.IntersectsTriangle(triangle.V0.Position, triangle.V1.Position, triangle.V2.Position, t)&&t<lastT)
 								{
+									lastT = t;
 									JM_WARN("INTERSECTION: {0}, t={1}", submesh.NodeName, t);
 									m_SelectionContext.push_back({ entity, &submesh, t });
 									break;
