@@ -1,0 +1,15 @@
+# Binaries
+**/bin/
+!vendor/bin
+!Jasmine/vendor/mono/bin
+!Jasmine/vendor/assimp/bin
+bin-int/
+obj/
+
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.csproj
