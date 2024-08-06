@@ -7,10 +7,17 @@ Jasmine Engine is one of my first practice development projects. My goal is to d
 ===========================Editor Demonstration==================================
 
 Transform:
-![Transform](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Transform.gif)
+![gif](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Transform.gif)
 
 Rotation:
-![Rotation](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Rotation.gif)
+![gif](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Rotation.gif)
 
 Scale:
-![Scale](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Scale.gif)
+![gif](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Scale.gif)
+
+Add Object:
+![gif](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20%20Create.gif)
+
+Material Edit:
+![gif](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Material%20Editor%201.gif)
+![gif](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Material%20Editor%202.gif)
