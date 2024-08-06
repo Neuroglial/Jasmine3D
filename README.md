@@ -21,3 +21,6 @@ Add Object:
 Material Edit:
 ![gif](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Material%20Editor%201.gif)
 ![gif](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Material%20Editor%202.gif)
+
+Performance test:
+![gif](https://github.com/Neuroglial/Jasmine3D/blob/OpenGLAssignment/Resources/Jasmine%20Engine%20Performance%20Test.gif)
